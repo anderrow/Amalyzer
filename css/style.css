@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,sans-serif;
 }
 ul{
     list-style: none;
@@ -86,7 +87,7 @@ a:-moz-any-link{
 /*------- Navigation Menu -------------*/
 nav {
     position: fixed;
-    background-color: #ffffff;
+    background-color:  rgb(226, 226, 226);
     text-align: center; /* This does not center flex elements */
     width: 100%;
     align-items: center;
@@ -97,6 +98,12 @@ nav ul {
     grid-template-columns: 1fr 1fr 100px 1fr 1fr;
     align-items: center;
 }
+nav ul li{
+   background-color:  rgb(226, 226, 226); 
+}
+#logo{
+    background-color:  rgb(226, 226, 226)
+}
 .MenuButton {
     display: flex;
     justify-content: center;
@@ -106,14 +113,40 @@ nav ul {
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,sans-serif;
     border-bottom: 1px solid grey;
     border-radius: 10px;
+    background-color: white;
+    border: 1px solid grey;
 }
 .MenuButton:hover{
-    background-color: #d8d8d8;;
-}
-#Proportionings, #Analyzer,#Regressor{
-    border-right: 1px solid grey;  
-}
-#VMS, #Regressor{
-    border-left: 1px solid grey;
+    background-color: #e9fadb;;
 }
 /*---Proportionings---*/
+#ProportioningArticle{
+    padding-top: 80px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 20px;
+}
+#ProportioningArticle{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto;
+    height: 100%;
+    gap: 20px;
+    background-color: rgb(226, 226, 226);
+}
+#Proportioningboard{
+    background-color: white;
+    border-radius: 10px; 
+    border: 2px solid rgb(109, 109, 109);
+}
+#ProportioningArticle section{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#ProportioningMenu{
+    background-color: white;
+    border-radius: 10px; 
+    border: 2px solid rgb(109, 109, 109);
+}
