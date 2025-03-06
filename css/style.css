@@ -24,6 +24,9 @@ a:-webkit-any(){
 a:-moz-any-link{
     color: black
 }
+body{
+    background-color: rgb(226, 226, 226);
+}
 
 /* -------------INTRODUCTION----------- */
 .intro {
@@ -139,14 +142,42 @@ nav ul li{
     border-radius: 10px; 
     border: 2px solid rgb(109, 109, 109);
 }
-#ProportioningArticle section{
+#Proportioningboard {
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
 }
-#ProportioningMenu{
+#ProportioningControls{
     background-color: white;
     border-radius: 10px; 
     border: 2px solid rgb(109, 109, 109);
+}
+#UpperText{
+    justify-items: center;
+    border-bottom: 1px solid black;
+    height: fit-content;
+    font-size: 18px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #adadad;
+    font-weight: 500;
+}
+.PropButton{
+
+}
+#ControlContainer{
+    display: grid;
+    grid-template-columns(2,1fr);
+    grid-template-rows: (2,1fr);
+    gap:10px;
+    text-align: center;
+}
+
+.PropButton{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    
+
 }
