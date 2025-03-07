@@ -4,12 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amalyzer</title>
     <link rel="stylesheet" href="../css/style.css"> <!-- Linking the CSS file -->
+    <link rel="icon" type="image/png" href="../images/AMABOX.png">
 </head>
 <body>
     <!-- Navigation Menu -->
     <nav>
         <ul>
-            <li class="MenuButton" id="Proportionings"><a href="/pages/Proportionings.html"> Proportionings</a></li>
+            <li class="MenuButton" id="Proportionings"><a href="/pages/Proportionings.html">Proportionings</a></li>
             <li class="MenuButton" id="Analyzer"><a href="/pages/Analyzer.html">Analyzer</a></li>
             <li id="logo"><img src="../images/AMABOX.png" alt="Amabox" height="75px"></i></li>
             <li class="MenuButton" id="Regressor"><a href="/pages/Regressor.html">Regressor</a></li>
@@ -18,19 +19,59 @@
     </nav>
     <!--End of Navigation Menu-->
     <article id="ProportioningArticle">
+        <!--Proportioning Board-->
         <section id="Proportioningboard">
            <div><p>Test</p></div>  
         </section>
+        <!--End of Proportioning Board-->
+        <!--Proportioning Controls-->
         <section id="ProportioningControls">
-            <div id="UpperText"><p>Controls</p></div>
-            <div id="ProportioningMainControls">
-                <ul id="ControlContainer">
-                    <li class="PropButton"><button typpe="button">Update</button></li>
-                    <li class="PropButton"><button typpe="button">Go to Lot</button></li>
-                    <li class="PropButton"><button typpe="button">Go to VMS</button></li>
-                    <li class="PropButton"><button typpe="button">Go to Proportioning</button></li>
-                </ul>
+            <div id="PropMainButons">
+                <div class="UpperText"><p>Controls</p></div>
+                <div id="ProportioningMainControls">
+                    <ul class="PropBoardContainer" id="ControlContainer">
+                        <li class="PropButton"><button type="button">Update</button></li>
+                        <li class="PropButton"><button type="button">Go to Lot</button></li>
+                        <li class="PropButton"><button type="button">Go to VMS</button></li>
+                        <li class="PropButton"><button type="button">Go to Proportioning</button></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="ArticleFilter">
+                <div class="UpperText"><p>Article Filter</p></div>
+                <div id="ArticleSwitch">
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="ArticleForm">
+                    <form action="">
+                        <div class="itemform">
+                            <input type="text" id="RequestedArticle" name="RequestedArticle" minlength="3" maxlength="64" size="90" required>
+                        </div>
+                        <div id="ArticleBox"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque laboriosam harum ea, praesentium eveniet laborum eos sed, esse, corporis impedit tempora est natus porro nemo! Ipsum modi praesentium natus vel?</p></div>  
+                    </form>
+                </div>
+                </div>
+            </div>
+            <div id="AgeFilter">
+                <div class="UpperText"><p>Age Filter</p></div>
+                <div id="AgeSwitch">
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="MultipleChoose">
+                    <select id="time-unit" name="time-unit">
+                    <option value="minutes">Minutes</option>
+                    <option value="hours">Hours</option>
+                    <option value="days">Days</option>
+                    </select>
+                </div> 
             </div>
         </section>
+        <!--End of Proportioning Controls-->
     </article>
 </body>
