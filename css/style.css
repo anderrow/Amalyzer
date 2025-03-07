@@ -89,6 +89,8 @@ body{
 
 /*------- Navigation Menu -------------*/
 nav {
+    padding-left: 30px;
+    padding-right: 30px;
     position: fixed;
     background-color:  rgb(226, 226, 226);
     text-align: center; /* This does not center flex elements */
@@ -98,7 +100,7 @@ nav {
 
 nav ul {
     display: grid;
-    grid-template-columns: 1fr 1fr 100px 1fr 1fr;
+    grid-template-columns: 1fr 1fr 160px 1fr 1fr;
     align-items: center;
 }
 nav ul li{
@@ -124,7 +126,7 @@ nav ul li{
 }
 /*---Proportionings---*/
 #ProportioningArticle{
-    padding-top: 80px;
+    padding-top: 90px;
     padding-left: 30px;
     padding-right: 30px;
     padding-bottom: 20px;
@@ -167,17 +169,16 @@ nav ul li{
 
 }
 #ControlContainer{
+    padding-top: 10px;
     display: grid;
-    grid-template-columns(2,1fr);
-    grid-template-rows: (2,1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
     gap:10px;
     text-align: center;
 }
-
 .PropButton{
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    
-
+    border-radius: 5px;
+}
+.PropButton:nth-child(1), .PropButton:nth-child(4){
+    grid-column: span 2;
 }
