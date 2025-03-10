@@ -291,6 +291,21 @@ nav ul li{
 .UpperText{
     grid-column: span 2;
 }
+.itemform{
+    grid-column: span 2;
+}
+#AgeButton{
+    grid-column: 2;
+    height: 40px;
+    width: 100px;
+    align-self: center;
+    justify-self: center;
+}
+#MultipleChoose{
+    grid-column: 2;
+    align-self: center;
+    justify-self: center;
+}
 
 
   
