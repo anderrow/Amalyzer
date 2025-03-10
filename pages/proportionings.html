@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="../images/AMABOX.png">
 </head>
 <body>
+
     <!-- Navigation Menu -->
     <nav>
         <ul>
@@ -24,58 +25,69 @@
            <div><p>Test</p></div>  
         </section>
         <!--End of Proportioning Board-->
+
         <!--Proportioning Controls-->
         <section id="ProportioningControls">
-            <div id="PropMainButons">
-                <div class="UpperText"><p>Controls</p></div>
-                <div id="ProportioningMainControls">
-                    <ul class="PropBoardContainer" id="ControlContainer">
-                        <li class="PropButton"><button type="button">Update</button></li>
-                        <li class="PropButton"><button type="button">Go to Lot</button></li>
-                        <li class="PropButton"><button type="button">Go to VMS</button></li>
-                        <li class="PropButton"><button type="button">Go to Proportioning</button></li>
-                    </ul>
+            <div id="ProportioningControlsContainer">
+
+                <!-- Main Buttons -->
+                <div id="PropMainButtons" class="PropControlBox">
+                    <div class="UpperText" id="UpperTextControl"><p>Controls</p></div>
+                    <div id="ProportioningMainControls">
+                        <ul class="PropBoardContainer" id="ControlContainer">
+                            <li class="PropButton"><button type="button">Update</button></li>
+                            <li class="PropButton"><button type="button">Go to Lot</button></li>
+                            <li class="PropButton"><button type="button">Go to VMS</button></li>
+                            <li class="PropButton"><button type="button">Go to Proportioning</button></li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <!-- Article Filter -->
+                <div id="ArticleFilter" class="PropControlBox">
+                    <div class="UpperText"><p>Article Filter</p></div>
+                    <div id="ArticleSwitch">
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div id="ArticleForm">
+                        <form action="">
+                            <div class="itemform">
+                                <input type="text" id="RequestedArticle" name="RequestedArticle" minlength="3" maxlength="64" required>
+                            </div>
+                            <div id="ArticleBox">
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit...</p>
+                            </div>  
+                        </form>
+                    </div>
+                </div>
+        
+                <!-- Age Filter -->
+                <div id="AgeFilter" class="PropControlBox">
+                    <div class="UpperText"><p>Age Filter</p></div>
+                    <div id="AgeSwitch">
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div id="MultipleChoose">
+                        <select id="time-unit" name="time-unit">
+                            <option value="minutes">Minutes</option>
+                            <option value="hours">Hours</option>
+                            <option value="days">Days</option>
+                        </select>
+                    </div> 
+                    <div class="itemform">
+                        <input type="text" id="AgeInput" name="AgeInput" minlength="1" maxlength="64" required>
+                    </div>
+                    <button type="button" id="AgeButton">Update</button>
                 </div>
             </div>
-            <div id="ArticleFilter">
-                <div class="UpperText"><p>Article Filter</p></div>
-                <div id="ArticleSwitch">
-                    <label class="switch">
-                        <input type="checkbox">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div id="ArticleForm">
-                    <form action="">
-                        <div class="itemform">
-                            <input type="text" id="RequestedArticle" name="RequestedArticle" minlength="3" maxlength="64" size="90" required>
-                        </div>
-                        <div id="ArticleBox"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque laboriosam harum ea, praesentium eveniet laborum eos sed, esse, corporis impedit tempora est natus porro nemo! Ipsum modi praesentium natus vel?</p></div>  
-                    </form>
-                </div>
-                </div>
-            </div>
-            <div id="AgeFilter">
-                <div class="UpperText"><p>Age Filter</p></div>
-                <div id="AgeSwitch">
-                    <label class="switch">
-                        <input type="checkbox">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div id="MultipleChoose">
-                    <select id="time-unit" name="time-unit">
-                    <option value="minutes">Minutes</option>
-                    <option value="hours">Hours</option>
-                    <option value="days">Days</option>
-                    </select>
-                </div> 
-                <div class="itemform">
-                    <input type="text" id="RequestedArticle" name="RequestedArticle" minlength="3" maxlength="64" size="90" required>
-                </div>
-                <button type="button" id="AgeButton">Update</button>
-            </div>
-        </section>
+        </section>        
         <!--End of Proportioning Controls-->
+
     </article>
 </body>
