@@ -3,8 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,sans-serif;
-}
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 ul{
     list-style: none;
 }
@@ -29,13 +28,7 @@ a{
 a:any-link{
     color: black;
 }
-a:-webkit-any(){
-    color: black;
-}
 
-a:-moz-any-link{
-    color: black
-}
 body{
     background-color: rgb(226, 226, 226);
 }
@@ -190,8 +183,7 @@ nav ul li{
     justify-content: center;
     align-items: center;
     height: 100%;
-    font-size: 24px;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,sans-serif;
+    font-size: 24px;font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     border-bottom: 1px solid grey;
     border-radius: 10px;
     background-color: white;
@@ -365,8 +357,8 @@ nav ul li{
 }
 
 #ArticleBox {
-    grid-column: 1; /* Aseguramos que ArticleBox ocupe toda la fila */
-    min-height: 100px; /* Ajusta la altura según necesites */
+    grid-column: 1; 
+    min-height: 100px; 
     border: 1px solid grey;
     padding: 10px;
     border-radius: 5px;
