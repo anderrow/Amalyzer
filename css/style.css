@@ -95,6 +95,17 @@ nav {
 }
 
 /* ---- Proportioning Layout ---- */
+
+/* Ajuste para pantallas más pequeñas */
+@media (max-width: 768px) {
+    #ProportioningTable {
+        font-size: 12px;
+    }
+    #ProportioningTable th, #ProportioningTable td {
+        padding: 6px;
+    }
+}
+
 #ProportioningControlsContainer {
     display: flex;
     flex-direction: column;
@@ -142,6 +153,39 @@ nav {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-height: calc(95vh - 60px);
+    overflow-y: auto; /* Habilita scroll vertical si hay demasiados datos */
+}
+#ProportioningTable {
+    width: 100%;
+
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#ProportioningTable th, #ProportioningTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#ProportioningTable th {
+    background-color: #4fb40c;
+    color: white;
+    text-align: center;
+}
+
+#ProportioningTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#ProportioningTable tr:hover {
+    background-color: #ddd;
+    cursor: pointer;
 }
 
 /* Proportioning Controls */
