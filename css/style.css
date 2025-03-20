@@ -3,370 +3,125 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Segoe UI", sans-serif;
 }
-ul{
-    list-style: none;
-}
-.MenuButton {
-    display: flex;
-    align-items: center; /* Centra el contenido verticalmente */
-    justify-content: center; /* Opcional, para centrar horizontalmente */
-    height: 100px; /* Ajusta según el diseño */
-    width: 100%; /* Asegura que ocupa todo el ancho disponible */
-}
-.MenuButton a {
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-a{
-    text-decoration: none;
-}
-a:any-link{
-    color: black;
-}
-
-body{
-    background-color: rgb(226, 226, 226);
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display:flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-button{
-    border-radius: 10px;
-    border: 1px solid grey;
-}
-button:hover{
-    background-color: rgb(202, 202, 202);
-}
-select {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    cursor: pointer;
-  }
-/* Styles for the switch container */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-  
-  /* Hide the checkbox to style it */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  /* Styles for the slider */
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 34px;
-  }
-  
-  /* The circle inside the slider */
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    border-radius: 50%;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.4s;
-  }
-  
-  /* When the checkbox is checked, change the background and move the circle */
-  input:checked + .slider {
-    background-color: #4CAF50;
-  }
-  
-  input:checked + .slider:before {
-    transform: translateX(26px);
-  }  
-/* -------------INTRODUCTION----------- */
-.intro {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgb(255, 255, 255);
-    color: black;
+body {
+    background-color: #f4f4f4;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+    min-height: 100vh;
 }
 
-/* Image */
-.intro img {
-     /* Adjust the size as needed */
-    margin-bottom: 20px;
-    animation: fadeIn 1s ease-in-out;
-}
-
-/* Text container */
-.typing-container {
-    font-size: 24px;
-    font-family: monospace;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 2px solid black;
-    width: 0;
-    animation: typing 1.6s steps(21, end) forwards, blink 0.6s infinite;
-}
-
-/* Typing animation */
-@keyframes typing {
-    from { width: 0; }
-    to { width: 400px; } /* Adjust to fit the text size */
-}
-
-/* Blinking cursor effect */
-@keyframes blink {
-    50% { border-color: transparent; }
-}
-
-/* Fade-in effect */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Main content (initially hidden) */
-.content {
-    opacity: 0;
-    position: relative;
-    transition: opacity 1s ease-in-out;
-}
-
-/*------- Navigation Menu -------------*/
+/* Navigation */
 nav {
-    margin-top: 5px;
-    padding-left: 30px;
-    padding-right: 30px;
-    background-color:  rgb(226, 226, 226);
-    text-align: center; /* This does not center flex elements */
-    width: 100%;
-    align-items: center;
-}
-
-nav ul {
-    display: grid;
-    grid-template-columns: 1fr 1fr 160px 1fr 1fr;
-    align-items: center;
-    gap: 4px;
-}
-nav ul li{
-   background-color:  rgb(226, 226, 226); 
-}
-#logo{
-    background-color:  rgb(226, 226, 226)
-}
-.MenuButton {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    height: 100%;
-    font-size: 24px;font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    border-bottom: 1px solid grey;
-    border-radius: 10px;
-    background-color: white;
-    border: 1px solid grey;
+    background-color: #ffffff;
+    padding: 10px 20px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
 }
-.MenuButton:hover{
-    background-color: #eafcd785;;
+.menu-toggle {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
 }
-
-
-/*---Proportionings---*/
-#ProportioningArticle{
-    flex: 1; /* Ocupa todo el espacio disponible */
-    padding-top: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: auto;
-    gap: 20px;
-    background-color: rgb(226, 226, 226);
+.nav-list {
+    display: flex;
+    list-style: none;
+    width: 100%;
+    justify-content: center;
 }
-#Proportioningboard{
-    background-color: white;
-    border-radius: 10px; 
-    border: 2px solid rgb(109, 109, 109);
+.nav-list li {
+    margin: 0 15px;
 }
-#Proportioningboard {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-#ProportioningControls{
-    background-color: white;
-    border-radius: 10px; 
-    border: 2px solid rgb(109, 109, 109);
-    overflow: hidden;
-}
-.UpperText{
-    justify-items: center;
-    border-bottom: 1px solid black;
-    height: fit-content;
+.nav-list a {
+    text-decoration: none;
     font-size: 18px;
-    background-color: #adadad;
-    font-weight: 500;
-    padding: 10px;
-}
-#ArticleFilter .UpperText, #AgeFilter .UpperText{
-    border-top: 1px solid black;
-}
-#PropMainButons .UpperText{
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-}
-#ControlContainer{
-    padding-top: 10px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
-    gap:10px;
-    text-align: center;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-.PropButton{
-    width: 100%;
-    padding-bottom: 10px;
-}
-.PropButton button{
-    height: 50px;
-    width: 100%;
-}
-.PropButton:nth-child(1), .PropButton:nth-child(4){
-    grid-column: span 2;
-}
-#ArticleFilter div, #AgeFilter div{
-    padding: 10px;
-}
-
-#ArticleBox{
-    height: 20%;
-    border:1px solid grey;
-    margin-left: 10px;
-    margin-right: 10px;
+    color: #333;
+    padding: 10px 15px;
     border-radius: 5px;
+    transition: 0.3s;
+}
+.nav-list a:hover {
+    background-color: #ddd;
+}
+#logo img {
+    height: 50px;
 }
 
-#AgeFilter{
-    display:grid;
-    grid-template-columns: repeat(2,1fr);
-    grid-template-rows: auto;
-    gap:10px;
+/* Mobile Navigation */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+    .nav-list {
+        display: none;
+        flex-direction: column;
+        background-color: white;
+        position: absolute;
+        top: 60px;
+        width: 100%;
+        left: 0;
+        text-align: center;
+        padding: 10px;
+        box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    }
+    .nav-list.active {
+        display: flex;
+    }
 }
-.UpperText{
-    grid-column: 1;
-    grid-column: span 2;
+
+/* Proportioning Sections */
+#ProportioningArticle {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
 }
-.itemform{
-    grid-column: span 2;
-}
-#AgeButton{
-    grid-column: 2;
-    height: 40px;
-    width: 100px;
-    align-self: center;
-    justify-self: center;
-    margin-bottom: 20px;
-}
-#MultipleChoose{
-    grid-column: 2;
-    align-self: center;
-    justify-self: center;
+#Proportioningboard, #ProportioningControls {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 #ProportioningControlsContainer {
     display: flex;
-    flex-wrap: wrap;  
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
 }
-
 .PropControlBox {
-    flex: 1 1 300px;  
-    min-width: 250px; 
+    flex: 1 1 280px;
+    min-width: 260px;
+    padding: 15px;
     background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
     text-align: center;
 }
-  
-#RequestedArticle,
-#AgeInput {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
+.UpperText {
+    font-weight: bold;
+    font-size: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
 }
-
-@media (max-width: 768px) {
-    #ProportioningControlsContainer {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .PropControlBox {
-        width: 90%;  /* Para que no ocupen todo el ancho en pantallas pequeñas */
-    }
-}
-
-#UpperTextControl{
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-}
-#ArticleFilter {
-    display: grid;
-    grid-template-columns: 1fr; /* Solo una columna */
-    grid-template-rows: auto auto 1fr; /* Tres filas: una para el título, otra para el switch + form, y otra para la caja */
-    gap: 10px; /* Espaciado entre elementos */
-}
-
-#ArticleSwitch,
-#ArticleForm {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-#ArticleForm {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#ArticleBox {
-    grid-column: 1; 
-    min-height: 100px; 
-    border: 1px solid grey;
+button {
+    background: #007bff;
+    color: white;
     padding: 10px;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    background: #0056b3;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
