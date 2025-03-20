@@ -32,6 +32,12 @@ a:any-link{
 
 body{
     background-color: rgb(226, 226, 226);
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display:flex;
+    flex-direction: column;
+    margin-bottom: 20px;
 }
 button{
     border-radius: 10px;
@@ -197,16 +203,13 @@ nav ul li{
 
 /*---Proportionings---*/
 #ProportioningArticle{
+    flex: 1; /* Ocupa todo el espacio disponible */
     padding-top: 20px;
     padding-left: 30px;
     padding-right: 30px;
-    padding-bottom: 20px;
-}
-#ProportioningArticle{
     display: grid;
     grid-template-columns: 2fr 1fr;
     grid-template-rows: auto;
-    height: 90%;
     gap: 20px;
     background-color: rgb(226, 226, 226);
 }
@@ -225,6 +228,7 @@ nav ul li{
     background-color: white;
     border-radius: 10px; 
     border: 2px solid rgb(109, 109, 109);
+    overflow: hidden;
 }
 .UpperText{
     justify-items: center;
@@ -294,6 +298,7 @@ nav ul li{
     width: 100px;
     align-self: center;
     justify-self: center;
+    margin-bottom: 20px;
 }
 #MultipleChoose{
     grid-column: 2;
