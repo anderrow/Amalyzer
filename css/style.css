@@ -107,13 +107,17 @@ nav {
     display: flex;
     flex-direction: column;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+
     text-align: center;
-    margin-bottom: 10px;
+}
+.PropControlBox ul, .PropControlBox select, .PropControlBox input, .PropControlBox button, .PropControlBox p {
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 90%;
 }
 #AgeFilter{
     margin-bottom: 0px;
+    border-radius: 8px;
 }
 
 
@@ -156,8 +160,7 @@ nav {
     text-align: center;
     background-color: #f0f0f0; /* ✅ Fondo diferente para resaltar */
     padding: 12px;
-    border-top-left-radius: 8px; /* ✅ Redondear esquinas superiores */
-    border-top-right-radius: 8px;
+    margin: 0px;
     border-bottom: 2px solid #ccc; /* ✅ Línea separadora del contenido */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -169,8 +172,9 @@ nav {
 /* Eliminar los puntos de los botones */
 .PropBoardContainer {
     list-style: none;
-    padding: 0;
-    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 10px; 
 }
 
 /* Botones */
@@ -188,7 +192,7 @@ button:hover {
     background: #0056b3;
 }
 input, select {
-    width: 100%;
+    width: 90%;
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ddd;
