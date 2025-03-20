@@ -115,6 +115,11 @@ nav {
     margin-right: 20px;
     width: 90%;
 }
+.PropControlBox label{
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
 #AgeFilter{
     margin-bottom: 0px;
     border-radius: 8px;
@@ -274,4 +279,72 @@ input, select {
     align-items: center;
     z-index: 1000;
     transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+}
+
+/* Contenedor del switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+
+/* Oculta el checkbox original */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Estilo de la barra deslizante */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 25px;
+}
+
+/* El círculo dentro del switch */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 3.5px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+/* Cuando está activado (ON) */
+.switch input:checked + .slider {
+    background-color: #007bff;
+}
+
+/* Mueve el círculo cuando está activado */
+.switch input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Estilo para OFF y ON */
+.switch:after {
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.switch input:checked + .slider:after {
+
+    left: auto;
+    right: 5px;
 }
