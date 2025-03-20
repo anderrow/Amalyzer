@@ -12,13 +12,6 @@ setTimeout(() => {
     }, 1000); // Espera 1s para la animación antes de redirigir
 }, 3000); // Duración de la intro (3s antes de iniciar el fade-out)
 
-document.addEventListener("DOMContentLoaded", function () {
-    const menuToggle = document.getElementById("mobile-menu");
-    const navList = document.querySelector(".nav-list");
-
-    menuToggle.addEventListener("click", function () {
-        navList.classList.toggle("active");
-    });
-});
 
 // End of Intro
+

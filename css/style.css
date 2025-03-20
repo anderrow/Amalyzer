@@ -72,40 +72,82 @@ nav {
     }
 }
 
-/* Proportioning Sections */
-#ProportioningArticle {
+/* ---- Proportioning Layout ---- */
+#ProportioningControlsContainer {
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    gap: 20px;
+    gap: 15px;
+    height: 100%; /* ✅ Ocupa todo el espacio disponible dentro de la sección */
 }
-#Proportioningboard, #ProportioningControls {
+
+.PropControlBox {
+    flex: 1; /* ✅ Hace que cada div crezca y ocupe el mismo espacio */
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 10px;
+}
+#AgeFilter{
+    margin-bottom: 0px;
+}
+
+#ProportioningArticle {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 y 1/3 de la pantalla */
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Proportioning Board */
+#Proportioningboard {
     background: white;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
+/* Proportioning Controls */
+#ProportioningControls {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Controles dentro de Proportioning Controls en disposición vertical */
 #ProportioningControlsContainer {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 10px;
-}
-.PropControlBox {
-    flex: 1 1 280px;
-    min-width: 260px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
+    flex-direction: column;
+    gap: 15px;
 }
 .UpperText {
-    font-weight: bold;
-    font-size: 16px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ddd;
+    font-size: 18px; /* ✅ Tamaño más grande para destacar */
+    font-weight: bold; /* ✅ Hace que el título sea más visible */
+    text-align: center;
+    background-color: #f0f0f0; /* ✅ Fondo diferente para resaltar */
+    padding: 12px;
+    border-top-left-radius: 8px; /* ✅ Redondear esquinas superiores */
+    border-top-right-radius: 8px;
+    border-bottom: 2px solid #ccc; /* ✅ Línea separadora del contenido */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+
+/* Estilos para los bloques de control */
+
+
+/* Eliminar los puntos de los botones */
+.PropBoardContainer {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Botones */
 button {
     background: #007bff;
     color: white;
@@ -114,6 +156,7 @@ button {
     border: none;
     cursor: pointer;
     transition: 0.3s;
+    margin: 5px;
 }
 button:hover {
     background: #0056b3;
@@ -124,4 +167,91 @@ input, select {
     margin: 5px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 1024px) {
+    #ProportioningArticle {
+        grid-template-columns: 1fr; /* En pantallas más pequeñas, cambia a una columna */
+    }
+}
+/* Ajustar el article para que ocupe toda la pantalla */
+#ProportioningArticle {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 y 1/3 de la pantalla */
+    gap: 20px;
+    padding: 20px;
+    
+    /* ✅ Hace que el article se extienda hasta abajo */
+    flex: 1;  /* Ocupa todo el espacio restante */
+    min-height: calc(100vh - 60px); /* 100% de la altura de la pantalla menos el nav */
+}
+
+/* -------------INTRODUCTION----------- */
+.intro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+}
+
+/* Image */
+.intro img {
+    width: 300px; /* Ajusta el tamaño del logo */
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Text container */
+.typing-container {
+    font-size: 24px;
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid black;
+    width: 0;
+    animation: typing 1.6s steps(30, end) forwards, blink 0.6s infinite;
+}
+
+/* Typing animation */
+@keyframes typing {
+    from { width: 0; }
+    to { width: 400px; } /* Ajusta según la longitud del texto */
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+/* Fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Ajuste para la animación de desvanecimiento */
+.intro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
 }
