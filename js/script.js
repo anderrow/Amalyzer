@@ -33,14 +33,28 @@ function populateTable(data) {
     data.forEach(row => {
         const tr = document.createElement("tr");
 
-        Object.values(row).forEach(value => {
-            const td = document.createElement("td");
-            td.textContent = value;
-            tr.appendChild(td);
-        });
+        // Insertar las celdas en el orden correcto
+        tr.innerHTML = `
+            <td>${row.ProportioningDBID}</td>
+            <td>${row.ArticleDBID}</td>
+            <td>${row.LotDBID}</td>
+            <td>${row.VMSscan}</td>
+            <td>${row.ArticleID}</td>
+            <td>${row.ArticleName}</td>
+            <td>${row.LotID}</td>
+            <td>${row.Requested}</td>
+            <td>${row.Actual}</td>
+            <td>${row.StartTime}</td>
+            <td>${row.EndTime}</td>
+            <td>${row.MixBoxID}</td>
+            <td>${row.IngBoxID}</td>
+            <td>${row.DosingLocation}</td>
+            <td>${row.TypeOfDosing}</td>
+        `;
 
         tableBody.appendChild(tr);
     });
 }
+
 
 fetch("http://127.0.0.1:5000/api/proportionings")

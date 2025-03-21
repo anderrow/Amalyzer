@@ -150,17 +150,15 @@ nav {
 /* Proportioning Board */
 #Proportioningboard {
     background: white;
-    padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     max-height: calc(95vh - 60px);
+    min-height: calc(95vh - 60px);
     overflow-y: auto; /* Habilita scroll vertical si hay demasiados datos */
 }
 #ProportioningTable {
     width: 100%;
-
     border-collapse: collapse;
-    margin-top: 10px;
     font-size: 14px;
     background-color: white;
     border-radius: 8px;
