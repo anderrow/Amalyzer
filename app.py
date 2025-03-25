@@ -53,7 +53,8 @@ def get_proportionings():
         JOIN amadeus_proportioningrecord ON amadeus_proportioning.proportioning_dbid = amadeus_proportioningrecord.proportioning_dbid 
         JOIN amadeus_loggingparam ON amadeus_proportioning.proportioning_dbid = amadeus_loggingparam.proportioning_dbid 
         JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.article_dbid 
-        JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid 
+        JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
+        ORDER BY amadeus_proportioning.proportioning_dbid DESC 
         """
 
         cur.execute(query)

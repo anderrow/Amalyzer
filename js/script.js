@@ -2,22 +2,36 @@
 setTimeout(() => {
     const intro = document.getElementById("intro");
 
-    // Aplica el efecto de desvanecimiento
-    intro.style.opacity = "0";
-    intro.style.visibility = "hidden"; // Esto lo oculta completamente después de la transición
+    if (intro) { // Only execute if Intro exits
+        intro.style.opacity = "0";
+        intro.style.visibility = "hidden";
 
-    // Espera la duración de la animación antes de redirigir
-    setTimeout(() => {
-        window.location.href = "./pages/proportionings.html"; // Redirección
-    }, 1000); // Espera 1s para la animación antes de redirigir
-}, 3000); // Duración de la intro (3s antes de iniciar el fade-out)
+        setTimeout(() => {
+            window.location.href = "./pages/proportionings.html"; // Redirect
+        }, 1000);
+    } else {
+        console.warn("No animation found, Intro not found ot doesn't exist");
+    }
+}, 3000);
+
 
 
 // End of Intro
 
 document.addEventListener("DOMContentLoaded", function () {
     fetchProportioningData();
+
+    // Agregar evento al botón "Update"
+    const updateButton = document.querySelector("#updateButton");
+    if (updateButton) {
+        updateButton.addEventListener("click", function () {
+            console.log("Update Table Data...");
+            fetchProportioningData(); // Recargar datos sin refrescar la página
+        });
+    }
 });
+
+
 
 function fetchProportioningData() {
     fetch("http://localhost:5000/api/proportionings") // Ajusta la URL de tu backend
@@ -55,6 +69,8 @@ function populateTable(data) {
         tableBody.appendChild(tr);
     });
 }
+
+
 
 
 fetch("http://127.0.0.1:5000/api/proportionings")
