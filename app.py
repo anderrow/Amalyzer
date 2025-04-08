@@ -60,7 +60,16 @@ def get_proportionings():
         cur.execute(query)
         rows = cur.fetchall()
         columns = [desc[0] for desc in cur.description]
-        data = [dict(zip(columns, row)) for row in rows]
+        
+        data = []
+        for row in rows:
+            row_dict = dict(zip(columns, row))
+            
+            # Format "Actual" to 4 decimal places if it exists and is a number
+            if "Actual" in row_dict and isinstance(row_dict["Actual"], (float, int)):
+                row_dict["Actual"] = round(row_dict["Actual"], 4)
+            
+            data.append(row_dict)
 
         cur.close()
         conn.close()
