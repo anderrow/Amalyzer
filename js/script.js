@@ -21,7 +21,6 @@ setTimeout(() => {
 document.addEventListener("DOMContentLoaded", function () {
     fetchProportioningData();
 
-    // Agregar evento al botón "Update"
     const updateButton = document.querySelector("#updateButton");
     if (updateButton) {
         updateButton.addEventListener("click", function () {
@@ -31,10 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
-
 function fetchProportioningData() {
-    fetch("http://localhost:5000/api/proportionings") // Ajusta la URL de tu backend
+    fetch("http://localhost:5000/api/proportionings") // Ajusta la URL de tu backend si es necesario
         .then(response => response.json())
         .then(data => populateTable(data))
         .catch(error => console.error("Error fetching data:", error));
@@ -70,7 +67,3 @@ function populateTable(data) {
     });
 }
 
-
-
-
-fetch("http://127.0.0.1:5000/api/proportionings")
