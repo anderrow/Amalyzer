@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify
 import psycopg2
 
-# Crear el blueprint
+# Create the blueprint for the API
 bp = Blueprint('proportionings', __name__)
 
-# Configuración de la base de datos
+# Database configuration
 config = {
     "ConnectionStrings": {
         "DriverName": "PostgreSQL",
@@ -16,10 +16,11 @@ config = {
     }
 }
 
+# Route to get proportioning data
 @bp.route('/api/proportionings', methods=['GET'])
 def get_proportionings():
     try:
-        # Conexión a PostgreSQL
+        # Connect to PostgreSQL database
         conn = psycopg2.connect(
             dbname=config['ConnectionStrings']['Database'],
             user=config['ConnectionStrings']['UserID'],
@@ -29,7 +30,7 @@ def get_proportionings():
         )
         cur = conn.cursor()
 
-        # Query
+        # SQL query to fetch proportioning data from multiple tables
         query = """
         SELECT 
             amadeus_proportioning.proportioning_dbid AS "ProportioningDBID", 
@@ -55,24 +56,31 @@ def get_proportionings():
         ORDER BY amadeus_proportioning.proportioning_dbid DESC 
         """
 
+        # Execute the query
         cur.execute(query)
         rows = cur.fetchall()
+
+        # Get column names from the cursor description
         columns = [desc[0] for desc in cur.description]
-        
+
+        # Prepare data by combining rows and column names into a dictionary
         data = []
         for row in rows:
             row_dict = dict(zip(columns, row))
             
-            # Format "Actual" to 4 decimal places if it exists and is a number
+            # Format the "Actual" field to 4 decimal places if it's a number
             if "Actual" in row_dict and isinstance(row_dict["Actual"], (float, int)):
                 row_dict["Actual"] = round(row_dict["Actual"], 4)
             
             data.append(row_dict)
 
+        # Close the cursor and connection
         cur.close()
         conn.close()
 
+        # Return the data as a JSON response
         return jsonify(data)
 
     except Exception as e:
+        # Return an error message if there is an exception
         return jsonify({"error": str(e)})
