@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 import psycopg2
+from datetime import datetime
 
 # Create an APIRouter instance
 router = APIRouter()
@@ -63,12 +64,24 @@ def get_proportionings():
         # Retrieve column names from the cursor description
         columns = [desc[0] for desc in cur.description]
 
-        # Prepare the data by combining the columns and their respective row values into dictionaries
         data = []
         for row in rows:
             row_dict = dict(zip(columns, row))
             
-            # Format the "Actual" field to 4 decimal places if it is a number
+            # Format the "StartTime" field if it's a datetime object
+            if "StartTime" in row_dict and isinstance(row_dict["StartTime"], datetime):
+                dt = row_dict["StartTime"]
+                # Format date with zero-padded month and day; day name with first letter uppercase
+                formatted_start = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
+                row_dict["StartTime"] = formatted_start
+            
+            # Format the "EndTime" field if it's a datetime object
+            if "EndTime" in row_dict and isinstance(row_dict["EndTime"], datetime):
+                dt = row_dict["EndTime"]
+                formatted_end = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
+                row_dict["EndTime"] = formatted_end
+
+            # Format the "Actual" field to 4 decimal places if it's a number
             if "Actual" in row_dict and isinstance(row_dict["Actual"], (float, int)):
                 row_dict["Actual"] = round(row_dict["Actual"], 4)
             
@@ -78,9 +91,10 @@ def get_proportionings():
         cur.close()
         conn.close()
 
-        # Return the data as JSON (FastAPI automatically converts the return value)
+        # Return the data as JSON; FastAPI automatically converts the return to JSON
         return data
 
     except Exception as e:
         # Return an error message if an exception occurs
         return {"error": str(e)}
+
