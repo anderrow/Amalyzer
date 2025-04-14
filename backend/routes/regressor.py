@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template
+# backend/routes/regressor.py
+from fastapi import APIRouter
 
-regressor_bp = Blueprint('regressor', __name__)
+# Create an APIRouter instance
+router = APIRouter(prefix="/regressor")  
 
-@regressor_bp.route("/regressor")
-def regressor():
-    return render_template("Regressor.html")
+# Example endpoint to check regressor status
+@router.get("/status")
+async def regressor_status():
+    return {"message": "regressor endpoint is active"}
