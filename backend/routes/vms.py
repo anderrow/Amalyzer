@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template
+# backend/routes/vms.py
+from fastapi import APIRouter
 
-vms_bp = Blueprint('vms', __name__)
+# Create an APIRouter instance
+router = APIRouter(prefix="/vms")  
 
-@vms_bp.route("/vms")
-def vms():
-    return render_template("VMS.html")
+# Example endpoint to check vms status
+@router.get("/status")
+async def vms_status():
+    return {"message": "vms endpoint is active"}

@@ -1,13 +1,22 @@
-from flask import Flask
-from backend.routes.proportionings import bp as proportionings_bp
-from flask_cors import CORS
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from backend.router import router as api_router  # Import the global API router
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
 
-# Regist blueprints
-app.register_blueprint(proportionings_bp)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins; adjust this for production as needed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router)  # Include all endpoints grouped in the global router
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    import uvicorn
+    uvicorn.run("app:app", host="0.0.0.0", port=5000, reload=True)
+
+
 

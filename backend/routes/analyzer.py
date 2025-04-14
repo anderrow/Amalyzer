@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template
+# backend/routes/analyzer.py
+from fastapi import APIRouter
 
-analyzer_bp = Blueprint('analyzer', __name__)
+# Create an APIRouter instance
+router = APIRouter(prefix="/analyzer")  
 
-@analyzer_bp.route("/analyzer")
-def analyzer():
-    return render_template("Analyzer.html")
+# Example endpoint to check analyzer status
+@router.get("/status")
+async def analyzer_status():
+    return {"message": "Analyzer endpoint is active"}
