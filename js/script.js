@@ -25,26 +25,26 @@ document.addEventListener("DOMContentLoaded", function () {
     if (updateButton) {
         updateButton.addEventListener("click", function () {
             console.log("Update Table Data...");
-            fetchProportioningData(); // Recargar datos sin refrescar la página
+            fetchProportioningData(); // Reload Data without refreshing page 
         });
     }
 });
 
 function fetchProportioningData() {
-    fetch("http://localhost:5000/api/proportionings") // Ajusta la URL de tu backend si es necesario
+    fetch("http://localhost:5000/api/proportionings") // Adjust the URL
         .then(response => response.json())
         .then(data => populateTable(data))
         .catch(error => console.error("Error fetching data:", error));
 }
 
 function populateTable(data) {
-    const tableBody = document.querySelector("#ProportioningTable tbody");
-    tableBody.innerHTML = ""; // Limpiar la tabla antes de llenarla
+    const tableBody = document.querySelector("#ProportioningTable tbody"); //Where to fill the data (tbody with ID ProportioningTable)
+    tableBody.innerHTML = ""; // Clean the table before Filling
 
     data.forEach(row => {
         const tr = document.createElement("tr");
 
-        // Insertar las celdas en el orden correcto
+        // Insert in the correct order
         tr.innerHTML = `
             <td>${row.ProportioningDBID}</td>
             <td>${row.ArticleDBID}</td>
@@ -61,7 +61,7 @@ function populateTable(data) {
             <td>${row.IngBoxID}</td>
             <td>${row.DosingLocation}</td>
             <td>${row.TypeOfDosing}</td>
-        `;
+            `;
 
         tableBody.appendChild(tr);
     });
