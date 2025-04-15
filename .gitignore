@@ -4,3 +4,4 @@ backend/__pycache__/__init__.cpython-312.pyc
 __pycache__/app.cpython-312.pyc
 backend/__pycache__/router.cpython-312.pyc
 __pycache__/app.cpython-312.pyc
+backend/classes/__pycache__/db_connection.cpython-312.pyc

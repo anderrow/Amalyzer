@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .db_connection import DBConnection # Import the DBConnection class
+from backend.classes.db_connection import DBConnection
 from typing import List, Dict, Any
 from datetime import datetime
 
