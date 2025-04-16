@@ -87,7 +87,8 @@
                         <option value="hours">Hours</option>
                         <option value="days">Days</option>
                     </select>
-                    <input type="text" id="AgeInput" placeholder="Enter age...">
+                    <input type="range" min="0" max="100" class="short-slider" oninput="rangevalue.value = value" />
+                    <output id="rangevalue">50</output>
                     <button id="FilterButton">Update Filtered Data</button>
                 </div>
             

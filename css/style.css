@@ -390,3 +390,47 @@ input, select {
     left: auto;
     right: 5px;
 }
+/* Style for Number Slider*/ 
+/* Solo afecta al slider del rango */
+.short-slider {
+    width: 150px; /* Ajusta el ancho como quieras */
+    height: 10px;
+    -webkit-appearance: none !important;
+    background-color: #A3CD99;
+    border: 1px solid #94bf8c;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+  }
+  
+  .short-slider:hover {
+    background-color: #b8dcb0;
+  }
+  
+  .short-slider::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    width: 16px;
+    height: 16px;
+    background-color: #579E81;
+    border-radius: 30px;
+    box-shadow: 0px 0px 3px #3e7d63;
+    transition: all 0.5s ease;
+  }
+  
+  .short-slider::-webkit-slider-thumb:hover {
+    background-color: #407c65;
+  }
+  
+  .short-slider::-webkit-slider-thumb:active {
+    box-shadow: 0px 0px 1px #3e7d63;
+  }
+  
+  /* El número debajo del slider */
+  #rangevalue {
+    font-family: 'Quantico', sans-serif;
+    font-size: 14px;
+    color: #579E81;
+    text-align: center;
+    display: block;
+    margin-top: 5px;
+  }
