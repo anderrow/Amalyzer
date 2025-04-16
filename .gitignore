@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 backend/classes/__pycache__/filter_data.cpython-312.pyc
 backend/classes/__pycache__/filter_data.cpython-312.pyc
+__pycache__/
