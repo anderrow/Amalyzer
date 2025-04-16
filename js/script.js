@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function fetchProportioningData(link) {
+function fetchProportioningData(link) { //FetchProportioning data from the backend
     fetch(link) // Adjust the URL
         .then(response => response.json())
         .then(data => populateTable(data))
