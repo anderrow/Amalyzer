@@ -18,20 +18,30 @@ setTimeout(() => {
 
 // End of Intro
 
-document.addEventListener("DOMContentLoaded", function () {
-    fetchProportioningData();
 
-    const updateButton = document.querySelector("#updateButton");
-    if (updateButton) {
-        updateButton.addEventListener("click", function () {
+//----------------UPDATE DATA----------------//
+document.addEventListener("DOMContentLoaded", function () {
+    fetchProportioningData("http://localhost:5000/api/proportionings"); //Fetch Data as soon as the page is loaded
+
+    const updateButton = document.querySelector("#updateButton"); //Listen to id="updateButton"
+    const filterUpdateButton = document.querySelector("#FilterButton"); // Listen to id ='FilterButton'
+
+    if (updateButton) { //If updateButton Exist
+        updateButton.addEventListener("click", function () { //Check if it's clicked
             console.log("Update Table Data...");
-            fetchProportioningData(); // Reload Data without refreshing page 
+            fetchProportioningData("http://localhost:5000/api/proportionings"); // Reload Data without refreshing page 
+        });
+    }
+    if (filterUpdateButton){
+        filterUpdateButton.addEventListener("click", function () {
+            console.log("Update Table (Filter) Data...");
+            fetchProportioningData("http://localhost:5000/api/proportioningsfilter"); // Reload Data without refreshing page 
         });
     }
 });
 
-function fetchProportioningData() {
-    fetch("http://localhost:5000/api/proportionings") // Adjust the URL
+function fetchProportioningData(link) {
+    fetch(link) // Adjust the URL
         .then(response => response.json())
         .then(data => populateTable(data))
         .catch(error => console.error("Error fetching data:", error));
@@ -66,4 +76,3 @@ function populateTable(data) {
         tableBody.appendChild(tr);
     });
 }
-
