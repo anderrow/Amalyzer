@@ -27,6 +27,11 @@ def make_db_redable(data):
             if "Actual" in row and isinstance(row["Actual"], (float, int)):
                 row["Actual"] = round(row["Actual"], 4)
 
+            # Convert boolean VMSscan to emojis
+            if "VMSscan" in row and isinstance(row["VMSscan"], bool):
+                row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
+
+
     return data
 
 #Filter by func
@@ -112,16 +117,16 @@ async def get_proportionings_filtered(
         #Filter by Article if it's requested
         if switchChecked:
             data = FilterByString(data, requestedArticle, 'ArticleName').apply_filter()
-            print("\n"+"*"*30 +"\nArticle Filter Switch enabled")
-            print(f"Requested Article: {requestedArticle} \n"+"*"*30+"\n")
+            print("\n"+"*"*50 +"\nArticle Filter Switch enabled")
+            print(f"Requested Article: {requestedArticle} \n"+"*"*50+"\n")
             
             
         # Handle Age Filter logic
         if ageSwitchChecked:
             # Filter by age range if needed based on rangeValue and timeUnit
             data = FilterByDateTime(data, rangeValue, timeUnit, 'StartTime').apply_filter()
-            print("\n" + "*" * 30 + "\nAge Filter Switch enabled")
-            print(f"Requested Time: {rangeValue} {timeUnit} \n" + "*" * 30 + "\n")
+            print("\n" + "*" * 50 + "\nAge Filter Switch enabled")
+            print(f"Requested Time: {rangeValue} {timeUnit} \n" + "*" * 50 + "\n")
         
         return make_db_redable(data)
         
