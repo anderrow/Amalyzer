@@ -6,6 +6,27 @@ from datetime import datetime
 # Create an APIRouter instance
 router = APIRouter()
 
+#Filter Database to make it more redable
+def make_db_redable(data):
+    for row in data:
+            # Format the "StartTime" field if it's a datetime object
+            if "StartTime" in row and isinstance(row["StartTime"], datetime):
+                dt = row["StartTime"]
+                formatted_start = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
+                row["StartTime"] = formatted_start
+
+            # Format the "EndTime" field if it's a datetime object
+            if "EndTime" in row and isinstance(row["EndTime"], datetime):
+                dt = row["EndTime"]
+                formatted_end = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
+                row["EndTime"] = formatted_end
+
+            # Format the "Actual" field to 4 decimal places if it's a number
+            if "Actual" in row and isinstance(row["Actual"], (float, int)):
+                row["Actual"] = round(row["Actual"], 4)
+
+    return data
+
 # Database configuration
 config = {
     "ConnectionStrings": {
@@ -47,31 +68,24 @@ JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
 ORDER BY amadeus_proportioning.proportioning_dbid DESC 
 """
 
+
 # GET endpoint to retrieve proportioning data
 @router.get("/api/proportionings")
 async def get_proportionings() -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
-        data = await db_connection.fetch_data(query=query)
-
-        # Format the "StartTime" field if it's a datetime object
-        for row in data:
-            if "StartTime" in row and isinstance(row["StartTime"], datetime):
-                dt = row["StartTime"]
-                formatted_start = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
-                row["StartTime"] = formatted_start
-
-            # Format the "EndTime" field if it's a datetime object
-            if "EndTime" in row and isinstance(row["EndTime"], datetime):
-                dt = row["EndTime"]
-                formatted_end = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
-                row["EndTime"] = formatted_end
-
-            # Format the "Actual" field to 4 decimal places if it's a number
-            if "Actual" in row and isinstance(row["Actual"], (float, int)):
-                row["Actual"] = round(row["Actual"], 4)
-
-        return data
+        data = await db_connection.fetch_data(query=query) #Raw Data
+        return make_db_redable(data) #Return data after making it redable for the user
 
     except Exception as e:
         return {"error": str(e)}
+    
+@router.get("/api/proportioningsfilter")
+async def get_proportionings_filtered() -> List[Dict[str, Any]]:
+    try:
+        # Fetch data from the database
+        data = await db_connection.fetch_data(query=query)
+        data = make_db_redable(data)
+        return data
+    except Exception as e:
+        return {"error": str(e)}  
