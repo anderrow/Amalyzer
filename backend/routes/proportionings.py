@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi import Query
 from backend.classes.db_connection import DBConnection
-from backend.classes.filter_data import FilterByString
+from backend.classes.filter_data import FilterByString, FilterByDateTime
 from typing import List, Dict, Any
 from datetime import datetime
 
@@ -94,6 +94,7 @@ async def get_proportionings() -> List[Dict[str, Any]]:
         return make_db_redable(data) #Return data after making it redable for the user
 
     except Exception as e:
+        print(f"Error: {str(e)}")
         return {"error": str(e)}
     
 @router.get("/api/proportioningsfilter")
@@ -110,21 +111,20 @@ async def get_proportionings_filtered(
 
         #Filter by Article if it's requested
         if switchChecked:
-            filtered_data = FilterByString(data, requestedArticle, 'ArticleName').apply_filter()
+            data = FilterByString(data, requestedArticle, 'ArticleName').apply_filter()
             print("\n"+"*"*30 +"\nArticle Filter Switch enabled")
             print(f"Requested Article: {requestedArticle} \n"+"*"*30+"\n")
-            send_filtered_data= True
+            
             
         # Handle Age Filter logic
         if ageSwitchChecked:
-            filtered_data = data;# Filter by age range if needed based on rangeValue and timeUnit
+            # Filter by age range if needed based on rangeValue and timeUnit
+            data = FilterByDateTime(data, rangeValue, timeUnit, 'StartTime').apply_filter()
             print("\n" + "*" * 30 + "\nAge Filter Switch enabled")
             print(f"Requested Time: {rangeValue} {timeUnit} \n" + "*" * 30 + "\n")
-            send_filtered_data= True
-            
-
-
-        if(send_filtered_data): return make_db_redable(filtered_data)
+        
         return make_db_redable(data)
+        
     except Exception as e:
+        print(f"Error: {str(e)}")
         return {"error": str(e)}  

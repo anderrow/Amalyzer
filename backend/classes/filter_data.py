@@ -36,26 +36,29 @@ class FilterByString(FilterData):
 
         return filtered_data  # Return the filtered data
 
-class FilterByDateTime(FilterData):
-    def __init__(self, data, minutes_ago):
-        super().__init__(data)
-        self.minutes_ago = minutes_ago
 
 class FilterByDateTime(FilterData):
-    def __init__(self, data, minutes_ago):
-        super().__init__(data)  # Call the parent constructor to initialize data
-        self.minutes_ago = minutes_ago  # Store the number of minutes for filtering
+    """
+    Given a value, a time unit (Minutes, Hours, or Days), and a column with DateTime type,
+    the subclass returns a data dictionary containing the rows in which the column date satisfies
+    the condition: (CurrentTime) - (Time specified by time unit and value) ≤ column.
+    """
+    def __init__(self, data, value, timeUnit, column):
+        super().__init__(data)
+        self.value = value
+        self.timeUnit = timeUnit.lower() #'minutes', 'hours' or 'days'. Requested key for datetime library
+        self.column = column
 
     def apply_filter(self):
         # Calculate the threshold time (current time minus the specified number of minutes)
-        threshold_time = datetime.now() - timedelta(minutes=self.minutes_ago)
+        threshold_time = datetime.now() - timedelta(**{self.timeUnit: self.value})
 
         filtered_data = []  # Initialize an empty list to store filtered results
 
         # Iterate over the data and apply the filter condition
         for row in self.data:
-            # Check if 'StartTime' is a datetime object and if it is greater than or equal to threshold_time
-            if isinstance(row['StartTime'], datetime) and row['StartTime'] >= threshold_time:
+            # Check if column is a datetime object and if it is greater than or equal to threshold_time
+            if isinstance(row[self.column], datetime) and row[self.column] >= threshold_time:
                 filtered_data.append(row)  # If the condition is met, add the row to the list
 
         return filtered_data  # Return the filtered data
