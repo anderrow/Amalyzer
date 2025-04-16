@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi import Query
 from backend.classes.db_connection import DBConnection
 from typing import List, Dict, Any
 from datetime import datetime
@@ -26,6 +27,20 @@ def make_db_redable(data):
                 row["Actual"] = round(row["Actual"], 4)
 
     return data
+
+#Filter by func
+def filter_by(data, hue):
+    filtered_data = []  # List where the filtered rows will be stored
+
+    # Normalize 'hue' to lowercase and strip spaces for a case-insensitive, whitespace-stripped comparison
+    normalized_hue = hue.strip().lower()
+
+    for row in data:
+        # Check if 'ArticleName' is a string and compare it with normalized 'hue'
+        if isinstance(row['ArticleName'], str) and normalized_hue in row['ArticleName'].strip().lower():
+            filtered_data.append(row)  # If condition is met, add the row to the list
+
+    return filtered_data
 
 # Database configuration
 config = {
@@ -81,11 +96,21 @@ async def get_proportionings() -> List[Dict[str, Any]]:
         return {"error": str(e)}
     
 @router.get("/api/proportioningsfilter")
-async def get_proportionings_filtered() -> List[Dict[str, Any]]:
+async def get_proportionings_filtered(
+    switchChecked: bool = Query(False),  # Default is False (switch off)
+    requestedArticle: str = Query("")  # Default is empty string if no input
+) -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query)
         data = make_db_redable(data)
+
+        #Filter by Article if it's requested
+        if switchChecked:
+            print("\n"+"*"*30 +"\nArticle Filter Switch enabled")
+            print(f"Requested Article: {requestedArticle} \n"+"*"*30+"\n")
+            return filter_by(data, requestedArticle)
+        
         return data
     except Exception as e:
         return {"error": str(e)}  

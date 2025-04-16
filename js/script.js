@@ -21,29 +21,39 @@ setTimeout(() => {
 
 //----------------UPDATE DATA----------------//
 document.addEventListener("DOMContentLoaded", function () {
-    fetchProportioningData("http://localhost:5000/api/proportionings"); //Fetch Data as soon as the page is loaded
+    fetchProportioningData("http://localhost:5000/api/proportionings"); // Fetch Data as soon as the page is loaded
 
-    const updateButton = document.querySelector("#updateButton"); //Listen to id="updateButton"
+    const updateButton = document.querySelector("#updateButton"); // Listen to id="updateButton"
     const filterUpdateButton = document.querySelector("#FilterButton"); // Listen to id ='FilterButton'
 
-    if (updateButton) { //If updateButton Exist
-        updateButton.addEventListener("click", function () { //Check if it's clicked
+    if (updateButton) { // If updateButton exists
+        updateButton.addEventListener("click", function () { // Check if it's clicked
             console.log("Update Table Data...");
             fetchProportioningData("http://localhost:5000/api/proportionings"); // Reload Data without refreshing page 
         });
     }
-    if (filterUpdateButton){
+
+    if (filterUpdateButton) {
         filterUpdateButton.addEventListener("click", function () {
             console.log("Update Table (Filter) Data...");
-            fetchProportioningData("http://localhost:5000/api/proportioningsfilter"); // Reload Data without refreshing page 
+            // Get the state of the switch (checked or unchecked) and the input text value
+            const switchChecked = document.querySelector("#ArticleFilterSwitch").checked; // Get the state of the switch
+            const requestedArticle = document.querySelector("#RequestedArticle").value; // Get the value from the input field
+            
+            // Build the URL with query parameters
+            const url = `http://localhost:5000/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}`;
+
+            // Now fetch the data using the correct dynamic URL
+            fetchProportioningData(url); // Pass the correct URL with query parameters
         });
     }
 });
 
-function fetchProportioningData(link) { //FetchProportioning data from the backend
+// Function to fetch proportioning data
+function fetchProportioningData(link) {
     fetch(link) // Adjust the URL
         .then(response => response.json())
-        .then(data => populateTable(data))
+        .then(data => populateTable(data)) // Populate table with the fetched data
         .catch(error => console.error("Error fetching data:", error));
 }
 
