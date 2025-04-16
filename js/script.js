@@ -36,12 +36,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filterUpdateButton) {
         filterUpdateButton.addEventListener("click", function () {
             console.log("Update Table (Filter) Data...");
-            // Get the state of the switch (checked or unchecked) and the input text value
+            // Get the state of the switch (checked or unchecked) and the input text value from Article Filter
             const switchChecked = document.querySelector("#ArticleFilterSwitch").checked; // Get the state of the switch
             const requestedArticle = document.querySelector("#RequestedArticle").value; // Get the value from the input field
-            
-            // Build the URL with query parameters
-            const url = `http://localhost:5000/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}`;
+
+            // Get values from the Age Filter
+            const ageSwitchChecked = document.querySelector("#AgeFilterSwitch").checked;  // Get Age Filter switch state
+            const timeUnit = document.querySelector("#time-unit").value;  // Get the selected time unit (minutes, hours, days)
+            const rangeValue = document.querySelector(".short-slider").value;  // Get the slider value
+
+            const url = `http://localhost:5000/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}&ageSwitchChecked=${ageSwitchChecked}&timeUnit=${timeUnit}&rangeValue=${rangeValue}`;
 
             // Now fetch the data using the correct dynamic URL
             fetchProportioningData(url); // Pass the correct URL with query parameters

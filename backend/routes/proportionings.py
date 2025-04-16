@@ -99,7 +99,10 @@ async def get_proportionings() -> List[Dict[str, Any]]:
 @router.get("/api/proportioningsfilter")
 async def get_proportionings_filtered(
     switchChecked: bool = Query(False),  # Default is False (switch off)
-    requestedArticle: str = Query("")  # Default is empty string if no input
+    requestedArticle: str = Query(""), # Default is empty string if no input
+    ageSwitchChecked: bool = Query(False),  # Parameter for Age Filter switch (Default False)
+    timeUnit: str = Query("Minutes"),  # Parameter for time unit (minutes, hours, days) (Default Minutes)
+    rangeValue: int = Query(50)  # Parameter for slider value (default to 50)  
 ) -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
@@ -110,8 +113,18 @@ async def get_proportionings_filtered(
             filtered_data = FilterByString(data, requestedArticle, 'ArticleName').apply_filter()
             print("\n"+"*"*30 +"\nArticle Filter Switch enabled")
             print(f"Requested Article: {requestedArticle} \n"+"*"*30+"\n")
-            return make_db_redable(filtered_data)
-        
+            send_filtered_data= True
+            
+        # Handle Age Filter logic
+        if ageSwitchChecked:
+            filtered_data = data;# Filter by age range if needed based on rangeValue and timeUnit
+            print("\n" + "*" * 30 + "\nAge Filter Switch enabled")
+            print(f"Requested Time: {rangeValue} {timeUnit} \n" + "*" * 30 + "\n")
+            send_filtered_data= True
+            
+
+
+        if(send_filtered_data): return make_db_redable(filtered_data)
         return make_db_redable(data)
     except Exception as e:
         return {"error": str(e)}  
