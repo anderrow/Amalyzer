@@ -152,6 +152,7 @@ nav {
     min-height: calc(95vh - 60px);
     overflow-y: auto; /* Enables vertical scrolling if too much data */
 }
+  
 #ProportioningTable {
     width: 100%;
     border-collapse: collapse;
@@ -164,7 +165,7 @@ nav {
 #ProportioningTable th, #ProportioningTable td {
     border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
+    text-align: center;
 }
 
 #ProportioningTable th {

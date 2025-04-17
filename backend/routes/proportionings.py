@@ -105,7 +105,7 @@ async def handle_row_click(request: PropIdRequest):
     # Print the received propDbId to the backend console for debugging/logging purposes
     print("\n"+ "*"*50 + f"\nPropDBID selected: {request.propDbId} \n"+ "*"*50+"\n")
     
-    #return {"message": f"Received PropDBID: {request.propDbId}"} # Return a confirmation message as a JSON response (Not needed for now)
+    return {"message": f"Received PropDBID: {request.propDbId}"} # Return a confirmation message as a JSON response (Not mandatory for now)
 
 
 
@@ -131,5 +131,9 @@ def make_db_redable(data):
             # Convert boolean VMSscan to emojis
             if "VMSscan" in row and isinstance(row["VMSscan"], bool):
                 row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
+            # Change the Formato of Lot ID
+            if "LotID" in row and isinstance(row["LotID"], str):
+                row["LotID"] = row["LotID"].replace("##", "#\n#")
+                
     return data
 
