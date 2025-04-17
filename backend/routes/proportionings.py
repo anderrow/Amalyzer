@@ -8,46 +8,6 @@ from datetime import datetime
 # Create an APIRouter instance
 router = APIRouter()
 
-#Filter Database to make it more redable
-def make_db_redable(data):
-    for row in data:
-            # Format the "StartTime" field if it's a datetime object
-            if "StartTime" in row and isinstance(row["StartTime"], datetime):
-                dt = row["StartTime"]
-                formatted_start = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
-                row["StartTime"] = formatted_start
-
-            # Format the "EndTime" field if it's a datetime object
-            if "EndTime" in row and isinstance(row["EndTime"], datetime):
-                dt = row["EndTime"]
-                formatted_end = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
-                row["EndTime"] = formatted_end
-
-            # Format the "Actual" field to 4 decimal places if it's a number
-            if "Actual" in row and isinstance(row["Actual"], (float, int)):
-                row["Actual"] = round(row["Actual"], 4)
-
-            # Convert boolean VMSscan to emojis
-            if "VMSscan" in row and isinstance(row["VMSscan"], bool):
-                row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
-
-
-    return data
-
-#Filter by func
-def filter_by(data, hue):
-    filtered_data = []  # List where the filtered rows will be stored
-
-    # Normalize 'hue' to lowercase and strip spaces for a case-insensitive, whitespace-stripped comparison
-    normalized_hue = hue.strip().lower()
-
-    for row in data:
-        # Check if 'ArticleName' is a string and compare it with normalized 'hue'
-        if isinstance(row['ArticleName'], str) and normalized_hue in row['ArticleName'].strip().lower():
-            filtered_data.append(row)  # If condition is met, add the row to the list
-
-    return filtered_data
-
 # Database configuration
 config = {
     "ConnectionStrings": {
@@ -90,7 +50,7 @@ ORDER BY amadeus_proportioning.proportioning_dbid DESC
 """
 
 
-# GET endpoint to retrieve proportioning data
+# GET endpoint to retrieve proportioning data (Controls -> Update button)
 @router.get("/api/proportionings")
 async def get_proportionings() -> List[Dict[str, Any]]:
     try:
@@ -102,7 +62,7 @@ async def get_proportionings() -> List[Dict[str, Any]]:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
     
-@router.get("/api/proportioningsfilter")
+@router.get("/api/proportioningsfilter") #Article + Age Filter -> Update Filtered Data Button
 async def get_proportionings_filtered(
     switchChecked: bool = Query(False),  # Default is False (switch off)
     requestedArticle: str = Query(""), # Default is empty string if no input
@@ -133,3 +93,28 @@ async def get_proportionings_filtered(
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}  
+
+
+#Filter Database to make it more redable
+def make_db_redable(data):
+    for row in data:
+            # Format the "StartTime" field if it's a datetime object
+            if "StartTime" in row and isinstance(row["StartTime"], datetime):
+                dt = row["StartTime"]
+                formatted_start = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
+                row["StartTime"] = formatted_start
+
+            # Format the "EndTime" field if it's a datetime object
+            if "EndTime" in row and isinstance(row["EndTime"], datetime):
+                dt = row["EndTime"]
+                formatted_end = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
+                row["EndTime"] = formatted_end
+
+            # Format the "Actual" field to 4 decimal places if it's a number
+            if "Actual" in row and isinstance(row["Actual"], (float, int)):
+                row["Actual"] = round(row["Actual"], 4)
+
+            # Convert boolean VMSscan to emojis
+            if "VMSscan" in row and isinstance(row["VMSscan"], bool):
+                row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
+    return data

@@ -230,6 +230,7 @@ button {
     cursor: pointer;
     transition: 0.3s;
     margin: 5px;
+    font-size: 16px;
 }
 button:hover {
     background: #0056b3;
@@ -397,7 +398,8 @@ input, select {
     border: 1px solid #94bf8c;
     border-radius: 10px;
     transition: all 0.3s ease;
-    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 5px;
   }
   
   .short-slider:hover {
