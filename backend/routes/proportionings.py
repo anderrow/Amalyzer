@@ -2,8 +2,10 @@ from fastapi import APIRouter
 from fastapi import Query
 from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import FilterByString, FilterByDateTime
+from backend.classes.request import PropIdRequest
 from typing import List, Dict, Any
 from datetime import datetime
+
 
 # Create an APIRouter instance
 router = APIRouter()
@@ -95,6 +97,18 @@ async def get_proportionings_filtered(
         return {"error": str(e)}  
 
 
+
+
+# Define a POST route that listens for row click events from the frontend
+@router.post("/api/rowclicked")
+async def handle_row_click(request: PropIdRequest):
+    # Print the received propDbId to the backend console for debugging/logging purposes
+    print("\n"+ "*"*50 + f"\nPropDBID selected: {request.propDbId} \n"+ "*"*50+"\n")
+    
+    #return {"message": f"Received PropDBID: {request.propDbId}"} # Return a confirmation message as a JSON response (Not needed for now)
+
+
+
 #Filter Database to make it more redable
 def make_db_redable(data):
     for row in data:
@@ -118,3 +132,4 @@ def make_db_redable(data):
             if "VMSscan" in row and isinstance(row["VMSscan"], bool):
                 row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
     return data
+

@@ -87,6 +87,26 @@ function populateTable(data) {
             <td>${row.TypeOfDosing}</td>
             `;
 
-        tableBody.appendChild(tr);
+            //Adding a Listernet to check when one row is clicked
+            tr.addEventListener("click", function () {
+                //Obtain propDbID of the row selected
+                const propDbId = row.ProportioningDBID;
+                console.log("Clicked row with PropDbId:", propDbId);
+                
+                //Send a Post request to the python backend
+                fetch(`http://localhost:5000/api/rowclicked`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ propDbId: propDbId }),
+                })
+                //Handle response of the backend 
+                .then(response => response.json()) //If a JSON comes convert it on response
+                .then(result => console.log("Backend response:", result)) //And write it on console
+                .catch(error => console.error("Error sending data to backend:", error)); //If some error happens print it on console
+            });
+    
+            tableBody.appendChild(tr);
     });
 }
