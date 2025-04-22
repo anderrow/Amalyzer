@@ -101,7 +101,7 @@ def make_db_redable(data):
                 row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
             # Change the Formato of Lot ID
             if "LotID" in row and isinstance(row["LotID"], str):
-                row["LotID"] = row["LotID"].replace("##", "#\n#")
+                row["LotID"] = row["LotID"].replace("##", "#<br>#") #<br> works better than \n 
                 
     return data
 
