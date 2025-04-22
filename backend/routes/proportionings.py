@@ -7,7 +7,7 @@ from backend.database.config import config
 from backend.database.query import query_proportionings
 from typing import List, Dict, Any
 from datetime import datetime
-
+from enum import Enum
 
 # Create an APIRouter instance
 router = APIRouter()
@@ -78,6 +78,11 @@ async def handle_row_click(request: PropIdRequest):
 
 
 #Filter Database to make it more redable
+class DosingType(Enum):
+    NORMAL = 1
+    LEARNING = 2
+    D2E = 100
+
 def make_db_redable(data):
     for row in data:
             # Format the "StartTime" field if it's a datetime object
@@ -102,6 +107,15 @@ def make_db_redable(data):
             # Change the Formato of Lot ID
             if "LotID" in row and isinstance(row["LotID"], str):
                 row["LotID"] = row["LotID"].replace("##", "#<br>#") #<br> works better than \n 
+
+            # Change the Formato of Lot ID
+            if "TypeOfDosing" in row and isinstance(row["TypeOfDosing"], int):
+                value = row["TypeOfDosing"]
+                try:
+                    row["TypeOfDosing"] = DosingType(value).name.capitalize()
+                except ValueError:
+                    row["TypeOfDosing"] = f"Unknown ({value})"
                 
     return data
+
 
