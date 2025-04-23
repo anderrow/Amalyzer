@@ -80,13 +80,13 @@ function populateTable(data) {
             <td>${row.Requested}</td>
             <td>${row.Actual}</td>
             <td>${row.Deviation}</td>
+            <td>${row.Tolerance}</td>
             <td>${row.StartTime}</td>
             <td>${row.EndTime}</td>
             <td>${row.MixBoxID}</td>
             <td>${row.IngBoxID}</td>
             <td>${row.DosingLocation}</td>
             <td>${row.TypeOfDosing}</td>
-            <td>${row.Tolerance}</td>
             <td>${row.OrderID}</td>
             `;
 
