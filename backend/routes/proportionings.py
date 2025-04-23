@@ -156,7 +156,7 @@ def make_db_redable(data):
 
             # Format the "Tolerance" column
             if ("Tolerance" in row and isinstance(row["Tolerance"], float) and "calc_per" in row and isinstance(row["calc_per"], float)):
-                row["Tolerance"] = f"{row["Tolerance"]}% | {row["calc_per"]:.2f} kg" 
+                row["Tolerance"] = f"{row["Tolerance"]}% <br> {row["calc_per"]:.2f} kg" 
 
             #Change the Format of Deviation column
             if "Deviation" in row and isinstance(row["Deviation"], int):

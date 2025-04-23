@@ -155,6 +155,7 @@ nav {
   
 #ProportioningTable {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     font-size: 14px;
     background-color: white;
