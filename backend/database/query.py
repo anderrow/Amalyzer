@@ -16,7 +16,7 @@ SELECT
     amadeus_proportioningrecord.ingredientboxid AS "IngBoxID",   
     amadeus_proportioningrecord.proportioninglocation AS "DosingLocation", 
     amadeus_loggingparam.if_in_typeofdosing AS "TypeOfDosing", 
-    amadeus_proportioningrecord.requiredtolerance AS "Tollerance", 
+    amadeus_proportioningrecord.requiredtolerance AS "Tolerance", 
     amadeus_proportioningrecord.manufacturingorderid AS "OrderID"
 FROM amadeus_proportioning 
 JOIN amadeus_proportioningrecord ON amadeus_proportioning.proportioning_dbid = amadeus_proportioningrecord.proportioning_dbid 

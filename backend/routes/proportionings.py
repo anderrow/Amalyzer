@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 from fastapi import Query
+from backend.database.config import config
+from backend.database.query import query_proportionings
 from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import FilterByString, FilterByDateTime
 from backend.classes.request import PropIdRequest
-from backend.database.config import config
-from backend.database.query import query_proportionings
-from backend.classes.calculation import CaclulateDateDelta
+from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance
 from typing import List, Dict, Any
 from datetime import datetime
 from enum import Enum
@@ -20,21 +20,42 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 query = query_proportionings #query is declared in backend/database/query.py
 
 
-# ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) -----------------
+
+#DEBUGGIN GET:
+@router.get("/api/proportioningsdebug")
+async def get_proportionings() -> List[Dict[str, Any]]:
+    try:
+        # Fetch data from the database
+        data = await db_connection.fetch_data(query=query) #Raw Data
+
+        #Make all the calculations that are needed
+        data = calculate(data)
+
+        return data
+    
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return {"error": str(e)}
+#DEBUGGIN END 
+# ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) ----------------- #
+
 @router.get("/api/proportionings")
 async def get_proportionings() -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query) #Raw Data
-        #Overwrite Endtime with EndTime - StartTime to calculate duration
-        data = CaclulateDateDelta(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
+
+        #Make all the calculations that are needed
+        data = calculate(data)
+
         return make_db_redable(data) #Return data after making it redable for the user
 
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
 
-# ----------------- GET endpoint to retrieve proportioning filtered data (Controls -> Update Filtered Data button) -----------------
+# ----------------- GET endpoint to retrieve proportioning filtered data (Controls -> Update Filtered Data button) ----------------- #
+
 @router.get("/api/proportioningsfilter") #Article + Age Filter -> Update Filtered Data Button
 async def get_proportionings_filtered(
     switchChecked: bool = Query(False),  # Default is False (switch off)
@@ -46,7 +67,9 @@ async def get_proportionings_filtered(
     try:
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query)
-        data = CaclulateDateDelta(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
+
+        #Make all the calculations that are needed
+        data = calculate(data)
 
         #Filter by Article if it's requested
         if switchChecked:
@@ -72,6 +95,7 @@ async def get_proportionings_filtered(
 
 
 # ----------------- Define a POST route that listens for row click events from the frontend ----------------- #
+
 @router.post("/api/rowclicked")
 async def handle_row_click(request: PropIdRequest):
     # Print the received propDbId to the backend console for debugging/logging purposes
@@ -80,12 +104,27 @@ async def handle_row_click(request: PropIdRequest):
     return {"message": f"Received PropDBID: {request.propDbId}"} # Return a confirmation message as a JSON response (Not mandatory for now)
 
 
+# ----------------- Make all the calculations that are needed ----------------- #
+def calculate(data):
 
+    #Overwrite Endtime with EndTime - StartTime to calculate duration
+    data = CaclulateDateDelta(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
+    #Add percentage calculation column
+    data = CaclulatPercent(data, "Requested", "Tolerance", overwrite=False).apply_calculation()
+    #Add deviation column
+    data = IsInTolerance(data, "Requested", "Actual", "Tolerance").apply_calculation()
+
+    return data
 #  -----------------  Filter Database to make it more redable  ----------------- #
 class DosingType(Enum):
     NORMAL = 1
     LEARNING = 2
     D2E = 100
+
+class Deviation(Enum):
+    UNDERDOSING = 1
+    NORMAL = 2
+    OVERDOSING = 3
 
 def make_db_redable(data):
     for row in data:
@@ -102,6 +141,7 @@ def make_db_redable(data):
             # Convert boolean VMSscan to emojis
             if "VMSscan" in row and isinstance(row["VMSscan"], bool):
                 row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
+
             # Change the Formato of Lot ID
             if "LotID" in row and isinstance(row["LotID"], str):
                 row["LotID"] = row["LotID"].replace("##", "#<br>#") #<br> works better than \n 
@@ -113,7 +153,18 @@ def make_db_redable(data):
                     row["TypeOfDosing"] = DosingType(value).name.capitalize()
                 except ValueError:
                     row["TypeOfDosing"] = f"Unknown ({value})"
-                
+
+            # Format the "Tolerance" column
+            if ("Tolerance" in row and isinstance(row["Tolerance"], float) and "calc_per" in row and isinstance(row["calc_per"], float)):
+                row["Tolerance"] = f"{row["Tolerance"]}% | {row["calc_per"]:.2f} kg" 
+
+            #Change the Format of Deviation column
+            if "Deviation" in row and isinstance(row["Deviation"], int):
+                value = row["Deviation"]    
+                try:
+                    row["Deviation"] = Deviation(value).name.capitalize()
+                except ValueError:
+                    row["Deviation"] =  f"Unknown ({value})"                  
     return data
 
 
