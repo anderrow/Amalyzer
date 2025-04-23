@@ -1,7 +1,13 @@
 # Ignore all python Cache
 __pycache__/
+*/__pycache__/
 *.py[cod]
 backend/classes/__pycache__/filter_data.cpython-312.pyc
 backend/classes/__pycache__/filter_data.cpython-312.pyc
 __pycache__/
 com.Tivadar.Best.MQTT.csproj
+backend/classes/__pycache__/*
+backend/classes/__pycache__/filter_data.cpython-312.pyc
+backend/classes/__pycache__/
+
+

@@ -5,6 +5,7 @@ from backend.classes.filter_data import FilterByString, FilterByDateTime
 from backend.classes.request import PropIdRequest
 from backend.database.config import config
 from backend.database.query import query_proportionings
+from backend.classes.calculation import CalculateDate
 from typing import List, Dict, Any
 from datetime import datetime
 from enum import Enum
@@ -25,6 +26,8 @@ async def get_proportionings() -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query) #Raw Data
+        #Overwrite Endtime with EndTime - StartTime to calculate duration
+        data = CalculateDate(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
         return make_db_redable(data) #Return data after making it redable for the user
 
     except Exception as e:
@@ -43,6 +46,7 @@ async def get_proportionings_filtered(
     try:
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query)
+        data = CalculateDate(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
 
         #Filter by Article if it's requested
         if switchChecked:
@@ -90,12 +94,6 @@ def make_db_redable(data):
                 dt = row["StartTime"]
                 formatted_start = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
                 row["StartTime"] = formatted_start
-
-            # Format the "EndTime" field if it's a datetime object
-            if "EndTime" in row and isinstance(row["EndTime"], datetime):
-                dt = row["EndTime"]
-                formatted_end = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
-                row["EndTime"] = formatted_end
 
             # Format the "Actual" field to 4 decimal places if it's a number
             if "Actual" in row and isinstance(row["Actual"], (float, int)):
