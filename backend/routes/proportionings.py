@@ -4,7 +4,7 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import FilterByString, FilterByDateTime
 from backend.classes.request import PropIdRequest
 from backend.database.config import config
-from backend.database.query import query_proportionings, query_proportionings2
+from backend.database.query import query_proportionings
 from backend.classes.calculation import CaclulateDateDelta
 from typing import List, Dict, Any
 from datetime import datetime
@@ -17,7 +17,7 @@ router = APIRouter()
 db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
 
 # SQL query to fetch proportioning data
-query = query_proportionings2 #query is declared in backend/database/query.py
+query = query_proportionings #query is declared in backend/database/query.py
 
 
 # ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) -----------------
