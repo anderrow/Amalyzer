@@ -85,6 +85,8 @@ function populateTable(data) {
             <td>${row.IngBoxID}</td>
             <td>${row.DosingLocation}</td>
             <td>${row.TypeOfDosing}</td>
+            <td>${row.Tollerance}</td>
+            <td>${row.OrderID}</td>
             `;
 
             //Adding a Listernet to check when one row is clicked

@@ -4,8 +4,8 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import FilterByString, FilterByDateTime
 from backend.classes.request import PropIdRequest
 from backend.database.config import config
-from backend.database.query import query_proportionings
-from backend.classes.calculation import CalculateDate
+from backend.database.query import query_proportionings, query_proportionings2
+from backend.classes.calculation import CaclulateDateDelta
 from typing import List, Dict, Any
 from datetime import datetime
 from enum import Enum
@@ -17,7 +17,7 @@ router = APIRouter()
 db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
 
 # SQL query to fetch proportioning data
-query = query_proportionings #query is declared in backend/database/query.py
+query = query_proportionings2 #query is declared in backend/database/query.py
 
 
 # ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) -----------------
@@ -27,7 +27,7 @@ async def get_proportionings() -> List[Dict[str, Any]]:
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query) #Raw Data
         #Overwrite Endtime with EndTime - StartTime to calculate duration
-        data = CalculateDate(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
+        data = CaclulateDateDelta(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
         return make_db_redable(data) #Return data after making it redable for the user
 
     except Exception as e:
@@ -46,7 +46,7 @@ async def get_proportionings_filtered(
     try:
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query)
-        data = CalculateDate(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
+        data = CaclulateDateDelta(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
 
         #Filter by Article if it's requested
         if switchChecked:
@@ -71,7 +71,7 @@ async def get_proportionings_filtered(
 
 
 
-# ----------------- Define a POST route that listens for row click events from the frontend ----------------- 
+# ----------------- Define a POST route that listens for row click events from the frontend ----------------- #
 @router.post("/api/rowclicked")
 async def handle_row_click(request: PropIdRequest):
     # Print the received propDbId to the backend console for debugging/logging purposes
@@ -81,7 +81,7 @@ async def handle_row_click(request: PropIdRequest):
 
 
 
-#Filter Database to make it more redable
+#  -----------------  Filter Database to make it more redable  ----------------- #
 class DosingType(Enum):
     NORMAL = 1
     LEARNING = 2

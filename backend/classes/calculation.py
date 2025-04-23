@@ -11,11 +11,11 @@ class Calculation:
     def apply_calculation(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
-class CalculateDate(Calculation):
+class CaclulateDateDelta(Calculation):
     """
     Given two columns (datetime type), the subclass returns a data dictionary
     containing the delta of this two columns, with the option of overwriting the
-    second column with the result (Is doing it by default). 
+    second column with the result (default mode = overwrite). 
     """
     def __init__(self, data, column1, column2, overwrite = True):
         super().__init__(data)
