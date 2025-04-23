@@ -106,7 +106,15 @@ function populateTable(data) {
                 })
                 //Handle response of the backend 
                 .then(response => response.json()) //If a JSON comes convert it on response
-                .then(result => console.log("Backend response:", result)) //And write it on console
+                .then(result => {
+                    console.log("Backend response:", result);
+            
+                    // Insert the value in the HTML
+                    const inputField = document.getElementById("PropIdInput");
+                    if (inputField) {
+                        inputField.value = result.propDbId;
+                    }
+                })
                 .catch(error => console.error("Error sending data to backend:", error)); //If some error happens print it on console
             });
     

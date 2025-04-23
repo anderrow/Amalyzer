@@ -101,7 +101,7 @@ async def handle_row_click(request: PropIdRequest):
     # Print the received propDbId to the backend console for debugging/logging purposes
     print("\n"+ "*"*50 + f"\nPropDBID selected: {request.propDbId} \n"+ "*"*50+"\n")
     
-    return {"message": f"Received PropDBID: {request.propDbId}"} # Return a confirmation message as a JSON response (Not mandatory for now)
+    return {"propDbId": request.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
 
 
 # ----------------- Make all the calculations that are needed ----------------- #

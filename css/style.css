@@ -212,7 +212,17 @@ nav {
 
 
 /* Styles for control blocks */
+.PropIdInput {
+    margin-top: 1rem;
+}
 
+.PropIdInput label {
+    display: block;
+    text-align: left;
+    padding-left: 20px;
+    margin-bottom: 0.25rem;
+    font-weight: 500; /* opcional, para que resalte un poco */
+}
 
 /* Remove bullet points from buttons */
 .PropBoardContainer {
