@@ -6,7 +6,7 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import FilterByString, FilterByDateTime
 from backend.classes.request import PropIdRequest
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance
-from backend.classes.memory.state import session_data
+from backend.memory.state import session_data
 from typing import List, Dict, Any
 from datetime import datetime
 from enum import Enum
@@ -17,16 +17,13 @@ router = APIRouter()
 # Initialize the DBConnection object
 db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
 
-# SQL query to fetch proportioning data
-query = query_proportionings #query is declared in backend/database/query.py
-
 # ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) ----------------- #
 
 @router.get("/api/proportionings")
 async def get_proportionings() -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
-        data = await db_connection.fetch_data(query=query) #Raw Data
+        data = await db_connection.fetch_data(query=query_proportionings) #Raw Data
 
         #Make all the calculations that are needed
         data = calculate(data)
@@ -49,7 +46,7 @@ async def get_proportionings_filtered(
 ) -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
-        data = await db_connection.fetch_data(query=query)
+        data = await db_connection.fetch_data(query=query_proportionings)
 
         #Make all the calculations that are needed
         data = calculate(data)

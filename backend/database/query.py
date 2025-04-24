@@ -25,3 +25,25 @@ JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.art
 JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
 ORDER BY amadeus_proportioning.proportioning_dbid DESC;
 """
+# SQL query to fetch Analyzer Summary data
+query_analyzer_summary = """
+SELECT 
+    amadeus_proportioning.proportioning_dbid AS "ProportioningDBID",
+    amadeus_article.name AS "ArticleName",
+    amadeus_lot.lot_id AS "LotID",
+    amadeus_proportioning.lot_dbid AS "LotDBID",
+    amadeus_proportioningrecord.start_time AS "Dosing Date",
+    amadeus_loggingparam.if_in_typeofdosing AS "DosigType", 
+    amadeus_proportioningrecord.proportioninglocation AS "DosingLocation", 
+    amadeus_proportioningrecord.requestedamount AS "Requested", 
+    amadeus_proportioningrecord.actualamount AS "Actual",
+    amadeus_proportioningrecord.requiredtolerance AS "Tolerance", 
+    amadeus_proportioningrecord.box_id AS "MixBoxID", 
+    amadeus_proportioningrecord.ingredientboxid AS "IngBoxID"
+FROM amadeus_proportioning 
+JOIN amadeus_proportioningrecord ON amadeus_proportioning.proportioning_dbid = amadeus_proportioningrecord.proportioning_dbid 
+JOIN amadeus_loggingparam ON amadeus_proportioning.proportioning_dbid = amadeus_loggingparam.proportioning_dbid 
+JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.article_dbid 
+JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
+WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
+"""

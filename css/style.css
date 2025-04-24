@@ -521,6 +521,9 @@ input, select {
 .analyzer{
     border-radius: 8px;
 }
+.analyzer-nav{
+    border-radius: 9px;
+}
 .analyzer-nav ul {
 	background:  #30A6E6;
 	list-style: none;
