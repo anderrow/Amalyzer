@@ -1,10 +1,13 @@
 # backend/routes/analyzer.py
 from fastapi import APIRouter
+from backend.classes.memory.state import session_data
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/analyzer")  
 
-# Example endpoint to check analyzer status
-@router.get("/status")
+# Get Actual PropId to analyze
+@router.get("/PropId")
 async def analyzer_status():
-    return {"message": "Analyzer endpoint is active"}
+    current_prop = session_data.get("current_prop_id")
+    return current_prop
+

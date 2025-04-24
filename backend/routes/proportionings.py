@@ -6,6 +6,7 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import FilterByString, FilterByDateTime
 from backend.classes.request import PropIdRequest
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance
+from backend.classes.memory.state import session_data
 from typing import List, Dict, Any
 from datetime import datetime
 from enum import Enum
@@ -82,7 +83,8 @@ async def get_proportionings_filtered(
 async def handle_row_click(request: PropIdRequest):
     # Print the received propDbId to the backend console for debugging/logging purposes
     print("\n"+ "*"*50 + f"\nPropDBID selected: {request.propDbId} \n"+ "*"*50+"\n")
-    
+    # Save int he dictionary using current_prop_id keyword
+    session_data["current_prop_id"] = request.propDbId
     return {"propDbId": request.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
 
 

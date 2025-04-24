@@ -1,25 +1,4 @@
-// Intro
-setTimeout(() => {
-    const intro = document.getElementById("intro");
-
-    if (intro) { // Only execute if Intro exits
-        intro.style.opacity = "0";
-        intro.style.visibility = "hidden";
-
-        setTimeout(() => {
-            window.location.href = "./pages/proportionings.html"; // Redirect
-        }, 1000);
-    } else {
-        console.warn("No animation found, Intro not found ot doesn't exist");
-    }
-}, 3000);
-
-
-
-// End of Intro
-
-
-//----------------UPDATE DATA----------------//
+// ---------------- UPDATE PROPORTIONING DATA ---------------- //
 document.addEventListener("DOMContentLoaded", function () {
     fetchProportioningData("http://localhost:5000/api/proportionings"); // Fetch Data as soon as the page is loaded
 
@@ -52,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
 // Function to fetch proportioning data
 function fetchProportioningData(link) {
     fetch(link) // Adjust the URL
@@ -111,13 +89,10 @@ function populateTable(data) {
             
                     // Insert the value in the HTML
                     const inputField = document.getElementById("PropIdInput");
-                    const inputField2 = document.getElementById("ProportioningId");
                     if (inputField) {
                         inputField.value = result.propDbId;
                     }
-                    if (inputField2) {
-                        inputField2.value = result.propDbId;
-                    }
+
                 })
                 .catch(error => console.error("Error sending data to backend:", error)); //If some error happens print it on console
             });
@@ -125,3 +100,4 @@ function populateTable(data) {
             tableBody.appendChild(tr);
     });
 }
+
