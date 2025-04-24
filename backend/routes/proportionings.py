@@ -19,24 +19,6 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 # SQL query to fetch proportioning data
 query = query_proportionings #query is declared in backend/database/query.py
 
-
-
-#DEBUGGIN GET:
-@router.get("/api/proportioningsdebug")
-async def get_proportionings() -> List[Dict[str, Any]]:
-    try:
-        # Fetch data from the database
-        data = await db_connection.fetch_data(query=query) #Raw Data
-
-        #Make all the calculations that are needed
-        data = calculate(data)
-
-        return data
-    
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return {"error": str(e)}
-#DEBUGGIN END 
 # ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) ----------------- #
 
 @router.get("/api/proportionings")

@@ -111,8 +111,12 @@ function populateTable(data) {
             
                     // Insert the value in the HTML
                     const inputField = document.getElementById("PropIdInput");
+                    const inputField2 = document.getElementById("ProportioningId");
                     if (inputField) {
                         inputField.value = result.propDbId;
+                    }
+                    if (inputField2) {
+                        inputField2.value = result.propDbId;
                     }
                 })
                 .catch(error => console.error("Error sending data to backend:", error)); //If some error happens print it on console
