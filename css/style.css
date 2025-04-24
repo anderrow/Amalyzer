@@ -108,7 +108,10 @@ nav {
     gap: 15px;
     height: 100%; /* ✅ Occupy all available space inside the section */
 }
-
+#PropMainButtons ul li button a {
+    color: white; 
+    text-decoration: none; 
+}
 .PropControlBox {
     flex: 1; /* ✅ Makes each div grow equally */
     display: flex;
