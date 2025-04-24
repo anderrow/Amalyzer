@@ -38,8 +38,8 @@ SELECT
     amadeus_proportioningrecord.requestedamount AS "Requested", 
     amadeus_proportioningrecord.actualamount AS "Actual",
     amadeus_proportioningrecord.requiredtolerance AS "Tolerance", 
-    amadeus_proportioningrecord.box_id AS "MixBoxID", 
-    amadeus_proportioningrecord.ingredientboxid AS "IngBoxID"
+    amadeus_loggingparam.c1_in_gain AS "Gain",
+	amadeus_loggingparam.if_in_source_netweight AS "Source Box NetWeight"
 FROM amadeus_proportioning 
 JOIN amadeus_proportioningrecord ON amadeus_proportioning.proportioning_dbid = amadeus_proportioningrecord.proportioning_dbid 
 JOIN amadeus_loggingparam ON amadeus_proportioning.proportioning_dbid = amadeus_loggingparam.proportioning_dbid 

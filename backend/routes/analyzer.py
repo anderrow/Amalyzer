@@ -19,11 +19,18 @@ async def analyzer_status():
 # Get Actual PropId to analyze
 @router.get("/PropIdSummary")
 async def analyzer_status():
-    #Get current proportioning id
-    current_prop = session_data.get("current_prop_id")
-    #Write the current_prop variable inside the query
-    query = query_analyzer_summary.format(current_prop=current_prop)
-    #Request the data
-    data = await db_connection.fetch_data(query=query)
+    try:
+        #Get current proportioning id
+        current_prop = session_data.get("current_prop_id")
+        #Write the current_prop variable inside the query
+        query = query_analyzer_summary.format(current_prop=current_prop)
+        #Request the data
+        data = await db_connection.fetch_data(query=query)
 
-    return data
+        return data
+    
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return {"error": str(e)}
+    
+    

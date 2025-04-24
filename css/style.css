@@ -522,13 +522,13 @@ input, select {
     border-radius: 8px;
 }
 .analyzer-nav{
-    border-radius: 9px;
+    border-radius: 10px;
 }
 .analyzer-nav ul {
 	background:  #30A6E6;
 	list-style: none;
 	width: 100%;
-    border-radius: 8px;
+    border-radius: 10px;
     margin:0;
     padding: 0;
     min-height: 60px;
@@ -540,8 +540,6 @@ input, select {
     border-radius: 8px;
     background: #30A6E6;
 	color: #FFFFFF;
-	font: bold 12px/20px sans-serif;
-	padding: 10px 25px;
     text-align: center;
     justify-content: center;
     align-items: center;
@@ -551,17 +549,21 @@ input, select {
     min-height: 60px;
     height: 100%;
 }
-.analyzer-nav a {
-	color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.analyzer-nav li button{
+    display:flex;
+    background-color:#30A6E6;
     height: 100%;
     width: 100%;
-    text-decoration: none;
-    font-size: 16px;
+    min-height: 60px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+	text-decoration: none;
 }
-.analyzer-nav li:hover{
-	background: #5572f3;
+.analyzer-nav li button:hover{
+    background: #5572f3;
 }
+
+
 
