@@ -16,14 +16,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
 //UPDATE SUMMARY
 document.addEventListener("DOMContentLoaded", function () {
-    fetchSummaryData("http://localhost:5000/analyzer/PropIdSummary"); // Fetch Data as soon as the page is loaded
+    fetchSummaryData("http://localhost:5000/analyzer/Summary"); // Fetch Data as soon as the page is loaded
     
     const summaryButton = document.querySelector("#SummaryButton"); //Listen to Summary Button
+    const propRecordButton = document.querySelector("#PropRecordButton"); //Listen to PropRecord Button
 
     if (summaryButton) { // If Summary exists
         summaryButton.addEventListener("click", function () { // Check if it's clicked
             console.log("Update Summary Data...");
-            fetchSummaryData("http://localhost:5000/analyzer/PropIdSummary"); // Reload Data without refreshing page 
+            fetchSummaryData("http://localhost:5000/analyzer/Summary"); // Reload Data without refreshing page 
+        });
+    }
+    if (propRecordButton) { // If Summary exists
+        propRecordButton.addEventListener("click", function () { // Check if it's clicked
+            console.log("Update PropRecord Data...");
+            fetchSummaryData("http://localhost:5000/analyzer/PropRecord"); // Reload Data without refreshing page 
         });
     }
 });

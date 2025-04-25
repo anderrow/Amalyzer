@@ -47,3 +47,9 @@ JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.art
 JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
 WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
 """
+# SQL query to fetch Analyzer PropRecord data
+query_analyzer_propRecord = """
+SELECT * FROM public.amadeus_proportioningrecord
+JOIN public.amadeus_proportioning ON amadeus_proportioning.proportioning_dbid = amadeus_proportioningrecord.proportioning_dbid
+WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
+"""
