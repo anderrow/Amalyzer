@@ -2,6 +2,29 @@
 // -------------------- UPDATE ANALYZER DATA -------------------- //
 //UPDATE PROPORTIONING ID
 window.addEventListener("DOMContentLoaded", () => {
+    fetch("http://localhost:5000/analyzer/Graph", { /* o tu puerto */ })
+    .then(res => res.text())
+    .then(html => {
+      const graphContainer = document.getElementById("graph-container");
+      graphContainer.innerHTML = html;  // 1) metemos el HTML bruto
+
+      // 2) ahora buscamos todos los <script> dentro del graphContainer
+      graphContainer.querySelectorAll("script").forEach(oldScript => {
+        // Creamos un nuevo <script> idéntico
+        const newScript = document.createElement("script");
+        if (oldScript.src) {
+          newScript.src = oldScript.src;
+        } else {
+          newScript.textContent = oldScript.textContent;
+        }
+        // Lo añadimos al <head> (o al body)
+        document.head.appendChild(newScript);
+        // Y opcionalmente eliminamos el viejo
+        oldScript.remove();
+      });
+    })
+    .catch(err => console.error("Error fetching graph:", err));
+    
     fetch("http://localhost:5000/analyzer/PropId")
         .then(response => response.text())
         .then(data => {
