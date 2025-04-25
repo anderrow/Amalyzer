@@ -30,6 +30,16 @@ document.addEventListener("DOMContentLoaded", function () {
             fetchProportioningData(url); // Pass the correct URL with query parameters
         });
     }
+    fetch("http://localhost:5000/analyzer/PropId")
+        .then(response => response.text())
+        .then(data => {
+            console.log("Fetched PropId:", data);
+            const inputField = document.getElementById("PropIdInput");
+            if (inputField) {
+                inputField.value = data;
+            }
+        })
+        .catch(error => console.error("Error fetching current propDbId:", error));
 });
 // Function to fetch proportioning data
 function fetchProportioningData(link) {
@@ -87,11 +97,16 @@ function populateTable(data) {
                 .then(result => {
                     console.log("Backend response:", result);
             
-                    // Insert the value in the HTML
-                    const inputField = document.getElementById("PropIdInput");
-                    if (inputField) {
-                        inputField.value = result.propDbId;
-                    }
+                    fetch("http://localhost:5000/analyzer/PropId")
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log("Fetched PropId:", data);
+                        const inputField = document.getElementById("PropIdInput");
+                        if (inputField) {
+                            inputField.value = data;
+                        }
+                    })
+                    .catch(error => console.error("Error fetching current propDbId:", error));
 
                 })
                 .catch(error => console.error("Error sending data to backend:", error)); //If some error happens print it on console

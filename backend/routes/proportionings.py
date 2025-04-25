@@ -72,8 +72,6 @@ async def get_proportionings_filtered(
         return {"error": str(e)}  
 
 
-
-
 # ----------------- Define a POST route that listens for row click events from the frontend ----------------- #
 
 @router.post("/api/rowclicked")
