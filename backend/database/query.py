@@ -53,3 +53,29 @@ SELECT * FROM public.amadeus_proportioningrecord
 JOIN public.amadeus_proportioning ON amadeus_proportioning.proportioning_dbid = amadeus_proportioningrecord.proportioning_dbid
 WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
 """
+# SQL query to fetch Analyzer LogginParam data
+query_analyzer_logginParam = """
+SELECT * FROM public.amadeus_loggingparam
+JOIN public.amadeus_proportioning ON amadeus_loggingparam.proportioning_dbid = amadeus_proportioning.proportioning_dbid
+WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
+"""
+# SQL query to fetch Analyzer Lot data
+query_analyzer_lot = """
+SELECT * 
+FROM public.amadeus_lot
+WHERE article_dbid = (
+    SELECT article_dbid 
+    FROM public.amadeus_proportioning 
+    WHERE proportioning_dbid = {current_prop});
+
+"""
+
+# SQL query to fetch Analyzer Article data
+query_analyzer_article = """
+SELECT * 
+FROM public.amadeus_article
+WHERE article_dbid = (
+    SELECT article_dbid 
+    FROM public.amadeus_proportioning 
+    WHERE proportioning_dbid = {current_prop});
+ """

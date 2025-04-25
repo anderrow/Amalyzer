@@ -20,6 +20,9 @@ document.addEventListener("DOMContentLoaded", function () {
     
     const summaryButton = document.querySelector("#SummaryButton"); //Listen to Summary Button
     const propRecordButton = document.querySelector("#PropRecordButton"); //Listen to PropRecord Button
+    const logginParamButton = document.querySelector("#LogginParamButton"); //Listen to LoginParam Button
+    const lotButton = document.querySelector("#LotButton"); //Listen to Lot Button
+    const articleButton = document.querySelector("#ArticleButton"); //Listen to Article Button
 
     if (summaryButton) { // If Summary exists
         summaryButton.addEventListener("click", function () { // Check if it's clicked
@@ -27,10 +30,28 @@ document.addEventListener("DOMContentLoaded", function () {
             fetchSummaryData("http://localhost:5000/analyzer/Summary"); // Reload Data without refreshing page 
         });
     }
-    if (propRecordButton) { // If Summary exists
+    if (propRecordButton) { // If PropRecord exists
         propRecordButton.addEventListener("click", function () { // Check if it's clicked
             console.log("Update PropRecord Data...");
             fetchSummaryData("http://localhost:5000/analyzer/PropRecord"); // Reload Data without refreshing page 
+        });
+    }
+    if (logginParamButton) { // If LogginParam exists
+        logginParamButton.addEventListener("click", function () { // Check if it's clicked
+            console.log("Update LogginParam Data...");
+            fetchSummaryData("http://localhost:5000/analyzer/LogginParam"); // Reload Data without refreshing page 
+        });
+    }
+    if (lotButton) { // If Lot Button exists
+        lotButton.addEventListener("click", function () { // Check if it's clicked
+            console.log("Update Lot Data...");
+            fetchSummaryData("http://localhost:5000/analyzer/Lot"); // Reload Data without refreshing page 
+        });
+    }
+    if (articleButton) { // If Article Button exists
+        articleButton.addEventListener("click", function () { // Check if it's clicked
+            console.log("Update Article Data...");
+            fetchSummaryData("http://localhost:5000/analyzer/Article"); // Reload Data without refreshing page 
         });
     }
 });
