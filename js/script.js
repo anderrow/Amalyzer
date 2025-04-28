@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch('http://localhost:5000/api/articlenames');
             const articleNames = await response.json();
     
-            const select = document.getElementById('RequestArticle');
+            const select = document.getElementById('RequestedArticle');
     
             // Clear previous options except the first one ("Filter by Article")
             select.length = 1;
