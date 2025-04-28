@@ -1,7 +1,8 @@
 import psycopg2
 from typing import List, Dict, Any
 import asyncio
-
+import pandas as pd
+from backend.memory.state import session_data
 
 class DBConnection:
     
@@ -49,4 +50,32 @@ class DBConnection:
     # Asynchronous method that runs the blocking code in a separate thread
     async def fetch_data(self, query: str) -> List[Dict[str, Any]]:
         return await asyncio.to_thread(self._connect_and_fetch, query)
+    
+    def _connect_and_fetch_df(self, query: str) -> List[Dict[str, Any]]:
+        try:
+            # Connect to the PostgreSQL database
+            conn = psycopg2.connect(
+            dbname=self.config['ConnectionStrings']['Database'],
+            user=self.config['ConnectionStrings']['UserID'],
+            password=self.config['ConnectionStrings']['Password'],
+            host=self.config['ConnectionStrings']['Server'],
+            port=self.config['ConnectionStrings']['Port']
+            ) 
 
+            #Get current proportioning id
+            current_prop = session_data.get("current_prop_id")
+            # Write the current_prop variable inside the query     
+            query = query.format(current_prop=current_prop)
+
+            # Load data into a Pandas DataFrame
+            df = pd.read_sql(query, conn)
+            #Close connection
+            conn.close()
+
+            return df
+        except Exception as e:
+            raise Exception(f"Error executing query: {e}")
+        
+     # Asynchronous method that runs the blocking code in a separate thread   
+    async def fetch_df(self, query: str) -> List[Dict[str, Any]]:
+        return await asyncio.to_thread(self._connect_and_fetch_df, query)

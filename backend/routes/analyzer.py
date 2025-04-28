@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
-import plotly.io as pio
-import plotly.graph_objects as go
+import pandas as pd
+import psycopg2
 from backend.memory.state import session_data
 from backend.classes.db_connection import DBConnection
+from backend.classes.graphs import PlotPointsinTime
 from backend.database.config import config
-from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article
-# Create an APIRouter instance
+from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph
 router = APIRouter(prefix="/analyzer")  
 
 # Initialize the DBConnection object
@@ -50,24 +50,19 @@ async def article_table():
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph():
     try:
-        # Datos de ejemplo
-        x_values = [0, 10, 20, 30, 40, 50]
-        y_values = [100] * len(x_values)
+        df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
+       
+        graph_html = PlotPointsinTime(
+            session_data.get("current_prop_id"), 
+            title="Slide Position", 
+            xaxis_title="Seconds", 
+            yaxis_title="mm", 
+            sample_time=0.01, 
+            x_axis=df.index.to_list(), 
+            y_axis=df["plant_out_slideposition"].to_list()
+        ).plot_graph()
 
-        # Crear el gráfico
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=x_values, y=y_values, mode='lines', name='Line at 100'))
-        fig.update_layout(
-            title="Horizontal Line at 100",
-            xaxis_title="X Axis",
-            yaxis_title="Y Axis",
-            template="plotly_dark"
-        )
-
-        # Convertir el gráfico a HTML
-        graph_html = pio.to_html(fig, full_html=False)
-
-        # Retornar HTML crudo (sin serializar a JSON)
+        # Return raw HTML
         return graph_html
 
     except Exception as e:
@@ -84,22 +79,8 @@ async def show_page():
         graph_html = await generate_graph()
 
         # Return the HTML page with the embedded graph
-        return f"""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Interactive Graph</title>
-        </head>
-        <body>
-            <h1>Graph</h1>
-            <section id="AnalyzerGraphs">
-                {graph_html}  <!-- The interactive graph is inserted here -->
-            </section>
-        </body>
-        </html>
-        """
+        return embebbed_graph(graph_html)
+    
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -117,3 +98,22 @@ async def fetch_table_data(query_template: str):
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
+    
+
+def embebbed_graph(graph_html):
+    return f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Interactive Graph</title>
+    </head>
+    <body>
+        <h1>Graph</h1>
+        <section id="AnalyzerGraphs">
+            {graph_html}  <!-- The interactive graph is inserted here -->
+        </section>
+    </body>
+    </html>
+    """
