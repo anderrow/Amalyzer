@@ -47,7 +47,7 @@ async def article_table():
     
 
 # ---------- Generate and return interactive graph ---------- #
-@router.get("/Graph", response_class=HTMLResponse)
+@router.get("/Graph1", response_class=HTMLResponse)
 async def generate_graph():
     try:
         df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
@@ -60,6 +60,31 @@ async def generate_graph():
             sample_time=0.01, 
             x_axis=df.index.to_list(), 
             y_axis=df["plant_out_slideposition"].to_list()
+        ).plot_graph()
+
+        # Return raw HTML
+        return graph_html
+
+    except Exception as e:
+        print(f"Error: {e}")
+        # Aquí podrías devolver un HTML de error, o un JSON si prefieres
+        return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
+    
+# ---------- Generate and return interactive graph ---------- #
+@router.get("/Graph2", response_class=HTMLResponse)
+async def generate_graph():
+    try:
+        df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
+       
+        graph_html = PlotPointsinTime(
+            session_data.get("current_prop_id"), 
+            title="Dosed Material", 
+            xaxis_title="Seconds", 
+            yaxis_title="kg", 
+            sample_time=0.01, 
+            x_axis=df.index.to_list(), 
+            y_axis=df["if_out_dosedweight"].to_list(),
+            color="red"
         ).plot_graph()
 
         # Return raw HTML
@@ -99,7 +124,7 @@ async def fetch_table_data(query_template: str):
         print(f"Error: {str(e)}")
         return {"error": str(e)}
     
-
+# ---------- embebbed_graph page ---------- #
 def embebbed_graph(graph_html):
     return f"""
     <!DOCTYPE html>
