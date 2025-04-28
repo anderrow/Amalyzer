@@ -54,7 +54,8 @@ class PlotPointsinTime(Graph):
                 bgcolor='rgba(255,255,255,0.5)',
                 bordercolor="black",
                 borderwidth=1
-            )
+            ),
+            height=350,  # Set maximum height to 500 px    
         )
 
         # Convert graph to HTML 

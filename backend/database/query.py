@@ -87,9 +87,3 @@ SELECT
     FROM 
     amadeus_logging WHERE proportioning_dbid =  {current_prop} ;
 """
-query_analyzer_dosed_weight="""
-SELECT 
-    plant_out_slideposition, logging_dbid, if_out_dosedweight 
-    FROM 
-    amadeus_logging WHERE proportioning_dbid =  {current_prop} ;
-"""

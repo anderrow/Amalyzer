@@ -473,6 +473,13 @@ input, select {
     flex: 1;  /* Occupies all remaining space */
     min-height: calc(5vh - 60px); 
 }
+#AnalyzerGraphs {
+    display: flex;
+    flex-direction: column;  
+}
+#graph-container, #graph-container2 {
+    width: 95%;  
+}
 #ProportioningConnection {
     display: flex;
     flex-direction: row;
