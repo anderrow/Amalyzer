@@ -10,6 +10,7 @@ from backend.memory.state import session_data
 from typing import List, Dict, Any
 from datetime import datetime
 from enum import Enum
+import pandas as pd
 
 # Create an APIRouter instance
 router = APIRouter()
@@ -82,10 +83,27 @@ async def handle_row_click(request: PropIdRequest):
     session_data["current_prop_id"] = request.propDbId
     return {"propDbId": request.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
 
+# ----------------- Request all the article names ----------------- #
+@router.get("/api/articlenames")
+async def get_article_names() -> List[Dict[str, Any]]:
+    try:
+        # Fetch data from the database
+        data = await db_connection.fetch_data(query=query_proportionings)   
+        # Convert the data to a pandas DateFrame
+        df = pd.DataFrame(data)
+        #Get unique values from the 'ArticleName' column
+        unique_article_names =df['ArticleName'].unique()
+        # Create a list of dictionaries (required format)
+        result = [{"ArticleName": name} for name in unique_article_names]
+        #Return the results
+        return result
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return {"error": str(e)}  
 
 # ----------------- Make all the calculations that are needed ----------------- #
 def calculate(data):
-
     #Overwrite Endtime with EndTime - StartTime to calculate duration
     data = CaclulateDateDelta(data, "StartTime", "EndTime", overwrite=True).apply_calculation()
     #Add percentage calculation column
@@ -95,16 +113,6 @@ def calculate(data):
 
     return data
 #  -----------------  Filter Database to make it more redable  ----------------- #
-class DosingType(Enum):
-    NORMAL = 1
-    LEARNING = 2
-    D2E = 100
-
-class Deviation(Enum):
-    UNDERDOSING = 1
-    NORMAL = 2
-    OVERDOSING = 3
-
 def make_db_redable(data):
     for row in data:
             # Format the "StartTime" field if it's a datetime object
@@ -145,5 +153,15 @@ def make_db_redable(data):
                 except ValueError:
                     row["Deviation"] =  f"Unknown ({value})"                  
     return data
+
+class DosingType(Enum):
+    NORMAL = 1
+    LEARNING = 2
+    D2E = 100
+
+class Deviation(Enum):
+    UNDERDOSING = 1
+    NORMAL = 2
+    OVERDOSING = 3
 
 

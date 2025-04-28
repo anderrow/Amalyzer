@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" type="image/png" href="../images/faviconV2.png">
     <script defer src="../js/script.js" defer></script>
+    <!-- Add the CSS for Choices.js -->
+    <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+    <!-- Add the JS for Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 </head>
 <body>
 
@@ -78,9 +83,10 @@
                         <span class="slider"></span>
                     </label>
                     <input type="text" id="RequestedArticle" name="RequestedArticle" placeholder="Enter article..." required>
-                    <div id="ArticleBox">
-                        <p>Example text...</p>
-                    </div>
+                    <select type="text" size="10" id="RequestArticle" onchange="" placeholder="Search for articles..">
+                        <option value="" disabled selected>Filter by Article</option>
+                        <!--Fetch by the Backend-->
+                    </select>
                 </div>
 
                 <div id="AgeFilter" class="PropControlBox">

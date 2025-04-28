@@ -40,6 +40,31 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         .catch(error => console.error("Error fetching current propDbId:", error));
+    // Function to load article names into the dropdown
+    async function loadArticleNames() {
+        try {
+            const response = await fetch('http://localhost:5000/api/articlenames');
+            const articleNames = await response.json();
+    
+            const select = document.getElementById('RequestArticle');
+    
+            // Clear previous options except the first one ("Filter by Article")
+            select.length = 1;
+    
+            // Add a new <option> for each article name
+            articleNames.forEach(article => {
+                const option = document.createElement('option');
+                option.value = article.ArticleName;
+                option.textContent = article.ArticleName;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading article names:', error);
+        }
+    }
+    
+    // Just call it directly here:
+    loadArticleNames();
 });
 // Function to fetch proportioning data
 function fetchProportioningData(link) {
