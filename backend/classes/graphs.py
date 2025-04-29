@@ -54,6 +54,9 @@ class PlotPointsinTime(Graph):
             line=dict(color=trace.color)
             ))
 
+        max_y = int(max(max(trace.y_data) for trace in self.traces))+1
+        max_x = int(max(trace.time))
+
         # Style
         fig.update_layout(
             title=self.title,
@@ -70,7 +73,9 @@ class PlotPointsinTime(Graph):
                 bordercolor="black",
                 borderwidth=1
             ),
-            height=350,  # Set maximum height to 500 px    
+            height=350,  # Set maximum height to 500 px 
+            yaxis=dict(range=[0, max_y],fixedrange=False), #Force to strart in y=0
+            xaxis=dict(range=[0, max_x],fixedrange=False), #Force to strart in x=0
         )
 
         # Convert graph to HTML 

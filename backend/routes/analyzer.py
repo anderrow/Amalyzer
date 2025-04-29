@@ -55,10 +55,11 @@ async def generate_graph():
         #Generate an empty list for traces
         trace_list = []
         #Generate TraceData object and append it
-        trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["dc_out_desiredslideposition"].to_list(), mode="lines", color="green"))
-        trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["plant_out_slideposition"].to_list(), mode="lines", color="blue"))
+        trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["dc_out_desiredslideposition"].to_list(), mode="lines", color="blue"))
+        trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["plant_out_slideposition"].to_list(), mode="lines", color="pink"))
+        trace_list.append(TraceData(label="Vibratos",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[5 if y else -10 for y in df["dc_out_controlvibrator"].to_list()], mode="markers", color="grey"))
+        #trace_list.append(TraceData(label="Knocer",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[20 if y else 0 for y in df["dc_out_controlknocker"].to_list()], mode="lines", color="purple"))
         
-
         graph_html = PlotPointsinTime(
             session_data.get("current_prop_id"), 
             title="Slide Position", 
