@@ -4,7 +4,7 @@ import pandas as pd
 import psycopg2
 from backend.memory.state import session_data
 from backend.classes.db_connection import DBConnection
-from backend.classes.graphs import PlotPointsinTime
+from backend.classes.graphs import PlotPointsinTime, TraceData
 from backend.database.config import config
 from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph
 router = APIRouter(prefix="/analyzer")  
@@ -51,15 +51,20 @@ async def article_table():
 async def generate_graph():
     try:
         df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
-       
+
+        #Generate an empty list for traces
+        trace_list = []
+        #Generate TraceData object and append it
+        trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["dc_out_desiredslideposition"].to_list(), mode="lines", color="green"))
+        trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["plant_out_slideposition"].to_list(), mode="lines", color="blue"))
+        
+
         graph_html = PlotPointsinTime(
             session_data.get("current_prop_id"), 
             title="Slide Position", 
             xaxis_title="Seconds", 
             yaxis_title="mm", 
-            sample_time=0.01, 
-            x_axis=df.index.to_list(), 
-            y_axis=df["plant_out_slideposition"].to_list()
+            traces=trace_list 
         ).plot_graph()
 
         # Return raw HTML
@@ -76,15 +81,15 @@ async def generate_graph():
     try:
         df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
        
+        #Generate TraceData object
+        trace = TraceData(label="Slide Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["if_out_dosedweight"].to_list(), mode="lines", color="red")
+
         graph_html = PlotPointsinTime(
             session_data.get("current_prop_id"), 
             title="Dosed Material", 
             xaxis_title="Seconds", 
             yaxis_title="kg", 
-            sample_time=0.01, 
-            x_axis=df.index.to_list(), 
-            y_axis=df["if_out_dosedweight"].to_list(),
-            color="red"
+           traces=[trace]
         ).plot_graph()
 
         # Return raw HTML

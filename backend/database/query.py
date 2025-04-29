@@ -83,7 +83,7 @@ WHERE article_dbid = (
 #SQL query to fetch Analyzer Graph
 query_analyzer_slide_graph= """
 SELECT 
-    plant_out_slideposition, logging_dbid, if_out_dosedweight 
+    plant_out_slideposition, dc_out_desiredslideposition, logging_dbid, if_out_dosedweight ,dc_out_controlvibrator, dc_out_controlknocker 
     FROM 
     amadeus_logging WHERE proportioning_dbid =  {current_prop} ;
 """

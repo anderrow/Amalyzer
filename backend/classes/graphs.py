@@ -17,27 +17,42 @@ class Graph:
     def plot_graph(self):
         raise NotImplementedError("Subclasses should implement this method.")
     
-        
+class TraceData:
+    """
+    Object Trace Data who contains the information of the trace. (Label, calculated time, points to plot,
+    mode and color)
+    """
+    def __init__(self, label, sample_time,  x_data, y_data, mode="lines", color="blue"):
+        self.label = label
+        self.sample_time = sample_time
+        self.x_data = x_data
+        self.time = [x * self.sample_time for x in x_data]
+        self.y_data = y_data
+        self.mode = mode
+        self.color = color
+
+        if len(x_data) != len(y_data):
+            raise ValueError(f"x_data and y_data must have the same length for trace '{label}'")
   
 class PlotPointsinTime(Graph):
-    def __init__(self, prop_id, title, xaxis_title, yaxis_title, sample_time, x_axis, y_axis, color = "blue" ):
+    def __init__(self, prop_id, title, xaxis_title, yaxis_title, traces:list[TraceData] ):
         super().__init__(prop_id, title, xaxis_title, yaxis_title)
-        self.sample_time = sample_time
-        self.x_axis = x_axis
-        self.y_axis = y_axis
-        self.color = color
+        self.traces = traces
 
     def plot_graph(self):
         # Generate de graph
-        fig = go.Figure()
+        fig =self.fig
 
-        # Calculate time bassed on the sample time
-        time = [value * self.sample_time for value in self.x_axis] 
+        #Validate the data
+        for trace in self.traces:
 
-        fig.add_trace(go.Scatter(
-            y=self.y_axis, x=time, mode='lines', name=self.title,
-            line=dict(color=self.color)
-        ))
+            fig.add_trace(go.Scatter(
+            x=trace.time,
+            y=trace.y_data,
+            mode=trace.mode, #"lines",
+            name=trace.label,
+            line=dict(color=trace.color)
+            ))
 
         # Style
         fig.update_layout(
@@ -60,6 +75,4 @@ class PlotPointsinTime(Graph):
 
         # Convert graph to HTML 
         return pio.to_html(fig, full_html=False)
-
-
 
