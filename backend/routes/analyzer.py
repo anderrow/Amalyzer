@@ -55,8 +55,8 @@ async def generate_graph():
         #Generate an empty list for traces
         trace_list = []
         #Generate TraceData object and append it
-        trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["dc_out_desiredslideposition"].to_list(), mode="lines", color="blue"))
-        trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["plant_out_slideposition"].to_list(), mode="lines", color="pink"))
+        trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["dc_out_desiredslideposition"].to_list(), mode="lines", color="pink"))
+        trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["plant_out_slideposition"].to_list(), mode="lines", color="blue"))
         trace_list.append(TraceData(label="Vibratos",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[5 if y else -10 for y in df["dc_out_controlvibrator"].to_list()], mode="markers", color="grey"))
         trace_list.append(TraceData(label="Knocer",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[2.5 if y else -10 for y in df["dc_out_controlknocker"].to_list()], mode="markers", color="purple"))
         
@@ -88,8 +88,11 @@ async def generate_graph():
         lower_tolerance = requested * (1-tolerance)
 
         trace_list = []
-        
+        #Smoothed filter for erasing small variations
+        df['Smoothed'] = df["if_out_dosedweight"].rolling(window=100).mean().fillna(0) #0.1 seconds
+
         #Generate TraceData object
+        trace_list.append(TraceData(label="Smoothed Dosed Material",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["Smoothed"].to_list(), mode="lines", color="grey")) 
         trace_list.append(TraceData(label="Dosed Material",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["if_out_dosedweight"].to_list(), mode="lines", color="red"))
         trace_list.append(TraceData(label="Set Point",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[requested] * len(df.index.to_list()), mode="lines", color="Blue")) #Setpoint
         trace_list.append(TraceData(label="Upper Tolerance",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[upper_tolerance] * len(df.index.to_list()), mode="lines", color="Green"))
