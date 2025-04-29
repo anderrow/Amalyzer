@@ -58,7 +58,7 @@ async def generate_graph():
         trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["dc_out_desiredslideposition"].to_list(), mode="lines", color="blue"))
         trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["plant_out_slideposition"].to_list(), mode="lines", color="pink"))
         trace_list.append(TraceData(label="Vibratos",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[5 if y else -10 for y in df["dc_out_controlvibrator"].to_list()], mode="markers", color="grey"))
-        #trace_list.append(TraceData(label="Knocer",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[20 if y else 0 for y in df["dc_out_controlknocker"].to_list()], mode="lines", color="purple"))
+        trace_list.append(TraceData(label="Knocer",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[2.5 if y else -10 for y in df["dc_out_controlknocker"].to_list()], mode="markers", color="purple"))
         
         graph_html = PlotPointsinTime(
             session_data.get("current_prop_id"), 
@@ -81,16 +81,26 @@ async def generate_graph():
 async def generate_graph():
     try:
         df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
-       
+        summary = await fetch_table_data(query_analyzer_summary)
+        requested = float(summary[0]['Requested'])
+        tolerance = float(summary[0]['Requested'])/100
+        upper_tolerance = requested *  (1+tolerance)
+        lower_tolerance = requested * (1-tolerance)
+
+        trace_list = []
+        
         #Generate TraceData object
-        trace = TraceData(label="Slide Position",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["if_out_dosedweight"].to_list(), mode="lines", color="red")
+        trace_list.append(TraceData(label="Dosed Material",  sample_time=0.01, x_data=df.index.to_list(),  y_data=df["if_out_dosedweight"].to_list(), mode="lines", color="red"))
+        trace_list.append(TraceData(label="Set Point",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[requested] * len(df.index.to_list()), mode="lines", color="Blue")) #Setpoint
+        trace_list.append(TraceData(label="Upper Tolerance",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[upper_tolerance] * len(df.index.to_list()), mode="lines", color="Green"))
+        trace_list.append(TraceData(label="Lower Tolerance",  sample_time=0.01, x_data=df.index.to_list(),  y_data=[lower_tolerance] * len(df.index.to_list()), mode="lines", color="Green"))
 
         graph_html = PlotPointsinTime(
             session_data.get("current_prop_id"), 
             title="Dosed Material", 
             xaxis_title="Seconds", 
             yaxis_title="kg", 
-           traces=[trace]
+           traces=trace_list
         ).plot_graph()
 
         # Return raw HTML
