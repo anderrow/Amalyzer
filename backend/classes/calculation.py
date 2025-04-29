@@ -38,7 +38,7 @@ class CaclulateDateDelta(Calculation):
                     minutes = int(delta//60)   #Integrer minutes
                     seconds = int(delta % 60)  # Rest of seconds
                     # Format seconds to always show two digits (e.g., 03 instead of 3)
-                    if delta<10:
+                    if seconds<10:
                         delta=f"{minutes}:0{seconds}"
                     else:
                         delta=f"{minutes}:{seconds}"
