@@ -167,6 +167,7 @@ nav {
     background-color: white;
     border-radius: 8px;
     overflow: hidden;
+    overflow-wrap: break-word;
 }
 
 #ProportioningTable th, #ProportioningTable td {
