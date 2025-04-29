@@ -54,8 +54,8 @@ class PlotPointsinTime(Graph):
             line=dict(color=trace.color)
             ))
 
-        max_y = int(max(max(trace.y_data) for trace in self.traces))
-        max_x = int(max(trace.time))
+        max_y = float(max(max(trace.y_data) for trace in self.traces))
+        max_x = float(max(trace.time))
 
         # Style
         fig.update_layout(
