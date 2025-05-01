@@ -1,53 +1,54 @@
-
 // -------------------- UPDATE ANALYZER DATA -------------------- //
-//UPDATE PROPORTIONING ID
 window.addEventListener("DOMContentLoaded", () => {
+    // Fetch and inject Graph1 HTML
     fetch("http://localhost:5000/analyzer/Graph1", { })
     .then(res => res.text())
     .then(html => {
-      const graphContainer = document.getElementById("graph-container");
-      graphContainer.innerHTML = html;  // 1) metemos el HTML bruto
+        const graphContainer = document.getElementById("graph-container");
+        graphContainer.innerHTML = html;  // 1) insert raw HTML
 
-      // 2) ahora buscamos todos los <script> dentro del graphContainer
-      graphContainer.querySelectorAll("script").forEach(oldScript => {
-        // Creamos un nuevo <script> idéntico
-        const newScript = document.createElement("script");
-        if (oldScript.src) {
-          newScript.src = oldScript.src;
-        } else {
-          newScript.textContent = oldScript.textContent;
-        }
-        // Lo añadimos al <head> (o al body)
-        document.head.appendChild(newScript);
-        // Y opcionalmente eliminamos el viejo
-        oldScript.remove();
-      });
+        // 2) now find all <script> tags inside the graphContainer
+        graphContainer.querySelectorAll("script").forEach(oldScript => {
+            // Create a new identical <script>
+            const newScript = document.createElement("script");
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            // Add it to <head> (or body)
+            document.head.appendChild(newScript);
+            // Optionally remove the old one
+            oldScript.remove();
+        });
     })
     .catch(err => console.error("Error fetching graph:", err));
-    
+
+    // Fetch and inject Graph2 HTML
     fetch("http://localhost:5000/analyzer/Graph2", { })
     .then(res => res.text())
     .then(html => {
-      const graphContainer = document.getElementById("graph-container2");
-      graphContainer.innerHTML = html;  // 1) metemos el HTML bruto
+        const graphContainer = document.getElementById("graph-container2");
+        graphContainer.innerHTML = html;  // 1) insert raw HTML
 
-      // 2) ahora buscamos todos los <script> dentro del graphContainer
-      graphContainer.querySelectorAll("script").forEach(oldScript => {
-        // Creamos un nuevo <script> idéntico
-        const newScript = document.createElement("script");
-        if (oldScript.src) {
-          newScript.src = oldScript.src;
-        } else {
-          newScript.textContent = oldScript.textContent;
-        }
-        // Lo añadimos al <head> (o al body)
-        document.head.appendChild(newScript);
-        // Y opcionalmente eliminamos el viejo
-        oldScript.remove();
-      });
+        // 2) now find all <script> tags inside the graphContainer
+        graphContainer.querySelectorAll("script").forEach(oldScript => {
+            // Create a new identical <script>
+            const newScript = document.createElement("script");
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            // Add it to <head> (or body)
+            document.head.appendChild(newScript);
+            // Optionally remove the old one
+            oldScript.remove();
+        });
     })
     .catch(err => console.error("Error fetching graph:", err));
-    
+
+    // Fetch current Proportioning ID
     fetch("http://localhost:5000/analyzer/PropId")
         .then(response => response.text())
         .then(data => {
@@ -59,6 +60,7 @@ window.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => console.error("Error fetching current propDbId:", error));
 });
+
 
 //UPDATE SUMMARY
 document.addEventListener("DOMContentLoaded", function () {
