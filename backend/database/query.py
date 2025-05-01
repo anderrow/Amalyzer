@@ -87,3 +87,11 @@ SELECT
     FROM 
     amadeus_logging WHERE proportioning_dbid =  {current_prop} ;
 """
+
+#SQL query to fetch Regressor Graph
+query_regressor_graph = """
+SELECT
+intermediate_dbid, measurement_time, flow, opening
+FROM public.amadeus_intermediates
+Where lot_dbid = 32;
+"""

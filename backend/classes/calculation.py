@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 class Calculation:
     """
@@ -113,9 +115,9 @@ class IsInTolerance(Calculation):
                 LowerTol = row[self.requested] *(1-Tol_bass_1)
 
                 #Clasify by Over, Under and Within tolerance
-                if row[self.real] > UpperTol:
+                if row[self.real] < UpperTol:
                     row[self.new_column_name] = 1 #Over Tolerance
-                elif row[self.real] < LowerTol: 
+                elif row[self.real] > LowerTol: 
                     row[self.new_column_name] = 3 #Under Tolerance
                 else:
                     row[self.new_column_name] = 2 #Within tolerance
@@ -124,3 +126,18 @@ class IsInTolerance(Calculation):
                 filtered_data.append(row)
         
         return filtered_data
+    
+class CalculateLinearRegression(Calculation):
+    """
+    Given two columns (datetime type), the subclass returns a data dictionary
+    containing the delta of this two columns, with the option of overwriting the
+    second column with the result (default mode = overwrite). 
+    """
+    def __init__(self, data, column1, column2, overwrite = True, new_column_name = "duration"):
+        super().__init__(data)
+        self.column1 = column1
+        self.column2 = column2
+        self.overwrite = overwrite
+        self.new_colum_name = new_column_name
+
+    #def apply_calculation(self):
