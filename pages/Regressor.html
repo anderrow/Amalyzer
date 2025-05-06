@@ -40,7 +40,46 @@
             </div>
         </section>
         <section id="RegressorControls">
-
+            <div id="RegressorSliders" class="RegressorControlsContainer">
+                <div class="RegressorSlider-container">
+                    <label for="IntermediatesBin">Intermediates / Bin</label>
+                    <input type="range" min="0" max="100" value="10" class="short-slider RegressorSlider" oninput="IntermediatesBin.value = value" id="IntermediatesBinSlider"/>
+                    <output id="IntermediatesBin">10</output>
+                </div>
+            
+                <div class="RegressorSlider-container">
+                    <label for="Ramptime">Ramptime[s]</label>
+                    <input type="range" min="0" max="10" value="1" step="0.1" class="short-slider RegressorSlider" oninput="Ramptime.value = value" id="RamptimeSlider" />
+                    <output id="Ramptime">1</output>
+                </div>
+            
+                <div class="RegressorSlider-container">
+                    <label for="Gain">Gain</label>
+                    <input type="range" min="0" max="1" value="0.1" step="0.01" class="short-slider RegressorSlider" oninput="Gain.value = value" id="GainSlider" />
+                    <output id="Gain">1</output>
+                </div>
+            
+                <div class="RegressorSlider-container">
+                    <label for="MaxFlow">MaxFlow</label>
+                    <input type="range" min="0" max="5" step="0.01" value="0.5" class="short-slider RegressorSlider" oninput="MaxFlow.value = value" id="MaxFlowSlider"/>
+                    <output id="MaxFlow">0.5</output>
+                </div>
+            
+                <div class="RegressorSlider-container">
+                    <label for="BrakePercentage">Brake Percentage</label>
+                    <input type="range" min="0" max="5" step="0.01" value="0.5" class="short-slider RegressorSlider" oninput="BrakePercentage.value = value" id="BrakePercentageSlider"/>
+                    <output id="BrakePercentage">0.5</output>
+                </div>
+                <div class="RegressorSlider-container" id="RegressorDropDownMenu">
+                    <label for="RegressionMethod">Regression Method</label>
+                    <select id="RegressionMethod">
+                        <option value="Normal">Normal</option>
+                        <option value="Conservative">Conservative</option>
+                        <option value="Disabled">Disabled</option>
+                    </select> 
+                </div>
+            </div> 
+            
         </section>
     </article>
 </body>

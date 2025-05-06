@@ -30,7 +30,7 @@ async def generate_graph():
         #Extract the lot_id from the Json
         lot_id = lot_id[0]["lot_dbid"] 
 
-        print("\n" + "*"*50 + f"LotID: {lot_id} from proportioning {current_prop}* \n" + "*"*50) #Debug
+        print("\n" + "*"*35 + f"\n* LotID: {lot_id} from proportioning {current_prop} *\n" + "*"*37) #Debug
         query = query_regressor_graph.format(current_lot=lot_id)
 
         df = await db_connection.fetch_df(query=query)

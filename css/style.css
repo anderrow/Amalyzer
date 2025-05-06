@@ -502,7 +502,7 @@ input, select {
     justify-content: center;
     margin-inline: 10px;
 }
-#AnalyzerArticle, #RegressorArticle {
+#AnalyzerArticle {
     display: grid;
     grid-template-columns: 2fr 1fr; /* 2/3 and 1/3 of the screen */
     gap: 20px;
@@ -616,3 +616,48 @@ input, select {
     overflow-x: auto;
     max-height: 100%; 
 }
+
+/*
+*
+*
+Regressor
+*
+*
+*/
+
+#RegressorSliders {
+    display: flex;
+    flex-direction: column;  /* Stack sliders vertically */
+    gap: 10px; /* Space between each slider group */
+}
+
+#RegressorSliders label {
+    width: 30%; /* Set label width to 20% on the left side */
+    text-align: left; /* Align the label text to the left */
+    font-weight: bold;
+}
+
+.RegressorSlider-container {
+    display: flex;
+    align-items: center;  /* Vertically center the elements */
+    width: 100%;  /* Ensure the container takes up all available width */
+    padding: 10px;
+}
+
+.RegressorSlider {
+    flex-grow: 1; /* Make the slider take up all remaining space */
+    margin: 0 10px;  /* Space between the slider and the output */
+}
+
+output {
+    width: 50px; /* Set a fixed width for the output */
+    text-align: center; /* Center the output value */
+}
+#RegressorArticle {
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* 2/3 and 1/3 of the screen */
+    gap: 20px;
+    padding: 20px;
+    flex: 1;  /* Occupies all remaining space */
+    min-height: calc(90vh - 60px); 
+    }
