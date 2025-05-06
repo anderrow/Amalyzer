@@ -93,5 +93,11 @@ query_regressor_graph = """
 SELECT
 intermediate_dbid, measurement_time, flow, opening
 FROM public.amadeus_intermediates
-Where lot_dbid = 32;
+Where lot_dbid = {current_lot};
+"""
+
+#SQL query to request lot db id from a proportioning db id
+query_lot_db_id = """
+SELECT lot_dbid FROM public.amadeus_proportioning
+where proportioning_dbid = {current_prop};
 """

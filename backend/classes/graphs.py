@@ -94,7 +94,6 @@ class PlotPointsinTime(Graph):
         # Convert graph to HTML 
         return pio.to_html(fig, full_html=False)
 
-#Needs to be done 
 class LogScatterPlot(Graph):
     def __init__(self, prop_id, title, xaxis_title, yaxis_title, leyend_pos,traces:list[TraceData]):
         super().__init__(prop_id, title, xaxis_title, yaxis_title, leyend_pos)
@@ -121,10 +120,11 @@ class LogScatterPlot(Graph):
 
 
         #Layout
-        exp_min = int(np.floor(np.log10(self.traces[0].x_data.min())))
-        exp_max = int(np.ceil(np.log10(self.traces[0].x_data.max())))
-        tickvals = [10 ** e for e in range(exp_min, exp_max + 1)]
-        ticktext = [f"10<sup>{e}</sup>" for e in range(exp_min, exp_max + 1)]
+        exp_min = np.floor(np.log10(self.traces[0].x_data.min()))
+        exp_max = np.ceil(np.log10(self.traces[0].x_data.max()))
+
+        tickvals = [10 ** e for e in range(int(exp_min), int(exp_max + 1))]
+        ticktext = [f"10<sup>{e}</sup>" for e in range(int(exp_min), int(exp_max + 1))]
 
         fig.update_layout(
             #title=self.title,
@@ -132,7 +132,8 @@ class LogScatterPlot(Graph):
                 title=self.xaxis_title,
                 type='log',
                 tickvals=tickvals,
-                ticktext=ticktext
+                ticktext=ticktext, 
+                range=[exp_min, exp_max]
             ),
             yaxis=dict(title=self.yaxis_title),
             margin=dict(l=10, r=10, t=30, b=10),
