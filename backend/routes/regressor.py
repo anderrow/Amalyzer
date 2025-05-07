@@ -52,7 +52,6 @@ async def generate_graph():
         trace_list.append(TraceData(label="Polynomial Degree 3", x_data=flow_range,  y_data=y_deg3, mode="lines", color="lime", dash="dash")) #3rd Grade
         
         graph_html = LogScatterPlot(
-            RequestPropId().return_data(), 
             title="", 
             xaxis_title="Flow[kg/s]", 
             yaxis_title="Slide position [mm]", 

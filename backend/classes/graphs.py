@@ -8,12 +8,11 @@ class Graph:
     Give title, X axis title, Y axis title and a list of dicts which contain the traces information,
     the class returns a graphic dictionary containing the results of the requested filter in the subclass.
     """
-    def __init__(self, prop_id, title="Title", xaxis_title="X Axis", yaxis_title="Y Axis",leyend_pos=["top", "right"] ):
+    def __init__(self,title="Title", xaxis_title="X Axis", yaxis_title="Y Axis",leyend_pos=["top", "right"] ):
         self.fig = go.Figure()
         self.title = title
         self.xaxis_title = xaxis_title
         self.yaxis_title = yaxis_title
-        self.prop_id=prop_id
         self.leyend_pos = leyend_pos
     
     def plot_graph(self):
@@ -47,8 +46,8 @@ class TraceData:
             raise ValueError(f"x_data and y_data must have the same length for trace '{label}'")
   
 class PlotPointsinTime(Graph):
-    def __init__(self, prop_id, title, xaxis_title, yaxis_title, leyend_pos, traces:list[TraceData] ):
-        super().__init__(prop_id, title, xaxis_title, yaxis_title, leyend_pos)
+    def __init__(self, title, xaxis_title, yaxis_title, leyend_pos, traces:list[TraceData] ):
+        super().__init__(title, xaxis_title, yaxis_title, leyend_pos)
         self.traces = traces
 
     def plot_graph(self):
@@ -95,8 +94,8 @@ class PlotPointsinTime(Graph):
         return pio.to_html(fig, full_html=False)
 
 class LogScatterPlot(Graph):
-    def __init__(self, prop_id, title, xaxis_title, yaxis_title, leyend_pos,traces:list[TraceData]):
-        super().__init__(prop_id, title, xaxis_title, yaxis_title, leyend_pos)
+    def __init__(self, title, xaxis_title, yaxis_title, leyend_pos,traces:list[TraceData]):
+        super().__init__(title, xaxis_title, yaxis_title, leyend_pos)
         self.traces = traces
 
     def plot_graph(self):

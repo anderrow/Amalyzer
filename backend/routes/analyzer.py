@@ -59,8 +59,7 @@ async def generate_graph():
         trace_list.append(TraceData(label="Vibratos",  sample_time=0.01, x_data=df.index,  y_data=[5 if y else -10 for y in df["dc_out_controlvibrator"]], mode="markers", color="grey"))
         trace_list.append(TraceData(label="Knocer",  sample_time=0.01, x_data=df.index,  y_data=[2.5 if y else -10 for y in df["dc_out_controlknocker"]], mode="markers", color="purple"))
         
-        graph_html = PlotPointsinTime(
-            session_data.get("current_prop_id"), 
+        graph_html = PlotPointsinTime( 
             title="Slide Position", 
             xaxis_title="Seconds", 
             yaxis_title="mm", 
@@ -99,7 +98,6 @@ async def generate_graph():
         trace_list.append(TraceData(label="Lower Tolerance",  sample_time=0.01, x_data=df.index,  y_data=[lower_tolerance] * len(df.index), mode="lines", color="Green", dash="dash"))
 
         graph_html = PlotPointsinTime(
-            session_data.get("current_prop_id"), 
             title="Dosed Material", 
             xaxis_title="Seconds", 
             yaxis_title="kg", 
