@@ -113,20 +113,6 @@ async def generate_graph():
         # Aquí podrías devolver un HTML de error, o un JSON si prefieres
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
 
-    
-# ---------- Serve the HTML page with embedded graph ---------- #
-@router.get("/", response_class=HTMLResponse)
-async def show_page():
-    try:
-        # Get the interactive graph HTML from the generate_graph function
-        graph_html = await generate_graph()
-
-        # Return the HTML page with the embedded graph
-        return embebbed_graph(graph_html)
-    
-    except Exception as e:
-        return f"Error: {str(e)}"
-
 # ---------- Request data for table  ---------- #
 async def fetch_table_data(query_template: str):
     try:
@@ -142,21 +128,3 @@ async def fetch_table_data(query_template: str):
         print(f"Error: {str(e)}")
         return {"error": str(e)}
     
-# ---------- embebbed_graph page ---------- #
-def embebbed_graph(graph_html):
-    return f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Interactive Graph</title>
-    </head>
-    <body>
-        <h1>Graph</h1>
-        <section id="AnalyzerGraphs">
-            {graph_html}  <!-- The interactive graph is inserted here -->
-        </section>
-    </body>
-    </html>
-    """
