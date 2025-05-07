@@ -5,7 +5,7 @@ import pandas as pd
 
 class Graph:
     """
-    Give title, X axis title, Y axis title and a list of dicts which contain the traces information,
+    Given title, X axis title, Y axis title and a list of dicts which contain the traces information,
     the class returns a graphic dictionary containing the results of the requested filter in the subclass.
     """
     def __init__(self,title="Title", xaxis_title="X Axis", yaxis_title="Y Axis",leyend_pos=["top", "right"] ):
@@ -16,7 +16,7 @@ class Graph:
         self.leyend_pos = leyend_pos
     
     def plot_graph(self):
-        raise NotImplementedError("Subclasses should implement this method.")
+        raise NotImplementedError(f"Subclasses should implement this method. Call one of: {[cls.__name__ for cls in Graph.__subclasses__()]}")
     
 class TraceData:
     """
@@ -151,5 +151,3 @@ class LogScatterPlot(Graph):
 
         # Convert graph to HTML 
         return pio.to_html(fig, full_html=False)
-
-#def add_traces

@@ -9,7 +9,7 @@ class FilterData:
         self.data = data
 
     def apply_filter(self):
-        raise NotImplementedError("Subclasses should implement this method.")
+        raise NotImplementedError(f"Subclasses should implement this method. Call one of: {[cls.__name__ for cls in FilterData.__subclasses__()]}")
 
 
 class FilterByString(FilterData):

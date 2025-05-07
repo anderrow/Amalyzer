@@ -10,14 +10,21 @@ class PropIdRequest(BaseModel):
     propDbId: int
 
 class Request:
-        def __init__(self):        
-            #Get current proportioning id
-            self.current_prop = session_data.get("current_prop_id")
+    """
+    When this class is called, it will return the data requested. 
+    """
+    def __init__(self):        
+        #Get current proportioning id
+        self.current_prop = session_data.get("current_prop_id")
 
-        def return_data(self):
-            raise NotImplementedError("Subclasses should implement this method.")
+    def return_data(self):
+        raise NotImplementedError(f"Subclasses should implement this method. Call one of: {[cls.__name__ for cls in Request.__subclasses__()]}")
+
 
 class RequestPropId(Request):
+    """
+    When this class is called, it will return the current Proportioning ID 
+    """
     def __init__(self):
 
         super().__init__()
@@ -27,7 +34,9 @@ class RequestPropId(Request):
         return data
 
 class RequestLotId(Request):
-    
+    """
+    When this class is called, it will return the Lot Id attached to the current Proportioning ID
+    """
     def __init__(self):
         
         super().__init__()

@@ -11,7 +11,7 @@ class Calculation:
         self.data = data
 
     def apply_calculation(self):
-        raise NotImplementedError("Subclasses should implement this method.")
+        raise NotImplementedError(f"Subclasses should implement this method. Call one of: {[cls.__name__ for cls in Calculation.__subclasses__()]}")
 
 class CaclulateDateDelta(Calculation):
     """
