@@ -74,7 +74,6 @@ async def get_proportionings_filtered(
 
 
 # ----------------- Define a POST route that listens for row click events from the frontend ----------------- #
-
 @router.post("/api/rowclicked")
 async def handle_row_click(request: PropIdRequest):
     # Print the received propDbId to the backend console for debugging/logging purposes

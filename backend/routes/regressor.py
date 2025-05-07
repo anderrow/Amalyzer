@@ -20,6 +20,7 @@ async def generate_graph():
     try:
         #Extract lot_id and print it
         lot_id = await RequestLotId().return_data()
+        
         print("\n" + "*"*37 + f"\n* LotID: {lot_id} from proportioning {RequestPropId().return_data()} *\n" + "*"*37)
 
         #Format the query with the current lot id

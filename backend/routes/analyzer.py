@@ -5,45 +5,12 @@ from backend.memory.state import session_data
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import PlotPointsinTime, TraceData
 from backend.database.config import config
+from backend.classes.request import RequestPropId
 from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph
 router = APIRouter(prefix="/analyzer")  
 
 # Initialize the DBConnection object
-db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
-
-# Get Actual PropId to analyze
-@router.get("/PropId")
-async def analyzer_status():
-    current_prop = session_data.get("current_prop_id")
-    return current_prop
-
-# ---------- SUMMARY TABLE ---------- #
-@router.get("/Summary")
-async def summary_table():
-    return await fetch_table_data(query_analyzer_summary)
-
-# ---------- PROP RECORD ---------- #    
-@router.get("/PropRecord")
-async def propRecord_table():
-    return await fetch_table_data(query_analyzer_propRecord)
-    
-
-# ---------- Logging Param ---------- #    
-@router.get("/LogginParam")
-async def propRecord_table():
-    return await fetch_table_data(query_analyzer_logginParam)
-    
-
-# ---------- Logging Param ---------- #    
-@router.get("/Lot")
-async def lot_table():
-    return await fetch_table_data(query_analyzer_lot)
-    
-# ---------- Logging Param ---------- #    
-@router.get("/Article")
-async def article_table():
-    return await fetch_table_data(query_analyzer_article)
-    
+db_connection = DBConnection(config=config) #config is declared in backend/database/config.py   
 
 # ---------- Generate and return interactive graph ---------- #
 @router.get("/Graph1", response_class=HTMLResponse)
@@ -112,6 +79,41 @@ async def generate_graph():
         print(f"Error: {e}")
         # Aquí podrías devolver un HTML de error, o un JSON si prefieres
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
+
+# ---------- Get Actual PropId to analyze ---------- #
+@router.get("/PropId")
+async def analyzer_status():
+    current_prop = RequestPropId().return_data()
+    return current_prop
+
+# ---------- SUMMARY TABLE ---------- #
+@router.get("/Summary")
+async def summary_table():
+    return await fetch_table_data(query_analyzer_summary)
+
+# ---------- PROP RECORD ---------- #    
+@router.get("/PropRecord")
+async def propRecord_table():
+    return await fetch_table_data(query_analyzer_propRecord)
+    
+
+# ---------- Logging Param ---------- #    
+@router.get("/LogginParam")
+async def propRecord_table():
+    return await fetch_table_data(query_analyzer_logginParam)
+    
+
+# ---------- Logging Param ---------- #    
+@router.get("/Lot")
+async def lot_table():
+    return await fetch_table_data(query_analyzer_lot)
+    
+# ---------- Logging Param ---------- #    
+@router.get("/Article")
+async def article_table():
+    return await fetch_table_data(query_analyzer_article)
+
+
 
 # ---------- Request data for table  ---------- #
 async def fetch_table_data(query_template: str):
