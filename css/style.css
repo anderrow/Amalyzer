@@ -661,3 +661,8 @@ output {
     flex: 1;  /* Occupies all remaining space */
     min-height: calc(90vh - 60px); 
     }
+    @media (max-width: 1024px) {
+        #RegressorArticle {
+            grid-template-columns: 1fr;
+        }
+    }
