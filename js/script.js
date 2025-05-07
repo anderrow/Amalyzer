@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
             fetchProportioningData(url); // Pass the correct URL with query parameters
         });
     }
-    fetch("http://localhost:5000/analyzer/PropId")
+    fetch("http://localhost:5000/common/PropId")
         .then(response => response.text())
         .then(data => {
             console.log("Fetched PropId:", data);
@@ -122,7 +122,7 @@ function populateTable(data) {
                 .then(result => {
                     console.log("Backend response:", result);
             
-                    fetch("http://localhost:5000/analyzer/PropId")
+                    fetch("http://localhost:5000/common/PropId")
                     .then(response => response.text())
                     .then(data => {
                         console.log("Fetched PropId:", data);

@@ -49,7 +49,7 @@ window.addEventListener("DOMContentLoaded", () => {
     .catch(err => console.error("Error fetching graph:", err));
 
     // Fetch current Proportioning ID
-    fetch("http://localhost:5000/analyzer/PropId")
+    fetch("http://localhost:5000/common/PropId")
         .then(response => response.text())
         .then(data => {
             console.log("Fetched PropId:", data);

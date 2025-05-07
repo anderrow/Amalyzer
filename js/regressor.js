@@ -1,7 +1,7 @@
 
 window.addEventListener("DOMContentLoaded", () => {
     // Fetch current Proportioning ID
-    fetch("http://localhost:5000/analyzer/PropId")
+    fetch("http://localhost:5000/common/PropId")
     .then(response => response.text())
     .then(data => {
         console.log("Fetched PropId:", data);
