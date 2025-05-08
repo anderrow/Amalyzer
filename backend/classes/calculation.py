@@ -1,6 +1,8 @@
-from datetime import datetime, timedelta
 import pandas as pd
+import numpy as np
+from datetime import datetime
 from sklearn.linear_model import LinearRegression
+from backend.classes.graphs import TraceData
 
 class Calculation:
     """
@@ -126,18 +128,57 @@ class IsInTolerance(Calculation):
                 filtered_data.append(row)
         
         return filtered_data
-    
-class CalculateLinearRegression(Calculation):
-    """
-    Given two columns (datetime type), the subclass returns a data dictionary
-    containing the delta of this two columns, with the option of overwriting the
-    second column with the result (default mode = overwrite). 
-    """
-    def __init__(self, data, column1, column2, overwrite = True, new_column_name = "duration"):
-        super().__init__(data)
-        self.column1 = column1
-        self.column2 = column2
-        self.overwrite = overwrite
-        self.new_colum_name = new_column_name
 
-    #def apply_calculation(self):
+class CalculateLogTraces(Calculation):
+    def __init__(self, data, x_data, y_data, size, bins, grades=(1,2)):
+        # Fail fast
+        if not isinstance(data, pd.DataFrame):
+            raise TypeError("Expected a pandas DataFrame as input data.")
+        if not isinstance(bins, int) or bins < 1:
+            raise TypeError("Expected an integer value bigger than 1 for bins")
+        if grades[0] < 1 or grades[1] > 10 or grades[0] > grades[1]:
+            raise TypeError("Expected a tuple for grades between 1 and 10 where grades[0] < grades[1]")
+
+        super().__init__(data)
+        self.df = data
+        self.x_data = x_data
+        self.y_data = y_data
+        self.bins = bins
+        self.size = size
+        self.grades = grades
+
+    def apply_calculation(self):
+        # Apply the base 10 Log
+        self.df[f"log_{self.x_data}"] = np.log10(self.df[self.x_data])
+
+        # Generate a range of values for plotting them
+        x_range = np.linspace(self.df[self.x_data].min(), self.df[self.x_data].max(), self.bins)  # 'Bins' values evenly spaced
+        x_range_linear = 10 ** x_range  # Reverse log using 10 exponent
+
+        # Generate an empty list for traces
+        trace_list = []
+
+        # Intermediates (scatter plot for original data)
+        trace_list.append(TraceData(label="Intermediates", x_data=self.df[self.x_data],  y_data=self.df[self.y_data], mode="markers", color="blue", marker=dict(size=self.df[self.size] * 3 , color='blue', opacity=0.7)))
+
+        # Polynomial regressions (this will include linear regression as grade 1)
+        trace_list = self.polynomical_regressions(trace_list, x_range, x_range_linear)
+
+        # Return traces
+        return trace_list
+
+    def polynomical_regressions(self, trace_list, x_range, x_data):
+        colors = ["red", "lime", "orange", "yellow", "purple", "cyan", "magenta", "brown", "darkgreen", "pink"]
+
+        for grade in range(self.grades[0], self.grades[1] + 1):
+            coefs = np.polyfit(x_data, self.df[self.y_data], grade)  # Polynomial fitting
+            y_deg = np.polyval(coefs, x_range)  # Evaluate polynomial for given x_range
+
+            # For degree 1, treat it as linear regression
+            if grade == 1:
+                trace_list.append(TraceData(label=f"Linear Regression", x_data=x_range, y_data=y_deg, mode="lines", color=colors[grade-1], dash="dash"))
+            else:
+                trace_list.append(TraceData(label=f"Polynomial Degree {grade}", x_data=x_range, y_data=y_deg, mode="lines", color=colors[grade-1], dash="dash"))
+
+        return trace_list
+
