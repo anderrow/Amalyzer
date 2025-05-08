@@ -70,6 +70,7 @@
                     <input type="range" min="0" max="5" step="0.01" value="0.5" class="short-slider RegressorSlider" oninput="BrakePercentage.value = value" id="BrakePercentageSlider"/>
                     <output id="BrakePercentage">0.5</output>
                 </div>
+
                 <div class="RegressorSlider-container" id="RegressorDropDownMenu">
                     <label for="RegressionMethod">Regression Method</label>
                     <select id="RegressionMethod">
@@ -78,7 +79,14 @@
                         <option value="Disabled">Disabled</option>
                     </select> 
                 </div>
-            </div> 
+                <div class="RegressorSlider-container">
+                    <label for="PolynomialRegressionsSlider">Amount of Regressions</label>
+                    <input type="range" min="1" max="10" value="2" class="short-slider RegressorSlider"
+                        oninput="PolynomialRegressionsOutput.value = value"
+                        id="PolynomialRegressionsSlider"/>
+                    <output id="PolynomialRegressionsOutput">2</output>
+                </div>
+
             
         </section>
     </article>
