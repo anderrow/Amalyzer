@@ -22,7 +22,7 @@ async def generate_graph():
         #Extract lot_id and print it
         lot_id = await RequestLotId().return_data()
         
-        print(  # Debugging by console
+        print( # Debugging by console
         "\n" + "*" * 40 +
         f"\n* LotID: {f'{lot_id}':<30}*" +
         f"\n* ProportioningID: {f': {RequestPropId().return_data()}':<20}*" +
@@ -33,12 +33,15 @@ async def generate_graph():
 
         #Generate a dataframe with the DB query
         df = await db_connection.fetch_df(query=query) 
-        
+
+        log_traces = CalculateLogTraces(data = df, x_data ="flow", y_data= "opening",
+            size="measurement_time", bins=200, grades=(1,10))
+
         graph_html = LogScatterPlot(
             title="", 
             xaxis_title="Flow[kg/s]", 
             yaxis_title="Slide position [mm]", 
-            traces=CalculateLogTraces(data = df, x_data ="flow", y_data= "opening", size="measurement_time", bins=200, grades=(1,3)).apply_calculation(),
+            traces=log_traces.apply_calculation(),
             leyend_pos=["top", "left"]
         ).plot_graph()
 

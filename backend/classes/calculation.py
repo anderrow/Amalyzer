@@ -130,6 +130,7 @@ class IsInTolerance(Calculation):
         return filtered_data
 
 class CalculateLogTraces(Calculation):
+    
     def __init__(self, data, x_data, y_data, size, bins, grades=(1,2)):
         # Fail fast
         if not isinstance(data, pd.DataFrame):
