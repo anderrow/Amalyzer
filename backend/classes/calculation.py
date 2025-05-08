@@ -148,37 +148,38 @@ class CalculateLogTraces(Calculation):
         self.grades = grades
 
     def apply_calculation(self):
+        # Generate an empty list for traces
+        trace_list = []
+
+        # Intermediates (scatter plot for original data) (Raw data)
+        trace_list.append(TraceData(label="Intermediates", x_data=self.df[self.x_data],  y_data=self.df[self.y_data], mode="markers", color="blue", marker=dict(size=self.df[self.size] * 3 , color='blue', opacity=0.7)))
+        
         # Apply the base 10 Log
         self.df[f"log_{self.x_data}"] = np.log10(self.df[self.x_data])
 
         # Generate a range of values for plotting them
-        x_range = np.linspace(self.df[self.x_data].min(), self.df[self.x_data].max(), self.bins)  # 'Bins' values evenly spaced
-        x_range_linear = 10 ** x_range  # Reverse log using 10 exponent
-
-        # Generate an empty list for traces
-        trace_list = []
-
-        # Intermediates (scatter plot for original data)
-        trace_list.append(TraceData(label="Intermediates", x_data=self.df[self.x_data],  y_data=self.df[self.y_data], mode="markers", color="blue", marker=dict(size=self.df[self.size] * 3 , color='blue', opacity=0.7)))
-
+        x_range = np.linspace(self.df[f"log_{self.x_data}"].min(), self.df[f"log_{self.x_data}"].max(), self.bins)  # 'Bins' values evenly spaced
+        
         # Polynomial regressions (this will include linear regression as grade 1)
-        trace_list = self.polynomical_regressions(trace_list, x_range, x_range_linear)
+        trace_list = self.polynomical_regressions(trace_list, x_range, self.x_data, self.y_data, self.grades)
 
         # Return traces
         return trace_list
-
-    def polynomical_regressions(self, trace_list, x_range, x_data):
-        colors = ["red", "lime", "orange", "yellow", "purple", "cyan", "magenta", "brown", "darkgreen", "pink"]
+    
+    def polynomical_regressions(self, trace_list, x_range, x_data, y_data, grades):
+        #Define colors for the different traces
+        colors = ["grey", "red", "lime", "orange", "yellow", "purple", "cyan", "magenta", "brown", "darkgreen", "pink"]
+        
+        poly_range = 10 ** x_range
 
         for grade in range(self.grades[0], self.grades[1] + 1):
-            coefs = np.polyfit(x_data, self.df[self.y_data], grade)  # Polynomial fitting
-            y_deg = np.polyval(coefs, x_range)  # Evaluate polynomial for given x_range
-
-            # For degree 1, treat it as linear regression
+            coefs = np.polyfit(self.df[f'log_{x_data}'], self.df[y_data], grade)
+            y_deg = np.polyval(coefs, x_range) 
+            
             if grade == 1:
-                trace_list.append(TraceData(label=f"Linear Regression", x_data=x_range, y_data=y_deg, mode="lines", color=colors[grade-1], dash="dash"))
+                trace_list.append(TraceData(label="Linear Regression", x_data=poly_range,  y_data=y_deg, mode="lines", color=colors[grade-1], dash="dash")) #1st Grade
             else:
-                trace_list.append(TraceData(label=f"Polynomial Degree {grade}", x_data=x_range, y_data=y_deg, mode="lines", color=colors[grade-1], dash="dash"))
+                trace_list.append(TraceData(label=f"Polynomial Degree {grade}", x_data=poly_range,  y_data=y_deg, mode="lines", color=colors[grade-1], dash="dash")) 
 
         return trace_list
-
+        
