@@ -55,16 +55,16 @@ async def get_proportionings_filtered(
         #Filter by Article if it's requested
         if switchChecked:
             data = FilterByString(data, requestedArticle, 'ArticleName').apply_filter()
-            print("\n"+"*"*50 +"\nArticle Filter Switch enabled")
-            print(f"Requested Article: {requestedArticle} \n"+"*"*50+"\n")
+            print("\n"+"*"*50 +"\n* Article Filter Switch enabled" + " "*18 + "*")
+            print(f"* Requested Article: {requestedArticle:<28}* \n"+"*"*50+"\n")
             
             
         # Handle Age Filter logic
         if ageSwitchChecked:
             # Filter by age range if needed based on rangeValue and timeUnit
             data = FilterByDateTime(data, rangeValue, timeUnit, 'StartTime').apply_filter()
-            print("\n" + "*" * 50 + "\nAge Filter Switch enabled")
-            print(f"Requested Time: {rangeValue} {timeUnit} \n" + "*" * 50 + "\n")
+            print("\n" + "*" * 50 + "\n* Age Filter Switch enabled" + " "*22 + "*")
+            print(f"* Requested Time: {rangeValue} {timeUnit:<28}* \n" + "*" * 50 + "\n")
         
         return make_db_redable(data)
         
@@ -77,7 +77,7 @@ async def get_proportionings_filtered(
 @router.post("/api/rowclicked")
 async def handle_row_click(request: PropIdRequest):
     # Print the received propDbId to the backend console for debugging/logging purposes
-    print("\n"+ "*"*50 + f"\nPropDBID selected: {request.propDbId} \n"+ "*"*50+"\n")
+    print("\n"+ "*"*50+ "\n" + f"* PropDBID selected: {request.propDbId:<28}*"+ "\n" + "*"*50 + "\n")
     # Save int he dictionary using current_prop_id keyword
     session_data["current_prop_id"] = request.propDbId
     return {"propDbId": request.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)

@@ -23,8 +23,8 @@ async def generate_graph():
         
         print(  # Debugging by console
         "\n" + "*" * 40 +
-        f"\n* LotID: {f'{lot_id}':<40}*" +
-        f"\n* ProportioningID: {f': {RequestPropId().return_data()}':<40}*" +
+        f"\n* LotID: {f'{lot_id}':<30}*" +
+        f"\n* ProportioningID: {f': {RequestPropId().return_data()}':<20}*" +
         "\n" + "*" * 40)
 
         #Format the query with the current lot id
