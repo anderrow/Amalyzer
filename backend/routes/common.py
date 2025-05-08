@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from fastapi.responses import HTMLResponse
 from backend.classes.request import RequestPropId
 router = APIRouter(prefix="/common")  
 
