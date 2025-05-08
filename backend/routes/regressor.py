@@ -21,13 +21,17 @@ async def generate_graph():
         #Extract lot_id and print it
         lot_id = await RequestLotId().return_data()
         
-        print("\n" + "*"*37 + f"\n* LotID: {lot_id} from proportioning {RequestPropId().return_data()} *\n" + "*"*37)
+        print(  # Debugging by console
+        "\n" + "*" * 40 +
+        f"\n* LotID: {f'{lot_id}':<40}*" +
+        f"\n* ProportioningID: {f': {RequestPropId().return_data()}':<40}*" +
+        "\n" + "*" * 40)
 
         #Format the query with the current lot id
         query = query_regressor_graph.format(current_lot=lot_id)
-        #Generate a dataframe with the DB query
-        df = await db_connection.fetch_df(query=query)
 
+        #Generate a dataframe with the DB query
+        df = await db_connection.fetch_df(query=query) 
         # Regressions
         df['log_flow'] = np.log10(df['flow'])
 
