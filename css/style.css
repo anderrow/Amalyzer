@@ -641,7 +641,7 @@ Regressor
     display: flex;
     align-items: center;  /* Vertically center the elements */
     width: 100%;  /* Ensure the container takes up all available width */
-    padding: 10px;
+    padding-inline: 10px;
 }
 
 .RegressorSlider {
