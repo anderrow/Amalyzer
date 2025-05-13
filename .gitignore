@@ -17,3 +17,6 @@ com.Tivadar.Best.MQTT.csproj
 
 .vscode/settings.json
 pendingtask.txt
+backend/database/config_Prod_vilo.py
+backend/database/config_testrig.py
+
