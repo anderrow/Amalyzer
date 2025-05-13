@@ -10,6 +10,7 @@ __pycache__/
 # Ignore specific __pycache__ directory in backend/classes
 backend/classes/__pycache__/
 backend/database/config.py
+/backend/database/config.py
 
 # Ignore a specific .csproj file
 com.Tivadar.Best.MQTT.csproj
@@ -19,4 +20,3 @@ com.Tivadar.Best.MQTT.csproj
 pendingtask.txt
 backend/database/config_Prod_vilo.py
 backend/database/config_testrig.py
-
