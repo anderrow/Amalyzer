@@ -85,7 +85,7 @@ class PlotPointsinTime(Graph):
                 bordercolor="black",
                 borderwidth=1
             ),
-            height=350,  # Set maximum height to 350 px 
+            height=400,  # Set maximum height to 350 px 
             yaxis=dict(range=[0, max_y],fixedrange=False), #Force to strart in y=0
             xaxis=dict(range=[0, max_x],fixedrange=False), #Force to strart in x=0
         )
@@ -146,7 +146,7 @@ class LogScatterPlot(Graph):
                 borderwidth=1
             ),
             hovermode='closest',
-            height=700
+            height=800
         )
 
         # Convert graph to HTML 
