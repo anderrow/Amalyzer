@@ -16,6 +16,7 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 async def generate_graph():
     try:
         df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
+        debug(RequestPropId().return_data(), "Slide Position") # Debugging by console
 
         #Generate an empty list for traces
         trace_list = []
@@ -47,6 +48,8 @@ async def generate_graph():
     try:
         df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
         summary = await fetch_table_data(query_analyzer_summary)
+        debug(RequestPropId().return_data(),"Dosed Material") # Debugging by console
+
         requested = float(summary[0]['Requested'])
         tolerance = float(summary[0]['Requested'])/100
         upper_tolerance = requested *  (1+tolerance)
@@ -128,4 +131,9 @@ async def fetch_table_data(query_template: str):
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
-    
+# ---------- Debugging by console  ---------- #
+def debug(prop_id,num):
+    print( # Debugging by console
+        "\n" + "*" * 52 +
+        f"\n* Plotting Graph {num} for PropID: {f': {prop_id}':<7}*" +
+        "\n" + "*" * 52 + "\n" )   
