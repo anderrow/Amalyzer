@@ -105,12 +105,12 @@ async def propRecord_table():
     return await fetch_table_data(query_analyzer_logginParam)
     
 
-# ---------- Logging Param ---------- #    
+# ---------- Lot table ---------- #    
 @router.get("/Lot")
 async def lot_table():
     return await fetch_table_data(query_analyzer_lot)
     
-# ---------- Logging Param ---------- #    
+# ---------- Article table ---------- #    
 @router.get("/Article")
 async def article_table():
     return await fetch_table_data(query_analyzer_article)
