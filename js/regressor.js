@@ -45,37 +45,45 @@ function fetchSummaryData(link) {
         .catch(error => console.error("Error fetching data:", error));
 }
 
-//Fuction to fill the table
 function populateTable(data) {
     const table = document.getElementById("RegressorTable");
-
-    // Clear any existing content
     table.innerHTML = "";
 
-    // Handle empty or invalid data
     if (!Array.isArray(data) || data.length === 0) {
         table.innerHTML = "<tr><td>No data available</td></tr>";
         return;
     }
 
-    // Get the keys from the first object (assumes all objects have the same keys)
-    const keys = Object.keys(data[0]);
+    // Mapping keys to human-readable labels
+    const labels = {
+        lot_id: "LotID",
+        lot_dbid: "Lot(DB)ID",
+        c2_in_flowtablequality: "Quality(FlowTable)",
+        c2_in_measureddensity: "Measured Density",
+        c2_in_angleofrepose: "Measured AOR",
+        c2_in_oscillationfactor: "Oscilation Factor",
+        c2_in_oscillationmin: "Oscilation Min",
+        c2_in_oscillationspeed: "Oscilation Speed",
+        c1_in_minflow: "Min Flow",
+        c1_in_maxflow: "Max Flow",
+        IntermediateCount: "Intermediate Count"
+    };
 
-    // Create one row per key
-    keys.forEach(key => {
+    const rowData = data[0]; // single dictionary object
+
+    // For each key-value, create a row
+    Object.keys(rowData).forEach(key => {
         const row = document.createElement("tr");
 
-        // First cell: key name (field label)
+        // Key cell (th)
         const keyCell = document.createElement("th");
-        keyCell.textContent = key;
+        keyCell.textContent = labels[key] || key; // use label if exists or fallback to key
         row.appendChild(keyCell);
 
-        // Next cells: values for this key across all entries
-        data.forEach(entry => {
-            const valueCell = document.createElement("td");
-            valueCell.textContent = entry[key];
-            row.appendChild(valueCell);
-        });
+        // Value cell (td)
+        const valueCell = document.createElement("td");
+        valueCell.textContent = rowData[key];
+        row.appendChild(valueCell);
 
         table.appendChild(row);
     });

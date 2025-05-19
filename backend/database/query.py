@@ -103,6 +103,9 @@ WHERE proportioning_dbid = {current_prop};
 """
 #SQL query to request Regression table
 query_regression_table = """
-SELECT lot_id, lot_dbid, c2_in_flowtablequality, c2_in_measureddensity, c2_in_angleofrepose FROM public.amadeus_lot
+SELECT 
+     lot_id, lot_dbid, c2_in_flowtablequality, c2_in_measureddensity, c2_in_angleofrepose,c2_in_oscillationfactor,
+     c2_in_oscillationmin ,c2_in_oscillationspeed, c1_in_minflow, c1_in_maxflow 
+    FROM public.amadeus_lot
 WHERE lot_dbid = {current_lot}
 """
