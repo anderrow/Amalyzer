@@ -603,18 +603,18 @@ input, select {
     overflow-y: auto;
 }
   
-  #AnalyzerSummaryTable th,
-  #AnalyzerSummaryTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    white-space: normal;
-    overflow-wrap: break-word;  /*Break the word if it is too long*/
-  }
-  
-  #AnalyzerSummaryTable th {
-    background-color: #f2f2f2;
-    text-align: left;
-  }
+#AnalyzerSummaryTable th,
+#AnalyzerSummaryTable td {
+border: 1px solid #ddd;
+padding: 8px;
+white-space: normal;
+overflow-wrap: break-word;  /*Break the word if it is too long*/
+}
+
+#AnalyzerSummaryTable th {
+background-color: #f2f2f2;
+text-align: left;
+}
 
   .table-container {  /*Add scroll to the table */
     flex: 1;
@@ -686,4 +686,16 @@ output {
     border-radius: 8px;
     table-layout: fixed;
     overflow-y: auto;
+}
+#RegressorTable th,
+#RegressorTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  white-space: normal;
+  overflow-wrap: break-word;  /*Break the word if it is too long*/
+}
+
+#RegressorTable th {
+  background-color: #f2f2f2;
+  text-align: left;
 }

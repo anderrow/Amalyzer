@@ -30,7 +30,7 @@ async def generate_graph():
         df = await db_connection.fetch_df(query=query) 
 
         log_traces = CalculateLogTraces(data = df, x_data ="flow", y_data= "opening",
-            size="measurement_time", bins=200, grades=(1,10))
+            size="measurement_time", bins=200, grades=(2,10))
 
         graph_html = LogScatterPlot(
             title="", 
@@ -50,7 +50,18 @@ async def generate_graph():
 
 @router.get("/SummaryTable")
 async def summary_table():
-    return fetch_table_data(query_regression_table)
+    data = await fetch_table_data(query_regression_table)
+
+    #Extract lot_id and print it
+    lot_id = await RequestLotId().return_data() 
+    #Format the query with the current lot id
+    query = query_regressor_graph.format(current_lot=lot_id)
+    #Generate a dataframe with the DB query
+    df = await db_connection.fetch_df(query=query) 
+
+    if data:
+        data[0]["IntermediateCount"] = f"{len(df)}"
+    return data
 
 # ---------- Debug by console   ---------- #
 def debug(lot_id):
