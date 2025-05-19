@@ -19,7 +19,7 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph(
-    intermediates: int = Query(200), #Parametes for Interemdiate/Bin value (default 200)
+    intermediates: int = Query(100), #Parametes for Interemdiate/Bin value (default 200)
     amountOfRegressions: int = Query(2) #Parameter for Amount of Regressions (default 2)
 ):
     try:

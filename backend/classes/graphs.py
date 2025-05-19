@@ -146,7 +146,7 @@ class LogScatterPlot(Graph):
                 borderwidth=1
             ),
             hovermode='closest',
-            height=800
+            height=850
         )
 
         # Convert graph to HTML 

@@ -677,9 +677,11 @@ output {
     align-items: center;  /* Vertically center the elements */
     width: 100%;  /* Ensure the container takes up all available width */
     padding-inline: 10px;
+    max-height: 250px;
+    overflow-y: auto;
 }
 #RegressorTable {
-    margin-top: 4px;
+    margin-top: 200px;
     border-collapse: collapse;
     width: 100%;
     font-family: Arial, sans-serif;
