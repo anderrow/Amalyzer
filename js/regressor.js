@@ -1,40 +1,74 @@
-
-window.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
     // Fetch current Proportioning ID
     fetch("http://localhost:5000/common/PropId")
-    .then(response => response.text())
-    .then(data => {
-        console.log("Fetched PropId:", data);
-        const inputField = document.getElementById("ProportioningId");
-        if (inputField) {
-            inputField.value = data;
-        }
-    })
-    .catch(error => console.error("Error fetching current propDbId:", error));
+        .then(response => response.text())
+        .then(data => {
+            console.log("Fetched PropId:", data);
+            const inputField = document.getElementById("ProportioningId");
+            if (inputField) {
+                inputField.value = data;
+            }
+        })
+        .catch(error => console.error("Error fetching current propDbId:", error));
 
     // Fetch and inject Graph HTML
-    fetch("http://localhost:5000/regressor/Graph", { })
-    .then(res => res.text())
-    .then(html => {
-        const graphContainer = document.getElementById("regressor_graph_container");
-        graphContainer.innerHTML = html;  // 1) insert raw HTML
+    fetch("http://localhost:5000/regressor/Graph")
+        .then(res => res.text())
+        .then(html => {
+            const graphContainer = document.getElementById("regressor_graph_container");
+            graphContainer.innerHTML = html;
 
-        // 2) now find all <script> tags inside the graphContainer
-        graphContainer.querySelectorAll("script").forEach(oldScript => {
-            // Create a new identical <script>
-            const newScript = document.createElement("script");
-            if (oldScript.src) {
-                newScript.src = oldScript.src;
-            } else {
-                newScript.textContent = oldScript.textContent;
-            }
-            // Add it to <head> (or body)
-            document.head.appendChild(newScript);
-            // Optionally remove the old one
-            oldScript.remove();
+            graphContainer.querySelectorAll("script").forEach(oldScript => {
+                const newScript = document.createElement("script");
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                document.head.appendChild(newScript);
+                oldScript.remove();
+            });
         });
-    })
-    fetchSummaryData("http://localhost:5000/regressor/SummaryTable"); 
+
+    fetchSummaryData("http://localhost:5000/regressor/SummaryTable");
+
+    const updateButton = document.querySelector("#UpdateRegressor");
+    if (updateButton) {
+        updateButton.addEventListener("click", function () {
+            console.log("Updating Regressor Graph...");
+
+            const intermediatesInput = document.querySelector("#IntermediatesBin");
+            const regressionsInput = document.querySelector("#PolynomialRegressionsSlider");
+
+            if (intermediatesInput && regressionsInput) {
+                const intermediates = intermediatesInput.value;
+                const amountOfRegressions = regressionsInput.value;
+
+                const url = `http://localhost:5000/regressor/Graph?intermediates=${intermediates}&amountOfRegressions=${amountOfRegressions}`;
+
+                fetch(url)
+                    .then(res => res.text())
+                    .then(html => {
+                        const graphContainer = document.getElementById("regressor_graph_container");
+                        graphContainer.innerHTML = html;
+
+                        graphContainer.querySelectorAll("script").forEach(oldScript => {
+                            const newScript = document.createElement("script");
+                            if (oldScript.src) {
+                                newScript.src = oldScript.src;
+                            } else {
+                                newScript.textContent = oldScript.textContent;
+                            }
+                            document.head.appendChild(newScript);
+                            oldScript.remove();
+                        });
+                    })
+                    .catch(err => console.error("Error updating regressor graph:", err));
+            } else {
+                console.warn("One or both sliders are missing.");
+            }
+        });
+    }
 });
 
 // Function to fetch proportioning data

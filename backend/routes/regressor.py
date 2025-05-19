@@ -1,5 +1,6 @@
 # backend/routes/regressor.py
 from fastapi import APIRouter
+from fastapi import Query
 from fastapi.responses import HTMLResponse
 from backend.memory.state import session_data
 from backend.database.config import config
@@ -17,7 +18,10 @@ router = APIRouter(prefix="/regressor")
 db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
 
 @router.get("/Graph", response_class=HTMLResponse)
-async def generate_graph():
+async def generate_graph(
+    intermediates: int = Query(200), #Parametes for Interemdiate/Bin value (default 200)
+    amountOfRegressions: int = Query(2) #Parameter for Amount of Regressions (default 2)
+):
     try:
         #Extract lot_id and print it
         lot_id = await RequestLotId().return_data() 
@@ -29,8 +33,8 @@ async def generate_graph():
         #Generate a dataframe with the DB query
         df = await db_connection.fetch_df(query=query) 
 
-        log_traces = CalculateLogTraces(data = df, x_data ="flow", y_data= "opening",
-            size="measurement_time", bins=200, grades=(2,10))
+        log_traces = CalculateLogTraces(data = df, x_data ="flow", y_data= "opening", 
+            size="measurement_time", bins=intermediates, grades=(2,amountOfRegressions+1)) #Regression grade two to Regression Grade (Amount of Regressions+ 1) plot
 
         graph_html = LogScatterPlot(
             title="", 
