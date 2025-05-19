@@ -672,3 +672,18 @@ output {
             grid-template-columns: 1fr;
         }
     }
+#RegressorTable-container {
+    display: flex;
+    align-items: center;  /* Vertically center the elements */
+    width: 100%;  /* Ensure the container takes up all available width */
+    padding-inline: 10px;
+}
+#RegressorTable {
+    margin-top: 4px;
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    border-radius: 8px;
+    table-layout: fixed;
+    overflow-y: auto;
+}
