@@ -1,10 +1,11 @@
 # backend/routes/regressor.py
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
+from backend.memory.state import session_data
 from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import LogScatterPlot
-from backend.database.query import query_regressor_graph
+from backend.database.query import query_regressor_graph, query_regression_table
 from backend.classes.request import RequestLotId, RequestPropId
 from backend.classes.calculation import CalculateLogTraces
 
@@ -47,10 +48,29 @@ async def generate_graph():
         # Retrun error
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
 
+@router.get("/SummaryTable")
+async def summary_table():
+    return fetch_table_data(query_regression_table)
 
+# ---------- Debug by console   ---------- #
 def debug(lot_id):
     print( # Debugging by console
         "\n" + "*" * 40 +
         f"\n* LotID: {f'{lot_id}':<30}*" +
         f"\n* ProportioningID: {f': {RequestPropId().return_data()}':<20}*" +
         "\n" + "*" * 40 + "\n")
+    
+# ---------- Request data for table  ---------- #
+async def fetch_table_data(query_template: str):
+    try:
+        #Get current lot id
+        lot_id = await RequestLotId().return_data() 
+        #Write the current_prop variable inside the query
+        query = query_template.format(current_lot=lot_id)
+        #Request the data
+        data = await db_connection.fetch_data(query=query)
+        return data
+    
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return {"error": str(e)}
