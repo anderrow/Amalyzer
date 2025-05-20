@@ -486,6 +486,8 @@ input, select {
 #AnalyzerGraphs {
     display: flex;
     flex-direction: column;  
+    align-items: center;
+    justify-content: center;
 }
 #graph-container, #graph-container2 {
     width: 95%;  
@@ -531,6 +533,8 @@ input, select {
     max-height: calc(90vh - 60px);
     min-height: calc(86vh - 60px);
     overflow-y: auto; /* Enables vertical scrolling if too much data */
+    justify-content: center;
+    align-items: center;
 }
 
 #AnalyzerData, #RegressorControls {
@@ -677,7 +681,7 @@ output {
     align-items: center;  /* Vertically center the elements */
     width: 100%;  /* Ensure the container takes up all available width */
     padding-inline: 10px;
-    max-height: 250px;
+    max-height: 260px;
     overflow-y: auto;
 }
 #RegressorTable {

@@ -6,9 +6,9 @@
     <title>Amalyzer</title>
     <link rel="stylesheet" href="../css/style.css"> <!-- Linking the CSS file -->
     <link rel="icon" type="image/png" href="../images/faviconV2.png">
+    <script defer src="../js/vms.js" defer></script>
 </head>
 <body>
-
     <!-- Navigation Menu -->
     <nav>
         <div class="menu-toggle" id="mobile-menu">
@@ -24,5 +24,17 @@
     </nav>
     </nav>
     <!--End of Navigation Menu-->
-    <article id="VMSArticle"></article>
+    <article id="VMSHeader"  class="PropInfoHeader">
+        <section id="ProportioningConnection" class="PropConnection">
+                <label for="ProportioningId">Prop</label>
+                <label for="ProportioningId"> ID:</label>
+                <input type="text" id="ProportioningId" name="ProportioningId" value="Proportioning ID" />
+                <input type="text" id="InfoPropId" name="InfoPropId" value="Valuable Information about the Proportioning selected" readonly />
+                <button id="UpdateVMS">Update</button>
+        </section>
+    </article>
+
+    <article id="VMSArticle">
+        
+    </article>
 </body> 
