@@ -82,12 +82,6 @@ async def generate_graph():
         # Aquí podrías devolver un HTML de error, o un JSON si prefieres
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
 
-# ---------- Get Actual PropId to analyze ---------- #
-@router.get("/PropId")
-async def analyzer_status():
-    current_prop = RequestPropId().return_data()
-    return current_prop
-
 # ---------- SUMMARY TABLE ---------- #
 @router.get("/Summary")
 async def summary_table():
