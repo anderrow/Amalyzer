@@ -60,7 +60,7 @@ async def summary_table():
     lot_id = await RequestLotId().return_data() 
     #Format the query with the current lot id
     query = query_regressor_graph.format(current_lot=lot_id)
-    #Generate a dataframe with the DB query
+    #Generate a dataframe with the DB query (For calculate the length)
     df = await db_connection.fetch_df(query=query) 
 
     if data:

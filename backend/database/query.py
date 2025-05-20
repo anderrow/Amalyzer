@@ -47,6 +47,16 @@ JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.art
 JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
 WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
 """
+# SQL query, Valuable information about the PropID
+query_valuable_information = """
+SELECT 
+    amadeus_article.name AS "ArticleName",
+    amadeus_lot.lot_id AS "LotID"
+FROM amadeus_proportioning 
+JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.article_dbid 
+JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
+WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
+"""
 # SQL query to fetch Analyzer PropRecord data
 query_analyzer_propRecord = """
 SELECT * FROM public.amadeus_proportioningrecord
