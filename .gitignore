@@ -20,3 +20,4 @@ com.Tivadar.Best.MQTT.csproj
 pendingtask.txt
 backend/database/config_Prod_vilo.py
 backend/database/config_testrig.py
+backend/database/config.py
