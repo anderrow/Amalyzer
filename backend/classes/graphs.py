@@ -173,7 +173,7 @@ class Traces3DPlot(Graph):
         # We add the mesh (Mesh3d) first and then the traces (Scatter3d) so that the traces are visually on top.
         # Plotly renders objects in the order they are added, this way we prevent the mesh from covering important data.
 
-        #fig.add_trace(build_mesh3d_traces(trace_list))
+        fig.add_trace(self.build_mesh3d_traces(self.traces))
 
         #Add all the traces to the figure (PlotTraces transform normal traces in 3D traces)
         for trace in self.plot_traces(self.traces):
@@ -188,7 +188,7 @@ class Traces3DPlot(Graph):
             yaxis=dict(nticks=10), # Display 10 ticks in Y axis
             zaxis=dict(range=[900, 0])  # Range from 0 to 900 and inverted in Z
         ),
-        width=1200, 
+        width=1150, 
         height=700,
         margin=dict(r=10, l=10, b=10, t=10), #Small margin
         showlegend=True
@@ -209,3 +209,39 @@ class Traces3DPlot(Graph):
                 name=trace.label
             ))
         return traces3D
+    
+    def build_mesh3d_traces(self, trace_list):
+        n = len(trace_list[0].y_data)
+        x, y, z = [], [], []
+
+        for trace in trace_list:
+            x.append(np.array(trace.x_data))
+            y.append(np.array(trace.y_data))
+            z.append(np.array(trace.z_data))
+
+        x = np.concatenate(x)
+        y = np.concatenate(y)
+        z = np.concatenate(z)
+
+        total_lines = len(trace_list)
+        i, j, k = [], [], []
+
+        for p in range(n - 1):
+            for line in range(total_lines - 1):
+                offset = line * n
+                i.append(p + offset)
+                j.append(p + offset + n)
+                k.append(p + offset + 1)
+
+                i.append(p + offset + 1)
+                j.append(p + offset + n)
+                k.append(p + offset + n + 1)
+
+        return go.Mesh3d(
+            x=x, y=y, z=z,
+            i=i, j=j, k=k,
+            opacity=0.5,
+            color='tan',
+            flatshading=True,
+            name='Mesh'
+        )
