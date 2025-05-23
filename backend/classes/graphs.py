@@ -188,7 +188,7 @@ class Traces3DPlot(Graph):
             yaxis=dict(nticks=10), # Display 10 ticks in Y axis
             zaxis=dict(range=[900, 0])  # Range from 0 to 900 and inverted in Z
         ),
-        width=1150, 
+        width=1350, 
         height=700,
         margin=dict(r=10, l=10, b=10, t=10), #Small margin
         showlegend=True
@@ -211,37 +211,49 @@ class Traces3DPlot(Graph):
         return traces3D
     
     def build_mesh3d_traces(self, trace_list):
+        # Number of points in each trace (assumed to be equal)
         n = len(trace_list[0].y_data)
+
+        # Prepare empty lists for x, y, and z coordinates
         x, y, z = [], [], []
 
+        # Extract coordinate data from each trace
         for trace in trace_list:
             x.append(np.array(trace.x_data))
             y.append(np.array(trace.y_data))
             z.append(np.array(trace.z_data))
 
+        # Concatenate all coordinate arrays into single arrays
         x = np.concatenate(x)
         y = np.concatenate(y)
         z = np.concatenate(z)
 
-        total_lines = len(trace_list)
-        i, j, k = [], [], []
+        total_lines = len(trace_list)  # Total number of vertical traces
+        i, j, k = [], [], []  # Lists to hold triangle vertex indices
 
-        for p in range(n - 1):
-            for line in range(total_lines - 1):
-                offset = line * n
+        # Create two triangles (i, j, k) for each quad in the mesh
+        for p in range(n - 1):  # Iterate through points in the vertical direction
+            for line in range(total_lines - 1):  # Iterate through horizontal connections
+                offset = line * n  # Offset to locate the correct index in the flattened array
+
+                # First triangle of the quad
                 i.append(p + offset)
                 j.append(p + offset + n)
                 k.append(p + offset + 1)
 
+                # Second triangle of the quad
                 i.append(p + offset + 1)
                 j.append(p + offset + n)
                 k.append(p + offset + n + 1)
 
+        # Return a Plotly Mesh3d object with the computed geometry
         return go.Mesh3d(
             x=x, y=y, z=z,
-            i=i, j=j, k=k,
+            i=i, j=j, k=k,  # Triangle definitions
             opacity=0.5,
             color='tan',
             flatshading=True,
-            name='Mesh'
+            name='Mesh',
+            hoverinfo='skip',  # Disable hover for mesh
+            showscale=False    # Optional: don't show color scale
         )
