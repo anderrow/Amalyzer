@@ -22,4 +22,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
     .catch(error => console.error("Error fetching current propDbId:", error));
+
+    // Fetch and inject Graph HTML
+    fetch("http://localhost:5000/vms/Graph")
+        .then(res => res.text())
+        .then(html => {
+            const graphContainer = document.getElementById("VMS_graph_container");
+            graphContainer.innerHTML = html;
+
+            graphContainer.querySelectorAll("script").forEach(oldScript => {
+                const newScript = document.createElement("script");
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                document.head.appendChild(newScript);
+                oldScript.remove();
+            });
+        });
 });
