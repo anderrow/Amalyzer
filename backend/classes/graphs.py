@@ -23,7 +23,7 @@ class TraceData:
     Object Trace Data who contains the information of the trace. (Label, calculated time, points to plot,
     mode and color)
     """
-    def __init__(self, label, x_data, y_data, mode="lines", color="blue",sample_time=None,  dash=None, marker=None):
+    def __init__(self, label, x_data, y_data, z_data = None,  mode="lines", color="blue",sample_time=None,  dash=None, marker=None):
         self.label = label
         self.sample_time = sample_time
         self.x_data = x_data
@@ -32,6 +32,8 @@ class TraceData:
         self.color = color
         self.dash = dash
         self.marker = marker
+        self.z_data = z_data
+
         # Calculate time if it's needed
         if sample_time:
             self.time = [x * self.sample_time for x in x_data]
@@ -151,3 +153,59 @@ class LogScatterPlot(Graph):
 
         # Convert graph to HTML 
         return pio.to_html(fig, full_html=False)
+
+
+class Traces3DPlot(Graph):
+    def __init__(self, traces: list[TraceData]):
+        if not traces:
+            raise ValueError("The trace list is empty.")
+
+        lengths = [len(t.x_data) for t in traces]
+        if len(set(lengths)) != 1:
+            raise ValueError(f"All traces must have the same length. Lengths found: {lengths}")
+        
+        self.traces = traces
+
+    def plot_graph(self):
+        #Generate figure
+        fig = go.Figure()
+
+        # We add the mesh (Mesh3d) first and then the traces (Scatter3d) so that the traces are visually on top.
+        # Plotly renders objects in the order they are added, this way we prevent the mesh from covering important data.
+
+        #fig.add_trace(build_mesh3d_traces(trace_list))
+
+        #Add all the traces to the figure (PlotTraces transform normal traces in 3D traces)
+        for trace in self.plot_traces(self.traces):
+            fig.add_trace(trace)
+
+        fig.update_layout(
+        scene=dict(
+            xaxis_title='Box width (367)',
+            yaxis_title='Box length (570)',
+            zaxis_title='Distance to sensor (mm)',
+            xaxis=dict(nticks=5), # Display 5 ticks in X axis
+            yaxis=dict(nticks=10), # Display 10 ticks in Y axis
+            zaxis=dict(range=[900, 0])  # Range from 0 to 900 and inverted in Z
+        ),
+        width=1200, 
+        height=700,
+        margin=dict(r=10, l=10, b=10, t=10), #Small margin
+        showlegend=True
+        )
+
+        return pio.to_html(fig, full_html=False)
+    
+    def plot_traces(self, trace_list):
+        traces3D=[]
+        for trace in trace_list:
+            traces3D.append(go.Scatter3d(
+                x=trace.x_data,
+                y=trace.y_data,
+                z=trace.z_data,
+                mode=trace.mode,
+                line=trace.line,
+                marker=trace.marker,
+                name=trace.label
+            ))
+        return traces3D
