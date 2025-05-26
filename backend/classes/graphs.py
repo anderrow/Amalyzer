@@ -87,13 +87,13 @@ class PlotPointsinTime(Graph):
                 bordercolor="black",
                 borderwidth=1
             ),
-            height=400,  # Set maximum height to 350 px 
+            autosize=True, 
             yaxis=dict(range=[0, max_y],fixedrange=False), #Force to strart in y=0
             xaxis=dict(range=[0, max_x],fixedrange=False), #Force to strart in x=0
         )
 
         # Convert graph to HTML 
-        return pio.to_html(fig, full_html=False)
+        return pio.to_html(fig, full_html=False,  config={"responsive": True})
 
 class LogScatterPlot(Graph):
     def __init__(self, title, xaxis_title, yaxis_title, leyend_pos,traces:list[TraceData]):
@@ -128,7 +128,6 @@ class LogScatterPlot(Graph):
         ticktext = [f"10<sup>{e}</sup>" for e in range(int(exp_min), int(exp_max + 1))]
 
         fig.update_layout(
-            #title=self.title,
             xaxis=dict(
                 title=self.xaxis_title,
                 type='log',
@@ -148,11 +147,11 @@ class LogScatterPlot(Graph):
                 borderwidth=1
             ),
             hovermode='closest',
-            height=850
+            autosize=True
         )
 
         # Convert graph to HTML 
-        return pio.to_html(fig, full_html=False)
+        return pio.to_html(fig, full_html=False,  config={"responsive": True})
 
 
 class Traces3DPlot(Graph):
@@ -188,13 +187,13 @@ class Traces3DPlot(Graph):
             yaxis=dict(nticks=10), # Display 10 ticks in Y axis
             zaxis=dict(range=[900, 0])  # Range from 0 to 900 and inverted in Z
         ),
-        width=1350, 
-        height=700,
+        autosize=True,
         margin=dict(r=10, l=10, b=10, t=10), #Small margin
         showlegend=True
         )
 
-        return pio.to_html(fig, full_html=False)
+        return pio.to_html(fig, full_html=False, config={"responsive": True})
+
     
     def plot_traces(self, trace_list):
         traces3D=[]
