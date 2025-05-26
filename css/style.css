@@ -721,7 +721,6 @@ output {
 }
 #VMS_graph_container{
     height: 100%;
-    border: 8px dashed green;
 }
 
 #VMS_graph_container > div {
