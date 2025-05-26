@@ -119,3 +119,9 @@ SELECT
     FROM public.amadeus_lot
 WHERE lot_dbid = {current_lot}
 """
+#SQL query to reqest VMS data
+query_vms_data = """
+SELECT proportioning_dbid, sensor_l, sensor_m, sensor_r FROM public.amadeus_vms_logging
+	where proportioning_dbid = 	{current_prop}
+	ORDER BY vms_logging_dbid ASC
+"""

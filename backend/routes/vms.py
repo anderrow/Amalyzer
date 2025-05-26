@@ -18,10 +18,9 @@ db_connection = DBConnection(config=config_UFA_PROD)
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph():
     try:
-
+        current_prop = 29731
         #Format the query with the current proportioning id
-        #query = query_vms_data.format(current_lot=lot_id)
-        query = query_vms_data
+        query = query_vms_data.format(current_prop=current_prop)
 
         #Generate a dataframe with the DB query
         df = await db_connection.fetch_df(query=query) 
