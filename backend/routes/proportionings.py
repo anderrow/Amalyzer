@@ -159,8 +159,8 @@ class DosingType(Enum):
     D2E = 100
 
 class Deviation(Enum):
-    UNDERDOSING = 1
+    OVERDOSING = 1
     NORMAL = 2
-    OVERDOSING = 3
+    UNDERDOSING = 3
 
 

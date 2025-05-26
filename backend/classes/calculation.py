@@ -117,9 +117,9 @@ class IsInTolerance(Calculation):
                 LowerTol = row[self.requested] *(1-Tol_bass_1)
 
                 #Clasify by Over, Under and Within tolerance
-                if row[self.real] < UpperTol:
+                if row[self.real] > UpperTol:
                     row[self.new_column_name] = 1 #Over Tolerance
-                elif row[self.real] > LowerTol: 
+                elif row[self.real] < LowerTol: 
                     row[self.new_column_name] = 3 #Under Tolerance
                 else:
                     row[self.new_column_name] = 2 #Within tolerance
