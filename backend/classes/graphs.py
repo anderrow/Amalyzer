@@ -2,6 +2,9 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import numpy as np
 import pandas as pd
+from dataclasses import dataclass, field
+from typing import List, Optional, Union
+
 
 class Graph:
     """
@@ -18,34 +21,36 @@ class Graph:
     def plot_graph(self):
         raise NotImplementedError(f"Subclasses should implement this method. Call one of: {[cls.__name__ for cls in Graph.__subclasses__()]}")
     
+@dataclass
 class TraceData:
-    """
-    Object Trace Data who contains the information of the trace. (Label, calculated time, points to plot,
-    mode and color)
-    """
-    def __init__(self, label, x_data, y_data, z_data = None,  mode="lines", color="blue",sample_time=None,  dash=None, marker=None):
-        self.label = label
-        self.sample_time = sample_time
-        self.x_data = x_data
-        self.y_data = y_data
-        self.mode = mode
-        self.color = color
-        self.dash = dash
-        self.marker = marker
-        self.z_data = z_data
+    label: str
+    x_data: List[Union[int, float]]
+    y_data: List[Union[int, float]]
+    z_data: Optional[List[Union[int, float]]] = None
+    mode: str = "lines"
+    color: str = "blue"
+    sample_time: Optional[float] = None
+    dash: Optional[str] = None
+    marker: Optional[dict] = None
+    
+    time: Optional[List[float]] = field(init=False, default=None)
+    line: dict = field(init=False)
 
-        # Calculate time if it's needed
-        if sample_time:
-            self.time = [x * self.sample_time for x in x_data]
+    def __post_init__(self):
+        # Validate first (better fail early)
+        if len(self.x_data) != len(self.y_data):
+            raise ValueError(f"x_data and y_data must have the same length for trace '{self.label}'")
         
-        # Build line dictionary
-        if self.dash:
-            self.line = {"color": self.color, "dash": self.dash}
-        else:
-            self.line = {"color": self.color}
+        # Calculate time
+        self.time = (
+            [x * self.sample_time for x in self.x_data]
+            if self.sample_time is not None else self.x_data #If self.sample_time then self.time = [x * self.sample_time for x in self.x_data]]
+        )
 
-        if len(x_data) != len(y_data):
-            raise ValueError(f"x_data and y_data must have the same length for trace '{label}'")
+        # Build line dict
+        self.line = {"color": self.color}
+        if self.dash:
+            self.line["dash"] = self.dash
   
 class PlotPointsinTime(Graph):
     def __init__(self, title, xaxis_title, yaxis_title, leyend_pos, traces:list[TraceData] ):
@@ -185,7 +190,10 @@ class Traces3DPlot(Graph):
             zaxis_title='Distance to sensor (mm)',
             xaxis=dict(nticks=5), # Display 5 ticks in X axis
             yaxis=dict(nticks=10), # Display 10 ticks in Y axis
-            zaxis=dict(range=[900, 0])  # Range from 0 to 900 and inverted in Z
+            zaxis=dict(range=[900, 0]),  # Range from 0 to 900 and inverted in Z
+            camera=dict(
+                eye=dict(x=1.5, y=1.5, z=0),
+            )
         ),
         autosize=True,
         margin=dict(r=10, l=10, b=10, t=10), #Small margin
