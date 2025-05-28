@@ -3,7 +3,7 @@ import plotly.io as pio
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass, field
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Sequence
 
 
 class Graph:
@@ -23,10 +23,10 @@ class Graph:
     
 @dataclass
 class TraceData:
-    label: str
-    x_data: List[Union[int, float]]
-    y_data: List[Union[int, float]]
-    z_data: Optional[List[Union[int, float]]] = None
+    label: str 
+    x_data: Sequence[Union[int, float]] #Sequences accept Pandas series, list or duples
+    y_data: Sequence[Union[int, float]]
+    z_data: Optional[Sequence[Union[int, float]]] = None
     mode: str = "lines"
     color: str = "blue"
     sample_time: Optional[float] = None
@@ -44,8 +44,10 @@ class TraceData:
         # Calculate time
         self.time = (
             [x * self.sample_time for x in self.x_data]
-            if self.sample_time is not None else self.x_data #If self.sample_time then self.time = [x * self.sample_time for x in self.x_data]]
+            if self.sample_time is not None
+            else list(self.x_data)
         )
+
 
         # Build line dict
         self.line = {"color": self.color}
@@ -190,9 +192,9 @@ class Traces3DPlot(Graph):
             zaxis_title='Distance to sensor (mm)',
             xaxis=dict(nticks=5), # Display 5 ticks in X axis
             yaxis=dict(nticks=10), # Display 10 ticks in Y axis
-            zaxis=dict(range=[900, 0]),  # Range from 0 to 900 and inverted in Z
+            zaxis=dict(range=[650, 0]),  # Range from 0 to 900 and inverted in Z
             camera=dict(
-                eye=dict(x=1.5, y=1.5, z=0),
+                eye=dict(x=1.5, y=1.5, z=1),
             )
         ),
         autosize=True,
