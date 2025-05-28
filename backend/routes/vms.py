@@ -32,15 +32,27 @@ async def generate_graph():
         n = len(df) #Samples
         y_vals = np.linspace(0, 570, n) #Space then equally in 570 values
 
+        #Load x values for each sensor
+        x_left=18
+        x_mid=160
+        x_right=340
+
+        #Iterate new values
+        m_left = (df["sensor_m"]-df["sensor_l"])/(x_mid-x_left)
+        z_left_zero = m_left * (0- x_left) + df["sensor_l"]
+
+        m_right = (df["sensor_m"]-df["sensor_r"])/(x_mid-x_right)
+        z_right_zero = m_right * (367- x_right) + df["sensor_r"]
+        
         #Generate an empty list for traces
         trace_list = []
         #Generate TraceData object and append it
         trace_list.append(TraceData("z0", x_data=np.zeros(n), y_data=y_vals, z_data=np.full(n, 900), color="grey", dash='dot'))
-        trace_list.append(TraceData("LeftZero", x_data=np.zeros(n), y_data=y_vals, z_data=df["sensor_l"], color="black", dash='dot'))
-        trace_list.append(TraceData("Left", x_data=np.full(n, 18), y_data=y_vals, z_data=df["sensor_l"], color="black"))
-        trace_list.append(TraceData("Middle", x_data=np.full(n, 160), y_data=y_vals, z_data=df["sensor_m"], color="red"))
-        trace_list.append(TraceData("Right", x_data=np.full(n, 340), y_data=y_vals, z_data=df["sensor_r"], color="blue"))
-        trace_list.append(TraceData("RightZero", x_data=np.full(n, 367), y_data=y_vals, z_data=df["sensor_r"], color="blue", dash='dot'))
+        trace_list.append(TraceData("LeftZero", x_data=np.zeros(n), y_data=y_vals, z_data=z_left_zero, color="black", dash='dot'))
+        trace_list.append(TraceData("Left", x_data=np.full(n, x_left), y_data=y_vals, z_data=df["sensor_l"], color="black"))
+        trace_list.append(TraceData("Middle", x_data=np.full(n, x_mid), y_data=y_vals, z_data=df["sensor_m"], color="red"))
+        trace_list.append(TraceData("Right", x_data=np.full(n, x_right), y_data=y_vals, z_data=df["sensor_r"], color="blue"))
+        trace_list.append(TraceData("RightZero", x_data=np.full(n, 367), y_data=y_vals, z_data=z_right_zero, color="blue", dash='dot'))
         trace_list.append(TraceData("z1", x_data=np.full(n, 360), y_data=y_vals,  z_data= np.full(n, 900), color="gray", dash='dot'))
 
         graph_html = Traces3DPlot(trace_list).plot_graph()

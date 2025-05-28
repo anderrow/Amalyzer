@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from sklearn.linear_model import LinearRegression
+
 from backend.classes.graphs import TraceData
 
 class Calculation:
@@ -93,8 +93,8 @@ class IsInTolerance(Calculation):
     Given a requested value (float or int), a real value (float or int), and a tolerance percentage, the 
     subclass returns a data dictionary containing a new column named "Deviation" (default) with three possible results:
     1 = Over Tolerance
-    2 = Within Tolerance
-    3 = Under Tolerance
+    2 = Under Tolerance
+    3 = Within Tolerance
     """
     def __init__(self, data, requested, real, tolerance, new_column_name="Deviation"):
         super().__init__(data)
