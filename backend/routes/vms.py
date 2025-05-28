@@ -2,7 +2,7 @@
 from fastapi import APIRouter
 from fastapi import Query
 from fastapi.responses import HTMLResponse
-from backend.database.config import config_UFA_PROD
+from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import Traces3DPlot , TraceData
 from backend.database.query import query_vms_data
@@ -12,32 +12,28 @@ import pandas as pd
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  
 # Initialize the DBConnection object
-db_connection = DBConnection(config=config_UFA_PROD) 
+db_connection = DBConnection(config=config) 
 
 # Example endpoint to check vms status
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph():
     try:
-        current_prop = 29731
-        #Format the query with the current proportioning id
-        query = query_vms_data.format(current_prop=current_prop)
+        #Take the data from the prop ID requested
+        df = await db_connection.fetch_df(query=query_vms_data)
 
-        #Generate a dataframe with the DB query
-        df = await db_connection.fetch_df(query=query) 
-
-        #Filter the datafram here
+        #Filter the dataframe to only take the data INSIDE the box 
         df = take_data_inside_the_box(df)
 
         #Extra information
-        n = len(df) #Samples
-        y_vals = np.linspace(0, 570, n) #Space then equally in 570 values
+        n = len(df) #Number of Samples
+        y_vals = np.linspace(0, 570, n) #Space then equally in 570 values (Distance of the box)
 
-        #Load x values for each sensor
+        #Load x values for each sensor (Needs to be taken from db, also the height of the sensors)
         x_left=18
         x_mid=160
         x_right=340
 
-        #Iterate new values
+        #Iterate new values for the material on the wall of the box
         m_left = (df["sensor_m"]-df["sensor_l"])/(x_mid-x_left)
         z_left_zero = m_left * (0- x_left) + df["sensor_l"]
 
@@ -53,7 +49,7 @@ async def generate_graph():
         trace_list.append(TraceData("Middle", x_data=np.full(n, x_mid), y_data=y_vals, z_data=df["sensor_m"], color="red"))
         trace_list.append(TraceData("Right", x_data=np.full(n, x_right), y_data=y_vals, z_data=df["sensor_r"], color="blue"))
         trace_list.append(TraceData("RightZero", x_data=np.full(n, 367), y_data=y_vals, z_data=z_right_zero, color="blue", dash='dot'))
-        trace_list.append(TraceData("z1", x_data=np.full(n, 360), y_data=y_vals,  z_data= np.full(n, 900), color="gray", dash='dot'))
+        trace_list.append(TraceData("z1", x_data=np.full(n, 367), y_data=y_vals,  z_data= np.full(n, 900), color="gray", dash='dot'))
 
         graph_html = Traces3DPlot(trace_list).plot_graph()
 
