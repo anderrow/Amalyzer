@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amalyzer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/png" href="../images/faviconV2.png">
+    <script defer src="../js/proportionings.js" defer></script>
+
+</head>
+<body>
+
+    <!-- Navigation Menu -->
+    <nav>
+        <div class="menu-toggle" id="mobile-menu">
+            ☰
+        </div>
+        <ul class="nav-list">
+            <li class="MenuButton"><a href="/static/pages/proportionings.html">Proportionings</a></li>
+            <li class="MenuButton"><a href="/static/pages/Analyzer.html">Analyzer</a></li>
+            <li id="logo"><img src="../images/AMABOX.png" alt="Amabox" height="60"></li>
+            <li class="MenuButton"><a href="/static/pages/Regressor.html">Regressor</a></li>
+            <li class="MenuButton"><a href="/static/pages/VMS.html">VMS</a></li>
+        </ul>
+    </nav>
+
+    <article id="ProportioningArticle">
+        <section id="Proportioningboard">
+            <table id="ProportioningTable">
+                <thead>
+                    <tr>
+                        <th>Prop ID</th>
+                        <th>Article ID</th>
+                        <th>Lot ID</th>
+                        <th>VMS Scan</th>
+                        <th>Article ID</th>
+                        <th>Article Name</th>
+                        <th>Lot ID</th>
+                        <th>Target</th>
+                        <th>Actual</th>
+                        <th>Deviation</th>
+                        <th>Tolerance</th>
+                        <th>Start Time</th>
+                        <th>Duration</th>
+                        <th>Mix Box ID</th>
+                        <th>Ing Box ID</th>
+                        <th>Dosing Location</th>
+                        <th>Dosing Type</th>
+                        <th>Order ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data From DB-->
+                </tbody>
+            </table> 
+        </section>
+
+        <section id="ProportioningControls">
+            
+                <div id="PropMainButtons" class="PropControlBox">
+                    <div class="UpperText"><p>Controls</p></div>
+                    <ul class="PropBoardContainer">
+                        <li class="PropButton"><button id="updateButton">Update</button></li>
+                        <li class="PropButton"><button>Go to Lot</button></li>
+                        <li class="PropButton"><button>Go to VMS</button></li>
+                        <li class="PropButton"><button id="GoToProportioning"><a href="Analyzer.html">Go to Proportioning</a></button></li>
+                    </ul>
+                    <div class="PropIdInput">
+                        <label for="PropIdInput">Proportioning Id selected:</label>
+                        <input type="text" id="PropIdInput" name="PropIdInput" value="" />
+                    </div>
+                </div>
+        
+                <div id="ArticleFilter" class="PropControlBox">
+                    <div class="UpperText"><p>Article Filter</p></div>
+                    <label class="switch">
+                        <input type="checkbox" id="ArticleFilterSwitch">
+                        <span class="slider"></span>
+                    </label>
+                    <select type="text" size="1" id="RequestedArticle" onchange="" placeholder="Search for articles..">
+                        <option value="" disabled selected>Filter by Article</option>
+                        <!--Fetch by the Backend-->
+                    </select>
+                </div>
+
+                <div id="AgeFilter" class="PropControlBox">
+                    <div class="UpperText"><p>Age Filter</p></div>
+                    <label class="switch">
+                        <input type="checkbox" id="AgeFilterSwitch">
+                        <span class="slider"></span>
+                    </label>
+                    <select id="time-unit">
+                        <option value="minutes">Minutes</option>
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                    </select>
+                    <input type="range" min="0" max="100" value="10" class="short-slider" oninput="rangevalue.value = value" />
+                    <output id="rangevalue">10</output>
+                    <button id="FilterButton">Update Filtered Data</button>
+                </div>
+            
+        </section>        
+    </article>  
+</body>
+</html>

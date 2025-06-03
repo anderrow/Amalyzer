@@ -4,6 +4,7 @@ from backend.classes.db_connection import DBConnection
 from backend.database.config import config
 from backend.classes.request import RequestPropId
 from backend.database.query import query_valuable_information
+
 router = APIRouter(prefix="/common")  
 
 # Initialize the DBConnection object

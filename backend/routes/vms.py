@@ -22,7 +22,9 @@ async def generate_graph():
         df = await db_connection.fetch_df(query=query_vms_data)
 
         #Filter the dataframe to only take the data INSIDE the box 
-        df = take_data_inside_the_box(df)
+        #df = take_data_inside_the_box(df)
+        df = df[(df["sensor_m"] < 650) & (df["sensor_m"] > 300)]
+
 
         #Extra information
         n = len(df) #Number of Samples
