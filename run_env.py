@@ -13,7 +13,7 @@ def install_requirements():
     subprocess.check_call([pip_exec, "install", "-r", "requirements.txt"])
 
 def run_script():
-    print("🚀 Running JSON Generator in virtual environment...")
+    print("🚀 Running Amalyzer in virtual environment...")
     python_exec = os.path.join("venv", "Scripts" if platform.system() == "Windows" else "bin", "python")
     subprocess.check_call([python_exec, "app.py"])
 
