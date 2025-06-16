@@ -3,6 +3,7 @@ from typing import List, Dict, Any
 import asyncio
 import pandas as pd
 from backend.memory.state import session_data
+from sqlalchemy import create_engine
 
 class DBConnection:
     
@@ -51,28 +52,31 @@ class DBConnection:
     async def fetch_data(self, query: str) -> List[Dict[str, Any]]:
         return await asyncio.to_thread(self._connect_and_fetch, query)
     
-    def _connect_and_fetch_df(self, query: str) -> List[Dict[str, Any]]:
+    def _connect_and_fetch_df(self, query: str) -> pd.DataFrame:
         try:
-            # Connect to the PostgreSQL database
-            conn = psycopg2.connect(
-            dbname=self.config['ConnectionStrings']['Database'],
-            user=self.config['ConnectionStrings']['UserID'],
-            password=self.config['ConnectionStrings']['Password'],
-            host=self.config['ConnectionStrings']['Server'],
-            port=self.config['ConnectionStrings']['Port']
-            ) 
+            # Build SQLAlchemy connection string
+            user = self.config['ConnectionStrings']['UserID']
+            password = self.config['ConnectionStrings']['Password']
+            host = self.config['ConnectionStrings']['Server']
+            port = self.config['ConnectionStrings']['Port']
+            dbname = self.config['ConnectionStrings']['Database']
 
-            #Get current proportioning id
+            # Example: postgresql+psycopg2://user:password@host:port/dbname
+            connection_str = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}"
+            engine = create_engine(connection_str)
+
+            # Get current proportioning ID from session
             current_prop = session_data.get("current_prop_id")
-            # Write the current_prop variable inside the query     
             query = query.format(current_prop=current_prop)
 
-            # Load data into a Pandas DataFrame
-            df = pd.read_sql(query, conn)
-            #Close connection
-            conn.close()
+            # Read query into pandas DataFrame
+            df = pd.read_sql(query, engine)
+
+            # Dispose the SQLAlchemy engine to clean up resources
+            engine.dispose()
 
             return df
+
         except Exception as e:
             raise Exception(f"Error executing query: {e}")
         
