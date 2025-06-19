@@ -17,6 +17,21 @@ html, body {
     padding: 0;
 }
 
+.pagination-button {
+    margin: 2px;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.pagination-button.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+
 /* Navigation */
 nav {
     display: flex;

@@ -1,57 +1,52 @@
+let fullData = [];
+let currentPage = 1;
+const rowsPerPage = 2000;
+
 // ---------------- UPDATE PROPORTIONING DATA ---------------- //
 document.addEventListener("DOMContentLoaded", function () {
-    fetchProportioningData("/api/proportionings"); // Fetch Data as soon as the page is loaded
+    fetchProportioningData("/api/proportionings");
 
-    const updateButton = document.querySelector("#updateButton"); // Listen to id="updateButton"
-    const filterUpdateButton = document.querySelector("#FilterButton"); // Listen to id ='FilterButton'
+    const updateButton = document.querySelector("#updateButton");
+    const filterUpdateButton = document.querySelector("#FilterButton");
 
-    if (updateButton) { // If updateButton exists
-        updateButton.addEventListener("click", function () { // Check if it's clicked
+    if (updateButton) {
+        updateButton.addEventListener("click", function () {
             console.log("Update Table Data...");
-            fetchProportioningData("/api/proportionings"); // Reload Data without refreshing page 
+            fetchProportioningData("/api/proportionings");
         });
     }
 
     if (filterUpdateButton) {
         filterUpdateButton.addEventListener("click", function () {
             console.log("Update Table (Filter) Data...");
-            // Get the state of the switch (checked or unchecked) and the input text value from Article Filter
-            const switchChecked = document.querySelector("#ArticleFilterSwitch").checked; // Get the state of the switch
-            const requestedArticle = document.querySelector("#RequestedArticle").value; // Get the value from the input field
-
-            // Get values from the Age Filter
-            const ageSwitchChecked = document.querySelector("#AgeFilterSwitch").checked;  // Get Age Filter switch state
-            const timeUnit = document.querySelector("#time-unit").value;  // Get the selected time unit (minutes, hours, days)
-            const rangeValue = document.querySelector(".short-slider").value;  // Get the slider value
+            const switchChecked = document.querySelector("#ArticleFilterSwitch").checked;
+            const requestedArticle = document.querySelector("#RequestedArticle").value;
+            const ageSwitchChecked = document.querySelector("#AgeFilterSwitch").checked;
+            const timeUnit = document.querySelector("#time-unit").value;
+            const rangeValue = document.querySelector(".short-slider").value;
 
             const url = `/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}&ageSwitchChecked=${ageSwitchChecked}&timeUnit=${timeUnit}&rangeValue=${rangeValue}`;
-
-            // Now fetch the data using the correct dynamic URL
-            fetchProportioningData(url); // Pass the correct URL with query parameters
+            fetchProportioningData(url);
         });
     }
+
     fetch("/common/PropId")
         .then(response => response.text())
         .then(data => {
             console.log("Fetched PropId:", data);
             const inputField = document.getElementById("PropIdInput");
-            if (inputField) {
-                inputField.value = data;
-            }
+            if (inputField) inputField.value = data;
         })
         .catch(error => console.error("Error fetching current propDbId:", error));
-    // Function to load article names into the dropdown
+
     async function loadArticleNames() {
         try {
             const response = await fetch('/api/articlenames');
             const articleNames = await response.json();
-    
             const select = document.getElementById('RequestedArticle');
-    
-            // Clear previous options except the first one ("Filter by Article")
+
             select.length = 1;
-    
-            // Add a new <option> for each article name
+
             articleNames.forEach(article => {
                 const option = document.createElement('option');
                 option.value = article.ArticleName;
@@ -62,26 +57,37 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error loading article names:', error);
         }
     }
-    
-    // Just call it directly here:
+
     loadArticleNames();
 });
-// Function to fetch proportioning data
+
+// ---------------- FETCH + PAGINATION ---------------- //
 function fetchProportioningData(link) {
-    fetch(link) // Adjust the URL
+    console.time("RenderTableFetch");
+    fetch(link)
         .then(response => response.json())
-        .then(data => populateTable(data)) // Populate table with the fetched data
+        .then(data => {
+            fullData = data;
+            currentPage = 1;
+            renderTablePage(currentPage);
+            renderPaginationControls();
+            console.timeEnd("RenderTableFetch");
+        })
         .catch(error => console.error("Error fetching data:", error));
 }
 
-function populateTable(data) {
-    const tableBody = document.querySelector("#ProportioningTable tbody"); //Where to fill the data (tbody with ID ProportioningTable)
-    tableBody.innerHTML = ""; // Clean the table before Filling
+function renderTablePage(page) {
+    const tableBody = document.querySelector("#ProportioningTable tbody");
+    tableBody.innerHTML = "";
 
-    data.forEach(row => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = fullData.slice(start, end);
+
+    const fragment = document.createDocumentFragment();
+
+    pageData.forEach(row => {
         const tr = document.createElement("tr");
-
-        // Insert in the correct order
         tr.innerHTML = `
             <td>${row.ProportioningDBID}</td>
             <td>${row.ArticleDBID}</td>
@@ -101,43 +107,55 @@ function populateTable(data) {
             <td>${row.DosingLocation}</td>
             <td>${row.TypeOfDosing}</td>
             <td>${row.OrderID}</td>
-            `;
+        `;
 
-            //Adding a Listernet to check when one row is clicked
-            tr.addEventListener("click", function () {
-                //Obtain propDbID of the row selected
-                const propDbId = row.ProportioningDBID;
-                console.log("Clicked row with PropDbId:", propDbId);
-                
-                //Send a Post request to the python backend
-                fetch(`/api/rowclicked`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ propDbId: propDbId }),
-                })
-                //Handle response of the backend 
-                .then(response => response.json()) //If a JSON comes convert it on response
-                .then(result => {
-                    console.log("Backend response:", result);
-            
-                    fetch("/common/PropId")
+        tr.addEventListener("click", function () {
+            const propDbId = row.ProportioningDBID;
+            console.log("Clicked row with PropDbId:", propDbId);
+
+            fetch(`/api/rowclicked`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ propDbId })
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log("Backend response:", result);
+                fetch("/common/PropId")
                     .then(response => response.text())
                     .then(data => {
-                        console.log("Fetched PropId:", data);
                         const inputField = document.getElementById("PropIdInput");
-                        if (inputField) {
-                            inputField.value = data;
-                        }
+                        if (inputField) inputField.value = data;
                     })
                     .catch(error => console.error("Error fetching current propDbId:", error));
+            })
+            .catch(error => console.error("Error sending data to backend:", error));
+        });
 
-                })
-                .catch(error => console.error("Error sending data to backend:", error)); //If some error happens print it on console
-            });
-    
-            tableBody.appendChild(tr);
+        fragment.appendChild(tr);
     });
+
+    tableBody.appendChild(fragment);
 }
 
+function renderPaginationControls() {
+    const container = document.getElementById("pagination");
+    container.innerHTML = "";
+
+    const totalPages = Math.ceil(fullData.length / rowsPerPage);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.classList.add("pagination-button");
+        if (i === currentPage) btn.classList.add("active");
+
+        btn.addEventListener("click", () => {
+            currentPage = i;
+            renderTablePage(currentPage);
+            renderPaginationControls();
+        });
+
+        container.appendChild(btn);
+    }
+}
