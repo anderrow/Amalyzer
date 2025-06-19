@@ -24,12 +24,15 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 async def get_proportionings() -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
-        data = await db_connection.fetch_data(query=query_proportionings) #Raw Data
+        data = await db_connection.fetch_df(query=query_proportionings) #Raw Data
 
         #Make all the calculations that are needed
         data = calculate(data)
 
-        return make_db_redable(data) #Return data after making it redable for the user
+        #Make data redable
+        data = make_db_redable(data)
+
+        return data #Return data
 
     except Exception as e:
         print(f"Error: {str(e)}")
@@ -47,7 +50,7 @@ async def get_proportionings_filtered(
 ) -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
-        data = await db_connection.fetch_data(query=query_proportionings)
+        data = await db_connection.fetch_df(query=query_proportionings)
 
         #Make all the calculations that are needed
         data = calculate(data)
@@ -66,7 +69,10 @@ async def get_proportionings_filtered(
             print("\n" + "*" * 50 + "\n* Age Filter Switch enabled" + " "*22 + "*")
             print(f"* Requested Time: {rangeValue} {timeUnit:<28}* \n" + "*" * 50 + "\n")
         
-        return make_db_redable(data)
+        #Make data redable
+        data = make_db_redable(data)
+
+        return data
         
     except Exception as e:
         print(f"Error: {str(e)}")
@@ -109,49 +115,59 @@ def calculate(data):
     data = CaclulatPercent(data, "Requested", "Tolerance", overwrite=False).apply_calculation()
     #Add deviation column
     data = IsInTolerance(data, "Requested", "Actual", "Tolerance").apply_calculation()
-
+    if data is None:
+        print("Data Is None")
     return data
 #  -----------------  Filter Database to make it more redable  ----------------- #
-def make_db_redable(data):
-    for row in data:
-            # Format the "StartTime" field if it's a datetime object
-            if "StartTime" in row and isinstance(row["StartTime"], datetime):
-                dt = row["StartTime"]
-                formatted_start = f"{dt.year}-{dt.strftime('%m')}-{dt.strftime('%d')} {dt.strftime('%A')} {dt.strftime('%H:%M:%S')}"
-                row["StartTime"] = formatted_start
+def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:
+    # Format "StartTime"
+    if "StartTime" in df.columns:
+        df["StartTime"] = pd.to_datetime(df["StartTime"], errors="coerce")
+        df["StartTime"] = df["StartTime"].dt.strftime("%Y-%m-%d %A %H:%M:%S")
 
-            # Format the "Actual" field to 4 decimal places if it's a number
-            if "Actual" in row and isinstance(row["Actual"], (float, int)):
-                row["Actual"] = round(row["Actual"], 4)
+    # Format "Actual" to 4 decimal places
+    if "Actual" in df.columns:
+        df["Actual"] = pd.to_numeric(df["Actual"], errors="coerce").round(4)
 
-            # Convert boolean VMSscan to emojis
-            if "VMSscan" in row and isinstance(row["VMSscan"], bool):
-                row["VMSscan"] = "✅" if row["VMSscan"] else "❌"
+    # Convert boolean "VMSscan" to emojis
+    if "VMSscan" in df.columns:
+        df["VMSscan"] = df["VMSscan"].map({True: "✅", False: "❌"})
 
-            # Change the Formato of Lot ID
-            if "LotID" in row and isinstance(row["LotID"], str):
-                row["LotID"] = row["LotID"].replace("##", "#<br>#") #<br> works better than \n 
+    # Format "LotID"
+    if "LotID" in df.columns:
+        df["LotID"] = df["LotID"].astype(str).str.replace("##", "#<br>#", regex=False)
 
-            # Change the Formato of Lot ID
-            if "TypeOfDosing" in row and isinstance(row["TypeOfDosing"], int):
-                value = row["TypeOfDosing"]
-                try:
-                    row["TypeOfDosing"] = DosingType(value).name.capitalize()
-                except ValueError:
-                    row["TypeOfDosing"] = f"Unknown ({value})"
+    # Format "TypeOfDosing" using Enum
+    if "TypeOfDosing" in df.columns:
+        def format_dosing(val):
+            try:
+                return DosingType(val).name.capitalize()
+            except ValueError:
+                return f"Unknown ({val})"
+        df["TypeOfDosing"] = df["TypeOfDosing"].apply(format_dosing)
 
-            # Format the "Tolerance" column
-            if ("Tolerance" in row and isinstance(row["Tolerance"], float) and "calc_per" in row and isinstance(row["calc_per"], float)):
-                row["Tolerance"] = f"{row["Tolerance"]}% <br> {row["calc_per"]:.2f} kg" 
+    # Format "Tolerance" with percentage and weight (calc_per must exist)
+    if "Tolerance" in df.columns and "calc_per" in df.columns:
+        def format_tolerance(row):
+            try:
+                tol = float(row["Tolerance"])
+                kg = float(row["calc_per"])
+                return f"{tol}% <br> {kg:.2f} kg"
+            except:
+                return row["Tolerance"]
+        df["Tolerance"] = df.apply(format_tolerance, axis=1)
 
-            #Change the Format of Deviation column
-            if "Deviation" in row and isinstance(row["Deviation"], int):
-                value = row["Deviation"]    
-                try:
-                    row["Deviation"] = Deviation(value).name.capitalize()
-                except ValueError:
-                    row["Deviation"] =  f"Unknown ({value})"                  
-    return data
+    # Format "Deviation" using Enum
+    if "Deviation" in df.columns:
+        def format_deviation(val):
+            try:
+                return Deviation(val).name.capitalize()
+            except ValueError:
+                return f"Unknown ({val})"
+        df["Deviation"] = df["Deviation"].apply(format_deviation)
+
+    # Return as list of dicts for FastAPI response
+    return df.to_dict(orient="records")
 
 class DosingType(Enum):
     NORMAL = 1

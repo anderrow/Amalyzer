@@ -17,117 +17,115 @@ class Calculation:
 
 class CaclulateDateDelta(Calculation):
     """
-    Given two columns (datetime type), the subclass returns a data dictionary
-    containing the delta of this two columns, with the option of overwriting the
-    second column with the result (default mode = overwrite). 
+    Calculates the delta between two datetime columns in seconds, and formats it.
+    If `overwrite=True`, replaces column2 with the formatted duration.
+    Else, creates a new column with name `new_column_name`.
     """
-    def __init__(self, data, column1, column2, overwrite = True, new_column_name = "duration"):
+    def __init__(self, data: pd.DataFrame, column1: str, column2: str, overwrite=True, new_column_name="duration"):
         super().__init__(data)
         self.column1 = column1
         self.column2 = column2
         self.overwrite = overwrite
-        self.new_colum_name = new_column_name
-    
-    def apply_calculation(self):
-        # Initialize an empty list to store new results
-        filtered_data = []  
+        self.new_column_name = new_column_name
 
-        for row in self.data:
-            #Check if they are datetime objects
-            if isinstance(row[self.column1], datetime) and isinstance(row[self.column2], datetime):
-                #Calculate delta and save it in seconds
-                delta = round((row[self.column2] - row[self.column1]).total_seconds(), 1) #max 1 float
-                #Caclulate in minutes if delta is bigger than 60 seconds
-                if delta > 60:
-                    minutes = int(delta//60)   #Integrer minutes
-                    seconds = int(delta % 60)  # Rest of seconds
-                    # Format seconds to always show two digits (e.g., 03 instead of 3)
-                    if seconds<10:
-                        delta=f"{minutes}:0{seconds}"
-                    else:
-                        delta=f"{minutes}:{seconds}"
-                else:
-                    delta=f"{delta}" #Convert to str (keep all the data in the column with the same data type)
+    def apply_calculation(self) -> pd.DataFrame:
+        # Ensure columns are datetime
+        self.data[self.column1] = pd.to_datetime(self.data[self.column1], errors="coerce")
+        self.data[self.column2] = pd.to_datetime(self.data[self.column2], errors="coerce")
 
-                #Is overwrite is requested overwrite, otherwise, write it down in new column which is named duration
-                if self.overwrite:
-                    row[self.column2] = delta
-                else:
-                    row[self.new_column_name] = delta
+        # Compute delta in seconds
+        delta_seconds = (self.data[self.column2] - self.data[self.column1]).dt.total_seconds()
 
-                filtered_data.append(row)
-        return filtered_data
+        # Format the delta
+        def format_delta(seconds):
+            if pd.isna(seconds):
+                return None
+            seconds = round(seconds, 1)
+            if seconds > 60:
+                minutes = int(seconds // 60)
+                sec = int(seconds % 60)
+                return f"{minutes}:{sec:02d}"
+            else:
+                return str(seconds)
+
+        formatted = delta_seconds.apply(format_delta)
+
+        if self.overwrite:
+            self.data[self.column2] = formatted
+        else:
+            self.data[self.new_column_name] = formatted
+
+        return self.data
     
 class CaclulatPercent(Calculation):
     """
-    Given a value (float or int) and the percentage to be calculated, the subclass returns a 
-    data dictionary containing the result of the percentage calculation. By default, the result 
-    overwrites the percentage column, but this behavior can be changed.
-    (result  = value × percentage ÷ 100)
+    Given two numeric columns (value and percentage), calculates:
+        result = value × percentage ÷ 100
+    Overwrites the percentage column or stores the result in a new column.
     """
-    def __init__(self, data, value, percentage, overwrite = True, new_column_name="calc_per"):
+    def __init__(self, data: pd.DataFrame, value: str, percentage: str, overwrite=True, new_column_name="calc_per"):
         super().__init__(data)
         self.value = value
         self.percentage = percentage
         self.overwrite = overwrite
         self.new_column_name = new_column_name
-    
-    def apply_calculation(self):
-        # Initialize an empty list to store new results
-        filtered_data = []  
 
-        for row in self.data:
-            if isinstance(row[self.value], float) and isinstance(row[self.percentage],  float):
-                result =  round((row[self.value]*row[self.percentage]/100), 2)
-                #Is overwrite is requested overwrite, otherwise, write it down in new column which is named duration
-                if self.overwrite:
-                    row[self.percentage] = result
-                else:
-                    row[self.new_column_name] = result
+    def apply_calculation(self) -> pd.DataFrame:
+        # Ensure numeric values (NaNs remain if conversion fails)
+        self.data[self.value] = pd.to_numeric(self.data[self.value], errors="coerce")
+        self.data[self.percentage] = pd.to_numeric(self.data[self.percentage], errors="coerce")
 
-                filtered_data.append(row)
-        return filtered_data
+        # Compute percentage
+        result = (self.data[self.value] * self.data[self.percentage] / 100).round(2)
+
+        if self.overwrite:
+            self.data[self.percentage] = result
+        else:
+            self.data[self.new_column_name] = result
+
+        return self.data
     
 class IsInTolerance(Calculation):
     """
-    Given a requested value (float or int), a real value (float or int), and a tolerance percentage, the 
-    subclass returns a data dictionary containing a new column named "Deviation" (default) with three possible results:
-    1 = Over Tolerance
-    2 = Under Tolerance
-    3 = Within Tolerance
+    Given requested, actual, and tolerance (%) columns, this class adds a new column (default: 'Deviation') 
+    with:
+        1 = Over Tolerance
+        2 = Within Tolerance
+        3 = Under Tolerance
     """
-    def __init__(self, data, requested, real, tolerance, new_column_name="Deviation"):
+    def __init__(self, data: pd.DataFrame, requested: str, real: str, tolerance: str, new_column_name="Deviation"):
         super().__init__(data)
-        self.requested=requested
-        self.real=real
+        self.requested = requested
+        self.real = real
         self.tolerance = tolerance
         self.new_column_name = new_column_name
-    
-    def apply_calculation(self):
-        # Initialize an empty list to store new results
-        filtered_data = []
 
-        for row in self.data:
-            if (isinstance(row[self.requested],(int, float)) 
-                and isinstance(row[self.tolerance],  (int, float)) 
-                and isinstance(row[self.real],(int, float)) ):
-                #Calculate Upper and Lower tolerance in "real" number instead of percentage
-                Tol_bass_1 = row[self.tolerance]/100
-                UpperTol = row[self.requested] *(1+Tol_bass_1)
-                LowerTol = row[self.requested] *(1-Tol_bass_1)
+    def apply_calculation(self) -> pd.DataFrame:
+        # Ensure numeric columns
+        self.data[self.requested] = pd.to_numeric(self.data[self.requested], errors="coerce")
+        if self.data is None:
+            print("Data Is None")
+        self.data[self.real] = pd.to_numeric(self.data[self.real], errors="coerce")
+        if self.data is None:
+            print("Data Is None")
+        self.data[self.tolerance] = pd.to_numeric(self.data[self.tolerance], errors="coerce")
+        if self.data is None:
+            print("Data Is None")
+        # Calculate tolerance bounds
+        tol_fraction = self.data[self.tolerance] / 100
+        upper_tol = self.data[self.requested] * (1 + tol_fraction)
+        lower_tol = self.data[self.requested] * (1 - tol_fraction)
 
-                #Clasify by Over, Under and Within tolerance
-                if row[self.real] > UpperTol:
-                    row[self.new_column_name] = 1 #Over Tolerance
-                elif row[self.real] < LowerTol: 
-                    row[self.new_column_name] = 3 #Under Tolerance
-                else:
-                    row[self.new_column_name] = 2 #Within tolerance
-                
-                #Save the data
-                filtered_data.append(row)
-        
-        return filtered_data
+        # Classify deviations:
+        # 1 = Over Tolerance, 3 = Under Tolerance, 2 = Within Tolerance
+        deviation = pd.Series(2, index=self.data.index)  # Default: Within tolerance
+        deviation[self.data[self.real] > upper_tol] = 1  # Over
+        deviation[self.data[self.real] < lower_tol] = 3  # Under
+
+        # Assign the result to a new column
+        self.data[self.new_column_name] = deviation
+
+        return self.data
 
 class CalculateLogTraces(Calculation):
     
