@@ -81,5 +81,5 @@ class DBConnection:
             raise Exception(f"Error executing query: {e}")
         
      # Asynchronous method that runs the blocking code in a separate thread   
-    async def fetch_df(self, query: str) -> List[Dict[str, Any]]:
+    async def fetch_df(self, query: str) -> pd.DataFrame:
         return await asyncio.to_thread(self._connect_and_fetch_df, query)
