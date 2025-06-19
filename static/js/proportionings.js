@@ -1,6 +1,6 @@
 let fullData = [];
 let currentPage = 1;
-const rowsPerPage = 2000;
+const rowsPerPage = 500;
 
 // ---------------- UPDATE PROPORTIONING DATA ---------------- //
 document.addEventListener("DOMContentLoaded", function () {
