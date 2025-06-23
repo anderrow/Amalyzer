@@ -6,38 +6,20 @@ const rowsPerPage = 500;
 document.addEventListener("DOMContentLoaded", function () {
     fetchProportioningData("/api/proportionings");
 
-    const updateButton = document.querySelector("#updateButton");
-    const filterUpdateButton = document.querySelector("#FilterButton");
-
-    if (updateButton) {
-        updateButton.addEventListener("click", function () {
-            console.log("Update Table Data...");
-            fetchProportioningData("/api/proportionings");
-        });
+    function addButtonEventListener(buttonId, callback) {
+        const button = document.querySelector(buttonId);
+        if (button) {
+            button.addEventListener("click", callback);
+        }
     }
 
-    if (filterUpdateButton) {
-        filterUpdateButton.addEventListener("click", function () {
-            console.log("Update Table (Filter) Data...");
-            const switchChecked = document.querySelector("#ArticleFilterSwitch").checked;
-            const requestedArticle = document.querySelector("#RequestedArticle").value;
-            const ageSwitchChecked = document.querySelector("#AgeFilterSwitch").checked;
-            const timeUnit = document.querySelector("#time-unit").value;
-            const rangeValue = document.querySelector(".short-slider").value;
-
-            const url = `/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}&ageSwitchChecked=${ageSwitchChecked}&timeUnit=${timeUnit}&rangeValue=${rangeValue}`;
-            fetchProportioningData(url);
-        });
+    function showError(message) {
+        const errorContainer = document.getElementById("error-container");
+        if (errorContainer) {
+            errorContainer.textContent = message;
+            errorContainer.style.display = "block";
+        }
     }
-
-    fetch("/common/PropId")
-        .then(response => response.text())
-        .then(data => {
-            console.log("Fetched PropId:", data);
-            const inputField = document.getElementById("PropIdInput");
-            if (inputField) inputField.value = data;
-        })
-        .catch(error => console.error("Error fetching current propDbId:", error));
 
     async function loadArticleNames() {
         try {
@@ -47,16 +29,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
             select.length = 1;
 
+            const fragment = document.createDocumentFragment();
             articleNames.forEach(article => {
                 const option = document.createElement('option');
                 option.value = article.ArticleName;
                 option.textContent = article.ArticleName;
-                select.appendChild(option);
+                fragment.appendChild(option);
             });
+            select.appendChild(fragment);
         } catch (error) {
             console.error('Error loading article names:', error);
+            showError('Failed to load article names. Please try again.');
         }
     }
+
+    addButtonEventListener("#updateButton", () => {
+        console.log("Update Table Data...");
+        fetchProportioningData("/api/proportionings");
+    });
+
+    addButtonEventListener("#FilterButton", () => {
+        console.log("Update Table (Filter) Data...");
+        const switchChecked = document.querySelector("#ArticleFilterSwitch").checked;
+        const requestedArticle = document.querySelector("#RequestedArticle").value;
+        const ageSwitchChecked = document.querySelector("#AgeFilterSwitch").checked;
+        const timeUnit = document.querySelector("#time-unit").value;
+        const rangeValue = document.querySelector(".short-slider").value;
+
+        const url = `/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}&ageSwitchChecked=${ageSwitchChecked}&timeUnit=${timeUnit}&rangeValue=${rangeValue}`;
+        fetchProportioningData(url);
+    });
+
+    fetch("/common/PropId")
+        .then(response => response.text())
+        .then(data => {
+            console.log("Fetched PropId:", data);
+            const inputField = document.getElementById("PropIdInput");
+            if (inputField) inputField.value = data;
+        })
+        .catch(error => {
+            console.error("Error fetching current propDbId:", error);
+            showError("Failed to fetch PropId. Please try again.");
+        });
 
     loadArticleNames();
 });
