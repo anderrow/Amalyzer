@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 import pandas as pd
+from typing import List, Dict, Any
+from enum import Enum
 
 class FilterData:
     """
@@ -62,3 +64,73 @@ class FilterByDateTime(FilterData):
         filtered_df = self.data[col_dt >= threshold_time].copy() #Copy() makes everything saffer
 
         return filtered_df
+
+class ReadableDataFormatter:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df
+
+    def format_start_time(self):
+        if "StartTime" in self.df.columns:
+            self.df["StartTime"] = pd.to_datetime(self.df["StartTime"], errors="coerce")
+            self.df["StartTime"] = self.df["StartTime"].dt.strftime("%Y-%m-%d %A %H:%M:%S")
+
+    def format_actual(self):
+        if "Actual" in self.df.columns:
+            self.df["Actual"] = pd.to_numeric(self.df["Actual"], errors="coerce").round(4)
+
+    def format_vms_scan(self):
+        if "VMSscan" in self.df.columns:
+            self.df["VMSscan"] = self.df["VMSscan"].map({True: "✅", False: "❌"})
+
+    def format_lot_id(self):
+        if "LotID" in self.df.columns:
+            self.df["LotID"] = self.df["LotID"].astype(str).str.replace("##", "#<br>#", regex=False)
+
+    def format_type_of_dosing(self):
+        if "TypeOfDosing" in self.df.columns:
+            def format_dosing(val):
+                try:
+                    return DosingType(val).name.capitalize()
+                except ValueError:
+                    return f"Unknown ({val})"
+            self.df["TypeOfDosing"] = self.df["TypeOfDosing"].apply(format_dosing)
+
+    def format_tolerance(self):
+        if "Tolerance" in self.df.columns and "calc_per" in self.df.columns:
+            def format_tolerance(row):
+                try:
+                    tol = float(row["Tolerance"])
+                    kg = float(row["calc_per"])
+                    return f"{tol}% <br> {kg:.2f} kg"
+                except:
+                    return row["Tolerance"]
+            self.df["Tolerance"] = self.df.apply(format_tolerance, axis=1)
+
+    def format_deviation(self):
+        if "Deviation" in self.df.columns:
+            def format_deviation(val):
+                try:
+                    return Deviation(val).name.capitalize()
+                except ValueError:
+                    return f"Unknown ({val})"
+            self.df["Deviation"] = self.df["Deviation"].apply(format_deviation)
+
+    def apply_all_formats(self) -> List[Dict[str, Any]]:
+        self.format_start_time()
+        self.format_actual()
+        self.format_vms_scan()
+        self.format_lot_id()
+        self.format_type_of_dosing()
+        self.format_tolerance()
+        self.format_deviation()
+        return self.df.to_dict(orient="records")
+
+class DosingType(Enum):
+    NORMAL = 1
+    LEARNING = 2
+    D2E = 100
+
+class Deviation(Enum):
+    OVERDOSING = 1
+    NORMAL = 2
+    UNDERDOSING = 3

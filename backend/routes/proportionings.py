@@ -3,7 +3,7 @@ from fastapi import Query
 from backend.database.config import config
 from backend.database.query import query_proportionings
 from backend.classes.db_connection import DBConnection
-from backend.classes.filter_data import FilterByString, FilterByDateTime
+from backend.classes.filter_data import FilterByString, FilterByDateTime, ReadableDataFormatter
 from backend.classes.request import PropIdRequest
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance
 from backend.memory.state import session_data
@@ -120,54 +120,8 @@ def calculate(data):
     return data
 #  -----------------  Filter Database to make it more redable  ----------------- #
 def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:
-    # Format "StartTime"
-    if "StartTime" in df.columns:
-        df["StartTime"] = pd.to_datetime(df["StartTime"], errors="coerce")
-        df["StartTime"] = df["StartTime"].dt.strftime("%Y-%m-%d %A %H:%M:%S")
-
-    # Format "Actual" to 4 decimal places
-    if "Actual" in df.columns:
-        df["Actual"] = pd.to_numeric(df["Actual"], errors="coerce").round(4)
-
-    # Convert boolean "VMSscan" to emojis
-    if "VMSscan" in df.columns:
-        df["VMSscan"] = df["VMSscan"].map({True: "✅", False: "❌"})
-
-    # Format "LotID"
-    if "LotID" in df.columns:
-        df["LotID"] = df["LotID"].astype(str).str.replace("##", "#<br>#", regex=False)
-
-    # Format "TypeOfDosing" using Enum
-    if "TypeOfDosing" in df.columns:
-        def format_dosing(val):
-            try:
-                return DosingType(val).name.capitalize()
-            except ValueError:
-                return f"Unknown ({val})"
-        df["TypeOfDosing"] = df["TypeOfDosing"].apply(format_dosing)
-
-    # Format "Tolerance" with percentage and weight (calc_per must exist)
-    if "Tolerance" in df.columns and "calc_per" in df.columns:
-        def format_tolerance(row):
-            try:
-                tol = float(row["Tolerance"])
-                kg = float(row["calc_per"])
-                return f"{tol}% <br> {kg:.2f} kg"
-            except:
-                return row["Tolerance"]
-        df["Tolerance"] = df.apply(format_tolerance, axis=1)
-
-    # Format "Deviation" using Enum
-    if "Deviation" in df.columns:
-        def format_deviation(val):
-            try:
-                return Deviation(val).name.capitalize()
-            except ValueError:
-                return f"Unknown ({val})"
-        df["Deviation"] = df["Deviation"].apply(format_deviation)
-
-    # Return as list of dicts for FastAPI response
-    return df.to_dict(orient="records")
+    formatter = ReadableDataFormatter(df)
+    return formatter.apply_all_formats()
 
 class DosingType(Enum):
     NORMAL = 1
