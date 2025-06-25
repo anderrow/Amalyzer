@@ -731,7 +731,6 @@ output {
     width: 100%;
     font-family: Arial, sans-serif;
     border-radius: 8px;
-    table-layout: fixed;
     overflow-y: auto;
 }
 #RegressorTable th,
