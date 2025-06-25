@@ -194,11 +194,13 @@ nav {
   
 #ProportioningTable {
     width: 100%;
-    table-layout: fixed;
     border-collapse: collapse;
     font-size: 14px;
     background-color: white;
     border-radius: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 #ProportioningTable th{
     position: sticky;
