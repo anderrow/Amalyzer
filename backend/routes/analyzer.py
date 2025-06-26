@@ -5,13 +5,13 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import PlotPointsinTime, TraceData
 from backend.database.config import config
 from backend.classes.request import RequestPropId
-from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph
+from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph, query_analyzer_flow
 router = APIRouter(prefix="/analyzer")  
 
 # Initialize the DBConnection object
 db_connection = DBConnection(config=config) #config is declared in backend/database/config.py   
 
-# ---------- Generate and return interactive graph ---------- #
+# ---------- Generate and return interactive graph SLIDE POSITION  ---------- #
 @router.get("/Graph1", response_class=HTMLResponse)
 async def generate_graph():
     try:
@@ -21,10 +21,11 @@ async def generate_graph():
         #Generate an empty list for traces
         trace_list = []
         #Generate TraceData object and append it
-        trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index,  y_data=df["dc_out_desiredslideposition"], mode="lines", color="pink"))
-        trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index,  y_data=df["plant_out_slideposition"], mode="lines", color="blue"))
         trace_list.append(TraceData(label="Vibratos",  sample_time=0.01, x_data=df.index,  y_data=[5 if y else -10 for y in df["dc_out_controlvibrator"]], mode="markers", color="grey"))
         trace_list.append(TraceData(label="Knocer",  sample_time=0.01, x_data=df.index,  y_data=[2.5 if y else -10 for y in df["dc_out_controlknocker"]], mode="markers", color="purple"))
+        trace_list.append(TraceData(label="Desired Position",  sample_time=0.01, x_data=df.index,  y_data=df["dc_out_desiredslideposition"], mode="lines", color="pink"))
+        trace_list.append(TraceData(label="Real Time Position",  sample_time=0.01, x_data=df.index,  y_data=df["plant_out_slideposition"], mode="lines", color="blue"))
+
         
         graph_html = PlotPointsinTime( 
             title="Slide Position", 
@@ -42,7 +43,7 @@ async def generate_graph():
         # Aquí podrías devolver un HTML de error, o un JSON si prefieres
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
     
-# ---------- Generate and return interactive graph ---------- #
+# ---------- Generate and return interactive graph  DOSED MATERIAL---------- #
 @router.get("/Graph2", response_class=HTMLResponse)
 async def generate_graph():
     try:
@@ -81,6 +82,37 @@ async def generate_graph():
         print(f"Error: {e}")
         # Aquí podrías devolver un HTML de error, o un JSON si prefieres
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
+
+# ---------- Generate and return interactive graph SLIDE POSITION  ---------- #
+@router.get("/Graph3", response_class=HTMLResponse)
+async def generate_graph():
+    try:
+        df = await db_connection.fetch_df(query=query_analyzer_flow)
+        debug(RequestPropId().return_data(), "Material Flow") # Debugging by console
+
+        #Generate an empty list for traces
+        trace_list = []
+        #Generate TraceData object and append it
+        trace_list.append(TraceData(label="Expected Flow",  sample_time=0.01, x_data=df.index,  y_data=df["dc_out_expectedflow"], mode="lines", color="blue"))
+        trace_list.append(TraceData(label="Desired Flow",  sample_time=0.01, x_data=df.index,  y_data=df["dc_out_desiredflow"], mode="lines", color="pink",  dash="dash"))
+        trace_list.append(TraceData(label="Actual Flow",  sample_time=0.01, x_data=df.index,  y_data=df["f_out_filteredflow2"], mode="lines", color="green"))
+        
+        graph_html = PlotPointsinTime( 
+            title="Material Flow", 
+            xaxis_title="Seconds", 
+            yaxis_title="Kg/s", 
+            traces=trace_list,
+            leyend_pos=["top", "right"]
+        ).plot_graph()
+
+        # Return raw HTML
+        return graph_html
+
+    except Exception as e:
+        print(f"Error: {e}")
+        # Aquí podrías devolver un HTML de error, o un JSON si prefieres
+        return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
+    
 
 # ---------- SUMMARY TABLE ---------- #
 @router.get("/Summary")

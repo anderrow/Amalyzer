@@ -48,6 +48,30 @@ window.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => console.error("Error fetching graph:", err));
 
+    // Fetch and inject Graph2 HTML
+    fetch("/analyzer/Graph3", { })
+    .then(res => res.text())
+    .then(html => {
+        const graphContainer = document.getElementById("graph-container3");
+        graphContainer.innerHTML = html;  // 1) insert raw HTML
+
+        // 2) now find all <script> tags inside the graphContainer
+        graphContainer.querySelectorAll("script").forEach(oldScript => {
+            // Create a new identical <script>
+            const newScript = document.createElement("script");
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            // Add it to <head> (or body)
+            document.head.appendChild(newScript);
+            // Optionally remove the old one
+            oldScript.remove();
+        });
+    })
+    .catch(err => console.error("Error fetching graph:", err));
+
     // Fetch current Proportioning ID
     fetch("/common/PropId")
         .then(response => response.text())

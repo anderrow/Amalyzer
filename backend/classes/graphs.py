@@ -95,7 +95,7 @@ class PlotPointsinTime(Graph):
                 borderwidth=1
             ),
             autosize=True, 
-            yaxis=dict(range=[0, max_y],fixedrange=False), #Force to strart in y=0
+            yaxis=dict(range=[0, max_y*1.1],fixedrange=False), #Force to strart in y=0
             xaxis=dict(range=[0, max_x],fixedrange=False), #Force to strart in x=0
         )
 

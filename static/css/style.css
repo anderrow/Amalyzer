@@ -525,7 +525,7 @@ input, select {
     justify-content: center;
     height: 80%;
 }
-#graph-container, #graph-container2 {
+#graph-container, #graph-container2, #graph-container3 {
     width: 95%;  
 }
 #ProportioningConnection, .PropConnection {
@@ -766,13 +766,13 @@ output {
     width: 100% !important;
 }
 
-#graph-container, #graph-container2 {
+#graph-container, #graph-container2, #graph-container3 {
     flex: 1 1 0; 
     min-height: 0;
     position: relative; 
 }
 
-#graph-container > div , #graph-container2 > div {
+#graph-container > div , #graph-container2 > div, #graph-container3 > div {
     height: 100% !important;
     width: 100% !important;
 }

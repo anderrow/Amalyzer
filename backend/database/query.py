@@ -97,7 +97,13 @@ SELECT
     FROM 
     amadeus_logging WHERE proportioning_dbid =  {current_prop} ;
 """
-
+#SQL query to fetch Analyzer Graph3 (Flow)
+query_analyzer_flow= """
+SELECT 
+    dc_out_desiredflow,dc_out_expectedflow, f_out_filteredflow2 
+    FROM 
+    amadeus_logging WHERE proportioning_dbid =  {current_prop} ;
+"""
 #SQL query to fetch Regressor Graph
 query_regressor_graph = """
 SELECT
@@ -119,7 +125,7 @@ SELECT
     FROM public.amadeus_lot
 WHERE lot_dbid = {current_lot}
 """
-#SQL query to reqest VMS data
+#SQL query to request VMS data
 query_vms_data = """
 SELECT proportioning_dbid, sensor_l, sensor_m, sensor_r FROM public.amadeus_vms_logging
 	where proportioning_dbid = 	{current_prop}
