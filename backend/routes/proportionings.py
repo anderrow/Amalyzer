@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi import Query
 from backend.database.config import config
-from backend.database.query import query_proportionings
+from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import FilterByString, FilterByDateTime, ReadableDataFormatter
 from backend.classes.request import PropIdRequest
@@ -24,7 +24,7 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 async def get_proportionings() -> List[Dict[str, Any]]:
     try:
         # Fetch data from the database
-        data = await db_connection.fetch_df(query=query_proportionings) #Raw Data
+        data = await db_connection.fetch_df(query=query_proportionings) #Raw Data (Limited to 1000 rows by default)
 
         #Make all the calculations that are needed
         data = calculate(data)
@@ -48,16 +48,20 @@ async def get_proportionings_filtered(
     timeUnit: str = Query("Minutes"),  # Parameter for time unit (minutes, hours, days) (Default Minutes)
     rangeValue: int = Query(50)  # Parameter for slider value (default to 50)  
 ) -> List[Dict[str, Any]]:
+    
     try:
-        # Fetch data from the database
-        data = await db_connection.fetch_df(query=query_proportionings)
+        # Copy the base query for proportionings
+        query_proportionings_filtered = query_proportionings_filter
 
-        #Make all the calculations that are needed
-        data = calculate(data)
+        # Initialize an empty where clause (To avoid errors if no filters are applied with "none" values in the query)
+        where_clause = ""
 
+        # Initialize an empty list to hold conditions
+        conditions = []
         #Filter by Article if it's requested
         if switchChecked:
-            data = FilterByString(data, requestedArticle, 'ArticleName').apply_filter()
+            
+            conditions.append(f"name = '{requestedArticle}'")  # Add condition for ArticleName
             print("\n"+"*"*50 +"\n* Article Filter Switch enabled" + " "*18 + "*")
             print(f"* Requested Article: {requestedArticle:<28}* \n"+"*"*50+"\n")
             
@@ -65,10 +69,19 @@ async def get_proportionings_filtered(
         # Handle Age Filter logic
         if ageSwitchChecked:
             # Filter by age range if needed based on rangeValue and timeUnit
-            data = FilterByDateTime(data, rangeValue, timeUnit, 'StartTime').apply_filter()
+            conditions.append(f"start_time >= NOW() - INTERVAL '{rangeValue} {timeUnit}'")
+            # Add the age filter to the where clause
             print("\n" + "*" * 50 + "\n* Age Filter Switch enabled" + " "*22 + "*")
             print(f"* Requested Time: {rangeValue} {timeUnit:<28}* \n" + "*" * 50 + "\n")
-        
+
+        if conditions:
+            where_clause = "WHERE " + " AND ".join(conditions)
+
+        # Fetch data from the database
+        data = await db_connection.fetch_df(query=query_proportionings_filtered.format(where_clause=where_clause)) #Raw Data
+        #Make all the calculations that are needed
+        data = calculate(data)
+
         #Make data redable
         data = make_db_redable(data)
 
