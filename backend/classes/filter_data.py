@@ -101,7 +101,7 @@ class ReadableDataFormatter:
                 try:
                     tol = float(row["Tolerance"])
                     kg = float(row["calc_per"])
-                    return f"{tol}% <br> {kg:.2f} kg"
+                    return f"{tol:.2f}% <br> {kg:.2f} kg"
                 except:
                     return row["Tolerance"]
             self.df["Tolerance"] = self.df.apply(format_tolerance, axis=1)
