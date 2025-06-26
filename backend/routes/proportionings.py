@@ -9,7 +9,6 @@ from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsI
 from backend.memory.state import session_data
 from typing import List, Dict, Any
 from datetime import datetime
-from enum import Enum
 import pandas as pd
 
 # Create an APIRouter instance
@@ -135,15 +134,5 @@ def calculate(data):
 def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:
     formatter = ReadableDataFormatter(df)
     return formatter.apply_all_formats()
-
-class DosingType(Enum):
-    NORMAL = 1
-    LEARNING = 2
-    D2E = 100
-
-class Deviation(Enum):
-    OVERDOSING = 1
-    NORMAL = 2
-    UNDERDOSING = 3
 
 
