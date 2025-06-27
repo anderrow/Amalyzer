@@ -199,29 +199,27 @@ nav {
     background-color: white;
     border-radius: 8px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
-#ProportioningTable th{
+
+#ProportioningTable th {
     position: sticky;
+    top: 0; /* Importante para que se quede arriba */
     z-index: 2;
     border-bottom: 1px solid #ccc;
+    background-color: #4fb40c;
+    color: white;
 }
+
 #ProportioningTable th, #ProportioningTable td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
 }
 
-#ProportioningTable td{
+#ProportioningTable td {
     overflow: hidden;
     overflow-wrap: break-word;
-}
-
-#ProportioningTable th {
-    background-color: #4fb40c;
-    color: white;
-    text-align: center;
+    text-overflow: ellipsis;
 }
 
 #ProportioningTable tr:nth-child(even) {

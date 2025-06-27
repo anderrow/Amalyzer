@@ -150,6 +150,17 @@ function renderTablePage(page) {
     });
 
     tableBody.appendChild(fragment);
+
+    // Inicializar DataTables si no está ya inicializado
+    if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#ProportioningTable')) {
+        $('#ProportioningTable').DataTable({
+            paging: false,
+            searching: true,
+            ordering: true,
+            info: false,
+            destroy: true
+        });
+    }
 }
 
 function renderPaginationControls() {
