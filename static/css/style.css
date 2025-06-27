@@ -208,6 +208,14 @@ nav {
     border-bottom: 1px solid #ccc;
     background-color: #4fb40c;
     color: white;
+    cursor: pointer;
+    user-select: none;
+}
+
+#ProportioningTable th .arrow {
+    font-size: 10px;
+    margin-left: 5px;
+    color: #ffffff;
 }
 
 #ProportioningTable th, #ProportioningTable td {

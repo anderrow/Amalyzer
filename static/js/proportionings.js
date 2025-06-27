@@ -1,8 +1,44 @@
 let fullData = [];
 let currentPage = 1;
 const rowsPerPage = 500;
+let sortDirections = []; // Track sort direction per column (true = ascending)
 
-// ---------------- UPDATE PROPORTIONING DATA ---------------- //
+const columnKeys = [
+    "ProportioningDBID", "VMSscan", "ArticleID", "ArticleName", "Requested",
+    "Actual", "Deviation", "Tolerance", "EndTime", "MixBoxID",
+    "IngBoxID", "TypeOfDosing", "StartTime", "DosingLocation", "OrderID",
+    "ArticleDBID", "LotDBID", "LotID"
+];
+
+// ---------------- SORTING FUCTION ---------------- //
+
+function sortTable(columnIndex) {
+    const isAscending = !sortDirections[columnIndex];
+    sortDirections[columnIndex] = isAscending;
+
+    const key = columnKeys[columnIndex];
+
+    fullData.sort((a, b) => {
+        const aText = a[key] != null ? a[key].toString().trim() : "";
+        const bText = b[key] != null ? b[key].toString().trim() : "";
+
+        const aNum = parseFloat(aText);
+        const bNum = parseFloat(bText);
+        const isNumeric = !isNaN(aNum) && !isNaN(bNum);
+
+        if (isNumeric) {
+            return isAscending ? aNum - bNum : bNum - aNum;
+        } else {
+            return isAscending
+                ? aText.localeCompare(bText)
+                : bText.localeCompare(aText);
+        }
+    });
+
+    renderTablePage(currentPage);
+}
+
+// ---------------- INITIALIZATION ---------------- //
 document.addEventListener("DOMContentLoaded", function () {
     fetchProportioningData("/api/proportionings");
 
@@ -123,6 +159,7 @@ function renderTablePage(page) {
             <td>${row.LotID}</td>
         `;
 
+        // Add row click listener to fetch and update selected ID
         tr.addEventListener("click", function () {
             const propDbId = row.ProportioningDBID;
             console.log("Clicked row with PropDbId:", propDbId);
@@ -132,35 +169,24 @@ function renderTablePage(page) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ propDbId })
             })
-            .then(response => response.json())
-            .then(result => {
-                console.log("Backend response:", result);
-                fetch("/common/PropId")
-                    .then(response => response.text())
-                    .then(data => {
-                        const inputField = document.getElementById("PropIdInput");
-                        if (inputField) inputField.value = data;
-                    })
-                    .catch(error => console.error("Error fetching current propDbId:", error));
-            })
-            .catch(error => console.error("Error sending data to backend:", error));
+                .then(response => response.json())
+                .then(result => {
+                    console.log("Backend response:", result);
+                    fetch("/common/PropId")
+                        .then(response => response.text())
+                        .then(data => {
+                            const inputField = document.getElementById("PropIdInput");
+                            if (inputField) inputField.value = data;
+                        })
+                        .catch(error => console.error("Error fetching current propDbId:", error));
+                })
+                .catch(error => console.error("Error sending data to backend:", error));
         });
 
         fragment.appendChild(tr);
     });
 
     tableBody.appendChild(fragment);
-
-    // Inicializar DataTables si no está ya inicializado
-    if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#ProportioningTable')) {
-        $('#ProportioningTable').DataTable({
-            paging: false,
-            searching: true,
-            ordering: true,
-            info: false,
-            destroy: true
-        });
-    }
 }
 
 function renderPaginationControls() {
