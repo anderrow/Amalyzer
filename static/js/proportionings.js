@@ -104,8 +104,6 @@ function renderTablePage(page) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${row.ProportioningDBID}</td>
-            <td>${row.ArticleDBID}</td>
-            <td>${row.LotDBID}</td>
             <td>${row.VMSscan}</td>
             <td>${row.ArticleID}</td>
             <td>${row.ArticleName}</td>
@@ -121,6 +119,8 @@ function renderTablePage(page) {
             <td>${row.DosingLocation}</td>
             <td>${row.TypeOfDosing}</td>
             <td>${row.OrderID}</td>
+            <td>${row.ArticleDBID}</td>
+            <td>${row.LotDBID}</td>
         `;
 
         tr.addEventListener("click", function () {
