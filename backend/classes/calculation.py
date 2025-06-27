@@ -103,24 +103,20 @@ class IsInTolerance(Calculation):
     def apply_calculation(self) -> pd.DataFrame:
         # Ensure numeric columns
         self.data[self.requested] = pd.to_numeric(self.data[self.requested], errors="coerce")
-        if self.data is None:
-            print("Data Is None")
         self.data[self.real] = pd.to_numeric(self.data[self.real], errors="coerce")
-        if self.data is None:
-            print("Data Is None")
         self.data[self.tolerance] = pd.to_numeric(self.data[self.tolerance], errors="coerce")
-        if self.data is None:
-            print("Data Is None")
+
         # Calculate tolerance bounds
         tol_fraction = self.data[self.tolerance] / 100
         upper_tol = self.data[self.requested] * (1 + tol_fraction)
         lower_tol = self.data[self.requested] * (1 - tol_fraction)
 
         # Classify deviations:
-        # 1 = Over Tolerance, 3 = Under Tolerance, 2 = Within Tolerance
+        # 1 = Over Tolerance, 3 = Under Tolerance, 2 = Within Tolerance, 4 = Requested Negative
         deviation = pd.Series(2, index=self.data.index)  # Default: Within tolerance
         deviation[self.data[self.real] > upper_tol] = 1  # Over
         deviation[self.data[self.real] < lower_tol] = 3  # Under
+        deviation[self.data[self.requested] < 0] = 4  # Requested negative (Filling is requested with -1 value, with means "Fill the box")
 
         # Assign the result to a new column
         self.data[self.new_column_name] = deviation
@@ -181,4 +177,4 @@ class CalculateLogTraces(Calculation):
                 trace_list.append(TraceData(label=f"Polynomial Degree {grade}", x_data=poly_range,  y_data=y_deg, mode="lines", color=colors[grade-1], dash="dash")) 
 
         return trace_list
-        
+
