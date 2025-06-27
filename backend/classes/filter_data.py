@@ -5,8 +5,8 @@ from enum import Enum
 
 class FilterData:
     """
-    Given a pandas DataFrame, this base class allows filtering logic to be applied
-    in subclasses using the apply_filter() method.
+    Base class for filtering a pandas DataFrame. Subclasses should implement the apply_filter() method
+    to provide specific filtering logic. The data attribute holds the DataFrame to be filtered.
     """
     def __init__(self, data: pd.DataFrame):
         self.data = data
@@ -21,6 +21,7 @@ class FilterByString(FilterData):
     """
     Filters the DataFrame by checking if the specified value (case-insensitive, trimmed)
     exists within the specified column (which should contain strings).
+    Inherits from FilterData and implements string-based filtering logic.
     """
     def __init__(self, data: pd.DataFrame, value: str, column: str):
         super().__init__(data)
@@ -44,6 +45,7 @@ class FilterByDateTime(FilterData):
     """
     Filters the DataFrame by checking if the datetime in the specified column is
     greater or equal than the threshold calculated as current time minus the specified timedelta.
+    Inherits from FilterData and implements datetime-based filtering logic.
     """
     def __init__(self, data: pd.DataFrame, value: int, timeUnit: str, column: str):
         super().__init__(data)
@@ -66,6 +68,11 @@ class FilterByDateTime(FilterData):
         return filtered_df
 
 class ReadableDataFormatter:
+    """
+    Formats columns in a pandas DataFrame to make the data more readable and user-friendly.
+    Provides methods to format specific columns such as StartTime, Actual, VMSscan, LotID,
+    TypeOfDosing, Tolerance, and Deviation. The apply_all_formats() method applies all formatting.
+    """
     def __init__(self, df: pd.DataFrame):
         self.df = df
 
@@ -126,11 +133,17 @@ class ReadableDataFormatter:
         return self.df.to_dict(orient="records")
 
 class DosingType(Enum):
+    """
+    Enum representing the type of dosing. Used for formatting and validation in data processing.
+    """
     NORMAL = 1
     LEARNING = 2
     D2E = 100
 
 class Deviation(Enum):
+    """
+    Enum representing the type of deviation. Used for formatting and validation in data processing.
+    """
     OVERDOSING = 1
     NORMAL = 2
     UNDERDOSING = 3

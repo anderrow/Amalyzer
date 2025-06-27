@@ -11,7 +11,9 @@ class PropIdRequest(BaseModel):
 
 class Request:
     """
-    When this class is called, it will return the data requested. 
+    Handles the creation and management of HTTP or API requests within the application.
+    Provides methods for building, sending, and processing requests and responses.
+    Intended to be used as a utility class for network communication or API integration.
     """
     def __init__(self):        
         #Get current proportioning id

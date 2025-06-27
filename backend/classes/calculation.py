@@ -6,8 +6,9 @@ from backend.classes.graphs import TraceData
 
 class Calculation:
     """
-    Given a data dictionary with the format List[Dict[str, Any]], the class returns
-    a data dictionary containing the results of the requested filter in the subclass.
+    Provides static methods for performing various calculations on pandas DataFrames, such as
+    calculating means, sums, and other statistical operations. Intended to be used as a utility class
+    for data analysis tasks in the application.
     """
     def __init__(self, data):
         self.data = data
@@ -124,7 +125,13 @@ class IsInTolerance(Calculation):
         return self.data
 
 class CalculateLogTraces(Calculation):
-    
+    """
+    CalculateLogTraces is a subclass of Calculation for performing logarithmic calculations
+    and generating trace data for visualization. It applies a base-10 logarithm to the specified
+    x_data of the DataFrame and performs polynomial regression (including linear regression)
+    on the logged data. The class is initialized with the DataFrame, x and y data column names,
+    the number of bins for creating a range of x values, and the grades for polynomial degrees.
+    """
     def __init__(self, data, x_data, y_data, size, bins, grades=(1,2)):
         # Fail fast
         if not isinstance(data, pd.DataFrame):

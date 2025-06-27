@@ -3,12 +3,11 @@ from fastapi import Query
 from backend.database.config import config
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
-from backend.classes.filter_data import FilterByString, FilterByDateTime, ReadableDataFormatter
+from backend.classes.filter_data import  ReadableDataFormatter
 from backend.classes.request import PropIdRequest
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance
 from backend.memory.state import session_data
 from typing import List, Dict, Any
-from datetime import datetime
 import pandas as pd
 
 # Create an APIRouter instance

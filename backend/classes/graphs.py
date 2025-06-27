@@ -8,8 +8,8 @@ from typing import List, Optional, Union, Sequence
 
 class Graph:
     """
-    Given title, X axis title, Y axis title and a list of dicts which contain the traces information,
-    the class returns a graphic dictionary containing the results of the requested filter in the subclass.
+    Provides methods for generating and managing graph data, such as preparing traces for plotting
+    and formatting data for visualization. Intended to be used as a utility class for graph-related operations.
     """
     def __init__(self,title="Title", xaxis_title="X Axis", yaxis_title="Y Axis",leyend_pos=["top", "right"] ):
         self.fig = go.Figure()
@@ -23,6 +23,10 @@ class Graph:
     
 @dataclass
 class TraceData:
+    """
+    Data structure for holding trace information for plotting graphs. Stores label, x and y data,
+    plot mode, color, and marker/dash style for use in visualization libraries.
+    """
     label: str 
     x_data: Sequence[Union[int, float]] #Sequences accept Pandas series, list or duples
     y_data: Sequence[Union[int, float]]
@@ -55,6 +59,10 @@ class TraceData:
             self.line["dash"] = self.dash
   
 class PlotPointsinTime(Graph):
+    """
+    Generates a 2D plot of points over time using the provided trace data. Inherits from Graph and
+    prepares a Plotly figure for time series or sequential data visualization.
+    """
     def __init__(self, title, xaxis_title, yaxis_title, leyend_pos, traces:list[TraceData] ):
         super().__init__(title, xaxis_title, yaxis_title, leyend_pos)
         self.traces = traces
@@ -103,6 +111,10 @@ class PlotPointsinTime(Graph):
         return pio.to_html(fig, full_html=False,  config={"responsive": True})
 
 class LogScatterPlot(Graph):
+    """
+    Generates a scatter plot with a logarithmic X axis using the provided trace data. Inherits from Graph
+    and prepares a Plotly figure for visualizing data with a wide range of X values.
+    """
     def __init__(self, title, xaxis_title, yaxis_title, leyend_pos,traces:list[TraceData]):
         super().__init__(title, xaxis_title, yaxis_title, leyend_pos)
         self.traces = traces
@@ -162,6 +174,10 @@ class LogScatterPlot(Graph):
 
 
 class Traces3DPlot(Graph):
+    """
+    Generates a 3D plot with traces and a mesh using the provided trace data. Inherits from Graph and
+    prepares a Plotly 3D figure for visualizing spatial or volumetric data.
+    """
     def __init__(self, traces: list[TraceData]):
         if not traces:
             raise ValueError("The trace list is empty.")
@@ -258,7 +274,7 @@ class Traces3DPlot(Graph):
         # Return a Plotly Mesh3d object with the computed geometry
         return go.Mesh3d(
             x=x, y=y, z=z,
-            i=i, j=j, k=k,  # Triangle definitions
+            i=i, j=j, k=k,
             opacity=0.5,
             color='tan',
             flatshading=True,

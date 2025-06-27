@@ -6,12 +6,9 @@ from backend.memory.state import session_data
 from sqlalchemy import create_engine
 
 class DBConnection:
-    
     """
-    Given a configuration dictionary (dbname, user, password, host, port [str, Any])
-    provided at instantiation, and a SQL query passed to the fetch_data method, the 
-    class returns a data dictionary containing the results of the requested query. 
-    It is recommended to use the await keyword when calling fetch_data.
+    Handles the connection to the database. Provides methods to connect, disconnect, and manage
+    the database session or cursor. Intended to be used as a utility class for database operations.
     """
 
     def __init__(self, config: Dict[str, Any]):
@@ -83,3 +80,12 @@ class DBConnection:
      # Asynchronous method that runs the blocking code in a separate thread   
     async def fetch_df(self, query: str) -> pd.DataFrame:
         return await asyncio.to_thread(self._connect_and_fetch_df, query)
+
+class DBConnectionError(Exception):
+    """
+    Custom exception for database connection errors. Raised when a connection or query fails.
+    """
+
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(self.message)
