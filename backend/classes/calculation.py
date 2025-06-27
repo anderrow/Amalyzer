@@ -44,9 +44,9 @@ class CaclulateDateDelta(Calculation):
             if seconds > 60:
                 minutes = int(seconds // 60)
                 sec = int(seconds % 60)
-                return f"{minutes}:{sec:02d}"
+                return f"{minutes}:{sec:02d} min"
             else:
-                return str(seconds)
+                return f"{seconds:.1f} s"
 
         formatted = delta_seconds.apply(format_delta)
 
