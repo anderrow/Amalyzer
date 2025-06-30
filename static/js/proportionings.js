@@ -5,8 +5,8 @@ let sortDirections = []; // Track sort direction per column (true = ascending)
 
 const columnKeys = [
     "ProportioningDBID", "VMSscan", "ArticleID", "ArticleName", "Requested",
-    "Actual", "Deviation", "Tolerance", "EndTime", "MixBoxID",
-    "IngBoxID", "TypeOfDosing", "StartTime", "DosingLocation", "OrderID",
+    "Actual", "Deviation", "Tolerance", "NumericDeviation", "EndTime", 
+    "MixBoxID", "IngBoxID", "TypeOfDosing", "StartTime", "DosingLocation", "OrderID",
     "ArticleDBID", "LotDBID", "LotID"
 ];
 
@@ -146,6 +146,7 @@ function renderTablePage(page) {
             <td>${row.Requested}</td>
             <td>${row.Actual}</td>
             <td>${row.Deviation}</td>
+            <td>${row.NumericDeviation}</td>
             <td>${row.Tolerance}</td>
             <td>${row.EndTime}</td>
             <td>${row.MixBoxID}</td>
