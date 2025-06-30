@@ -142,9 +142,27 @@ class NumericDeviation(Calculation):
         
         # Calculate absolute difference in kg and percentage deviation
         numdeviation = pd.Series(2, index=self.data.index)
-        numdeviation[self.data[self.requested] < 0] = 50.0  # If requested is negative, set numdeviation to 50 kg (-1 means "Fill the box")
-        absdeviation = (self.data[self.requested] - self.data[self.real]).abs().round(2)  # Absolute difference in kg
-        percentage_deviation =  ((self.data[self.real] *100)/self.data[self.requested] -100).round(2)# Percentage deviation
+        df_copy = self.data.copy()  # Create a copy to avoid modifying the original DataFrame
+        
+        # Identify rows where requested == -1 (special case: "Fill the box")
+        mask_fill_box = df_copy[self.requested] == -1
+
+        # Replace requested = real for those cases to prevent division by -1
+        df_copy.loc[mask_fill_box, self.requested] = df_copy[self.real]
+
+        # Calculate absolute and percentage deviation
+        absdeviation = (df_copy[self.requested] - df_copy[self.real]).abs()
+        percentage_deviation = ((df_copy[self.real] * 100) / df_copy[self.requested] - 100)
+
+        # Force both deviations to be 0.0 where the original requested was -1
+        absdeviation[mask_fill_box] = 0.0
+        percentage_deviation[mask_fill_box] = 0.0
+
+        # Round results to two decimal places
+        absdeviation = absdeviation.round(2)
+        percentage_deviation = percentage_deviation.round(2)
+
+
         numdeviation = absdeviation.astype(str) + " kg <br> " + percentage_deviation.astype(str) + " %"
         
 
