@@ -5,7 +5,7 @@ from backend.database.query import query_proportionings, query_proportionings_fi
 from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import  ReadableDataFormatter
 from backend.classes.request import PropIdRequest
-from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance
+from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
 from backend.memory.state import session_data
 from typing import List, Dict, Any
 import pandas as pd
@@ -126,8 +126,9 @@ def calculate(data):
     data = CaclulatPercent(data, "Requested", "Tolerance", overwrite=False).apply_calculation()
     #Add deviation column
     data = IsInTolerance(data, "Requested", "Actual", "Tolerance").apply_calculation()
-    if data is None:
-        print("Data Is None")
+    #Add Numeric Deviation column
+    data = NumericDeviation(data, "Requested", "Actual").apply_calculation()
+
     return data
 #  -----------------  Filter Database to make it more redable  ----------------- #
 def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:

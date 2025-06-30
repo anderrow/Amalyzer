@@ -123,6 +123,36 @@ class IsInTolerance(Calculation):
         self.data[self.new_column_name] = deviation
 
         return self.data
+    
+class NumericDeviation(Calculation):
+    """
+    Given requested, actual  columns, this class adds a new column (default: 'NumericDeviation') 
+    with the absolute difference between requested and actual values in kg and a percentage deviation.
+    """
+    def __init__(self, data: pd.DataFrame, requested: str, real: str, new_column_name="NumericDeviation"):
+        super().__init__(data)
+        self.requested = requested
+        self.real = real
+        self.new_column_name = new_column_name
+
+    def apply_calculation(self) -> pd.DataFrame:
+        # Ensure numeric columns
+        self.data[self.requested] = pd.to_numeric(self.data[self.requested], errors="coerce")
+        self.data[self.real] = pd.to_numeric(self.data[self.real], errors="coerce") 
+        
+        # Calculate absolute difference in kg and percentage deviation
+        numdeviation = pd.Series(2, index=self.data.index)
+        numdeviation[self.data[self.requested] < 0] = 50.0  # If requested is negative, set numdeviation to 50 kg (-1 means "Fill the box")
+        absdeviation = (self.data[self.requested] - self.data[self.real]).abs().round(2)  # Absolute difference in kg
+        percentage_deviation =  ((self.data[self.real] *100)/self.data[self.requested] -100).round(2)# Percentage deviation
+        numdeviation = absdeviation.astype(str) + " kg <br> " + percentage_deviation.astype(str) + " %"
+        
+
+        # Assign the result to a new column
+        self.data[self.new_column_name] = numdeviation
+
+        return self.data
+
 
 class CalculateLogTraces(Calculation):
     """
