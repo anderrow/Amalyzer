@@ -4,10 +4,10 @@ const rowsPerPage = 500;
 let sortDirections = []; // Track sort direction per column (true = ascending)
 
 const columnKeys = [
-    "ProportioningDBID", "VMSscan", "ArticleID", "ArticleName", "Requested",
+    "ProportioningDBID", "VMSscan", "ArticleName", "Requested",
     "Actual", "Deviation", "Tolerance", "NumericDeviation", "EndTime", 
     "MixBoxID", "IngBoxID", "TypeOfDosing", "StartTime", "DosingLocation", "OrderID",
-    "ArticleDBID", "LotDBID", "LotID"
+    "ArticleDBID", "LotDBID", "LotID", "ArticleID"
 ];
 
 // ---------------- SORTING FUCTION ---------------- //

@@ -52,7 +52,7 @@ async def generate_graph():
         debug(RequestPropId().return_data(),"Dosed Material") # Debugging by console
 
         requested = float(summary[0]['Requested'])
-        tolerance = float(summary[0]['Requested'])/100
+        tolerance = float(summary[0]['Tolerance'])/100
         upper_tolerance = requested *  (1+tolerance)
         lower_tolerance = requested * (1-tolerance)
 
