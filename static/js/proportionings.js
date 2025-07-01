@@ -162,6 +162,10 @@ function renderTablePage(page) {
 
         // Add row click listener to fetch and update selected ID
         tr.addEventListener("click", function () {
+            // Highlight this row, remove highlight from others
+            Array.from(tableBody.querySelectorAll('tr')).forEach(rowEl => rowEl.classList.remove('rowselected'));
+            tr.classList.add('rowselected');
+
             const propDbId = row.ProportioningDBID;
             console.log("Clicked row with PropDbId:", propDbId);
 

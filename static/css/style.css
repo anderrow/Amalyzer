@@ -234,7 +234,7 @@ nav {
     background-color: #f2f2f2;
 }
 
-#ProportioningTable tr:hover {
+/*#ProportioningTable tr:hover {
     background-color: #ddd;
     cursor: pointer;
 }
@@ -246,6 +246,11 @@ nav {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.rowselected {
+    background-color: #0f84d6;
+    color: #fff;
 }
 
 /* Controls inside Proportioning Controls laid out vertically */
@@ -841,4 +846,9 @@ output {
 #graph-container > div , #graph-container2 > div, #graph-container3 > div {
     height: 100% !important;
     width: 100% !important;
+}
+
+#ProportioningTable tr.rowselected {
+    background-color: #e0fac3 !important; /* Highlight color */
+    color: #222 !important; /* Ensure text is dark for visibility */
 }
