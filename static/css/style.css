@@ -289,6 +289,66 @@ nav {
     gap: 10px; 
 }
 
+/* Centrado de botón updateButton y label/input PropIdInput en su li */
+.PropBoardContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 100%;
+}
+
+.PropBoardContainer li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex: 1 1 0;
+}
+.PropBoardContainer li input {
+    justify-items: center;
+}
+
+#updateButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.PropIdInput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.PropIdInput label {
+    display: block;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    padding-left: 0;
+}
+
+.PropIdInput input {
+    text-align: center;
+}
+.PropButton{
+    margin-left: 5px;
+}
+#PropIdSelectedText {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1px;
+}   
+
 /* Buttons */
 button {
     background: #007bff;

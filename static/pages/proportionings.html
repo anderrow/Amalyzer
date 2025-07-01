@@ -59,49 +59,43 @@
         </section>
 
         <section id="ProportioningControls">
-            
-                <div id="PropMainButtons" class="PropControlBox">
-                    <div class="UpperText"><p>Controls</p></div>
-                    <ul class="PropBoardContainer">
-                        <li class="PropButton"><button id="updateButton">Update</button></li>
-                        <li class="PropButton"><button>Go to Lot</button></li>
-                        <li class="PropButton"><button>Go to VMS</button></li>
-                        <li class="PropButton"><button id="GoToProportioning"><a href="Analyzer.html">Go to Proportioning</a></button></li>
-                    </ul>
-                    <div class="PropIdInput">
-                        <label for="PropIdInput">Proportioning Id selected:</label>
+                <ul class="PropBoardContainer">
+                    <li class="PropButton">
+                        <button id="updateButton">Update</button>
+                    </li>
+                    <li >
+                        <p id="PropIdSelectedText">Prop.ID Selected:</p>
                         <input type="text" id="PropIdInput" name="PropIdInput" value="" />
-                    </div>
-                </div>
-        
+                    </li>
+                </ul>
+                <!--Article Filter-->
                 <div id="ArticleFilter" class="PropControlBox">
-                    <div class="UpperText"><p>Article Filter</p></div>
-                    <label class="switch">
-                        <input type="checkbox" id="ArticleFilterSwitch">
-                        <span class="slider"></span>
-                    </label>
-                    <select type="text" size="1" id="RequestedArticle" onchange="" placeholder="Search for articles..">
-                        <option value="" disabled selected>Filter by Article</option>
-                        <!--Fetch by the Backend-->
-                    </select>
-                </div>
-
-                <div id="AgeFilter" class="PropControlBox">
-                    <div class="UpperText"><p>Age Filter</p></div>
-                    <label class="switch">
-                        <input type="checkbox" id="AgeFilterSwitch">
-                        <span class="slider"></span>
-                    </label>
-                    <select id="time-unit">
-                        <option value="minutes">Minutes</option>
-                        <option value="hours">Hours</option>
-                        <option value="days">Days</option>
-                    </select>
-                    <input type="range" min="0" max="100" value="10" class="short-slider" oninput="rangevalue.value = value" />
-                    <output id="rangevalue">10</output>
-                    <button id="FilterButton">Update Filtered Data</button>
-                </div>
-            
+                <div class="UpperText"><p>Article Filter</p></div>
+                <label class="switch">
+                    <input type="checkbox" id="ArticleFilterSwitch">
+                    <span class="slider"></span>
+                </label>
+                <select type="text" size="1" id="RequestedArticle" onchange="" placeholder="Search for articles..">
+                    <option value="" disabled selected>Filter by Article</option>
+                    <!--Fetch by the Backend-->
+                </select>
+            </div>
+            <!--Age Filter-->
+            <div id="AgeFilter" class="PropControlBox">
+                <div class="UpperText"><p>Age Filter</p></div>
+                <label class="switch">
+                    <input type="checkbox" id="AgeFilterSwitch">
+                    <span class="slider"></span>
+                </label>
+                <select id="time-unit">
+                    <option value="minutes">Minutes</option>
+                    <option value="hours">Hours</option>
+                    <option value="days">Days</option>
+                </select>
+                <input type="range" min="0" max="100" value="10" class="short-slider" oninput="rangevalue.value = value" />
+                <output id="rangevalue">10</output>
+                <button id="FilterButton">Update Filtered Data</button>
+            </div>
         </section>        
     </article>  
 </body>
