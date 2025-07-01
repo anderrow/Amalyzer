@@ -143,7 +143,6 @@ function renderTablePage(page) {
         tr.innerHTML = `
             <td>${row.ProportioningDBID}</td>
             <td>${row.VMSscan}</td>
-            <td>${row.ArticleID}</td>
             <td>${row.ArticleName}</td>
             <td>${row.Requested}</td>
             <td>${row.Actual}</td>
@@ -160,6 +159,7 @@ function renderTablePage(page) {
             <td>${row.ArticleDBID}</td>
             <td>${row.LotDBID}</td>
             <td>${row.LotID}</td>
+            <td>${row.ArticleID}</td>
         `;
 
         // Add row click listener to fetch and update selected ID
