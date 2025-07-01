@@ -91,8 +91,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const ageSwitchChecked = document.querySelector("#AgeFilterSwitch").checked;
         const timeUnit = document.querySelector("#time-unit").value;
         const rangeValue = document.querySelector(".short-slider").value;
+        const DeviationSwitchChecked = document.querySelector("#DeviationFilterSwitch").checked;
+        const requestedDeviation = document.querySelector("#RequestedDeviation").value;
 
-        const url = `/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}&ageSwitchChecked=${ageSwitchChecked}&timeUnit=${timeUnit}&rangeValue=${rangeValue}`;
+        const url = `/api/proportioningsfilter?switchChecked=${switchChecked}&requestedArticle=${requestedArticle}&ageSwitchChecked=${ageSwitchChecked}&timeUnit=${timeUnit}&rangeValue=${rangeValue}&deviationSwitchChecked=${DeviationSwitchChecked}&requestedDeviation=${requestedDeviation}`;
         fetchProportioningData(url);
     });
 

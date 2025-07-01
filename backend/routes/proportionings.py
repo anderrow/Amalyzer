@@ -3,7 +3,7 @@ from fastapi import Query
 from backend.database.config import config
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
-from backend.classes.filter_data import  ReadableDataFormatter
+from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, Deviation
 from backend.classes.request import PropIdRequest
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
 from backend.memory.state import session_data
@@ -26,9 +26,12 @@ async def get_proportionings() -> List[Dict[str, Any]]:
 
         #Make all the calculations that are needed
         data = calculate(data)
+        
 
         #Make data redable
         data = make_db_redable(data)
+
+       
 
         return data #Return data
 
@@ -44,7 +47,9 @@ async def get_proportionings_filtered(
     requestedArticle: str = Query(""), # Default is empty string if no input
     ageSwitchChecked: bool = Query(False),  # Parameter for Age Filter switch (Default False)
     timeUnit: str = Query("Minutes"),  # Parameter for time unit (minutes, hours, days) (Default Minutes)
-    rangeValue: int = Query(50)  # Parameter for slider value (default to 50)  
+    rangeValue: int = Query(50),  # Parameter for slider value (default to 50) 
+    deviationSwitchChecked: bool = Query(False),  # Parameter for Deviation Filter switch (Default False)
+    requestedDeviation: str = Query("")  # Parameter for requested deviation type (Default is empty string, if no input is given) 
 ) -> List[Dict[str, Any]]:
     
     try:
@@ -58,7 +63,6 @@ async def get_proportionings_filtered(
         conditions = []
         #Filter by Article if it's requested
         if switchChecked:
-            
             conditions.append(f"name = '{requestedArticle}'")  # Add condition for ArticleName
             print("\n"+"*"*50 +"\n* Article Filter Switch enabled" + " "*18 + "*")
             print(f"* Requested Article: {requestedArticle:<28}* \n"+"*"*50+"\n")
@@ -77,11 +81,20 @@ async def get_proportionings_filtered(
 
         # Fetch data from the database
         data = await db_connection.fetch_df(query=query_proportionings_filtered.format(where_clause=where_clause)) #Raw Data
-        #Make all the calculations that are needed
+            
         data = calculate(data)
 
-        #Make data redable
-        data = make_db_redable(data)
+        # If deviation switch is checked, filter by requested deviation type (This is done in the backend, that's why is done after fetching the data)
+        if deviationSwitchChecked:
+            print("\n"+"*"*50 +"\n* Deviation Filter Switch enabled" + " "*16 + "*")
+            print(f"* Requested Deviation Type: {Deviation(int(requestedDeviation)).name:<21}* \n"+"*"*50+"\n") #print the requested deviation type name, not the numeric value.
+            data = FilterByString(data, requestedDeviation, "Deviation").apply_filter() 
+
+        #Make all the calculations that are needed (After filtering the data for avoiding unnecessary calculations)
+        if not data.empty:
+            data = data.head(500).copy()  # Limit to 500 rows for performance reasons
+            #Make data redable
+            data = make_db_redable(data)
 
         return data
         

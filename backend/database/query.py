@@ -52,7 +52,7 @@ JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.art
 JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
 {where_clause}
 ORDER BY amadeus_proportioning.proportioning_dbid DESC
-LIMIT 1000;"""
+LIMIT 5000;"""
 # SQL query to fetch Analyzer Summary data
 query_analyzer_summary = """
 SELECT 

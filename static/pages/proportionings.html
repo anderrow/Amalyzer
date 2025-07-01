@@ -30,8 +30,8 @@
             <table id="ProportioningTable">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0)">Prop ID <span class="arrow">&#x25B4;&#x25BE;</span></th>
-                        <th onclick="sortTable(1)">VMS Scan <span class="arrow">&#x25B4;&#x25BE;</span></th>
+                        <th onclick="sortTable(0)">PropID <span class="arrow">&#x25B4;&#x25BE;</span></th>
+                        <th onclick="sortTable(1)">VMS<span class="arrow">&#x25B4;&#x25BE;</span></th>
                         <th onclick="sortTable(2)">Article ID <span class="arrow">&#x25B4;&#x25BE;</span></th>
                         <th onclick="sortTable(3)">Article Name <span class="arrow">&#x25B4;&#x25BE;</span></th>
                         <th onclick="sortTable(4)">Target <span class="arrow">&#x25B4;&#x25BE;</span></th>
@@ -79,6 +79,23 @@
                     <option value="" disabled selected>Filter by Article</option>
                     <!--Fetch by the Backend-->
                 </select>
+            </div>
+            <!--Deviation Filter-->
+            <div id="DeviatonFilter" class="PropControlBox">
+                <div class="UpperText"><p>Deviation Filter</p></div>
+                <label class="switch">
+                    <input type="checkbox" id="DeviationFilterSwitch">
+                    <span class="slider"></span>
+                </label>
+                <select type="text" size="1" id="RequestedDeviation" onchange="" placeholder="Select Deviation"> 
+                    <option value="" disabled selected>Select Deviation</option> 
+                    <option value="1">Overdosing</option>
+                    <option value="2" >Normal</option>
+                    <option value="3" >Underdosing</option>
+                    <option value="4" >Filler</option>
+                    <!--Values Linked with the Deviation ENUM (Backend)-->
+                </select>
+                <p>Only the last 500 matching records are displayed</p>
             </div>
             <!--Age Filter-->
             <div id="AgeFilter" class="PropControlBox">
