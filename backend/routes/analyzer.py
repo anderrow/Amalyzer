@@ -5,7 +5,8 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import PlotPointsinTime, TraceData
 from backend.database.config import config
 from backend.classes.request import RequestPropId
-from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph, query_analyzer_flow
+from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph, query_analyzer_flow, query_analyzer_dosed_material
+
 router = APIRouter(prefix="/analyzer")  
 
 # Initialize the DBConnection object
@@ -47,7 +48,7 @@ async def generate_graph():
 @router.get("/Graph2", response_class=HTMLResponse)
 async def generate_graph():
     try:
-        df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
+        df = await db_connection.fetch_df(query=query_analyzer_dosed_material)
         summary = await fetch_table_data(query_analyzer_summary)
         debug(RequestPropId().return_data(),"Dosed Material") # Debugging by console
 
