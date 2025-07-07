@@ -1,13 +1,13 @@
 # backend/routes/vms.py
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi import Query
 from fastapi.responses import HTMLResponse
 from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import Traces3DPlot , TraceData
+from backend.classes.request import RequestPropId
 from backend.database.query import query_vms_data
 import numpy as np
-import pandas as pd
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  
@@ -16,10 +16,11 @@ db_connection = DBConnection(config=config)
 
 # Example endpoint to check vms status
 @router.get("/Graph", response_class=HTMLResponse)
-async def generate_graph():
+async def generate_graph(request: Request):
     try:
+        current_prop = RequestPropId(request).return_data()
         #Take the data from the prop ID requested
-        df = await db_connection.fetch_df(query=query_vms_data)
+        df = await db_connection.fetch_df(query_vms_data, current_prop)
 
         #Filter the dataframe to only take the data INSIDE the box 
         #df = take_data_inside_the_box(df)
