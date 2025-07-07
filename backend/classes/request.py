@@ -41,24 +41,26 @@ class RequestPropId(RequestBase):
     def return_data(self):
         # Get current proportioning id for this user UID
         user_session = session_data.get(self.uid, {})
-        self.current_prop = user_session.get("current_prop_id")
-        return self.current_prop
+        current_prop = user_session.get("current_prop_id")
+        return current_prop
 
 class RequestLotId(RequestBase):
     """
     When this class is called, it will return the Lot Id attached to the current Proportioning ID
     """
-    def __init__(self):
-        
+    def __init__(self, uid: str):     
         super().__init__(uid)
 
     async def return_data(self):
+        # Get current proportioning id for this user UID
+        user_session = session_data.get(self.uid, {})
+        current_prop = user_session.get("current_prop_id")
+        #Write the current_prop variable inside the query
+        query = query_lot_db_id.format(current_prop=current_prop)
+
         # Initialize the DBConnection object
         db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
-        #Write the current_prop variable inside the query
-        query = query_lot_db_id.format(current_prop=self.current_prop)
-        #Save lot_id
-        lot_id = await db_connection.fetch_data(query=query)
-        #Extract the lot_id
-        data = lot_id[0]["lot_dbid"]    
+        lot_id = await db_connection.fetch_data(query)  #Save lot_id
+        data = lot_id[0]["lot_dbid"]    #Extract the lot_id
+
         return data

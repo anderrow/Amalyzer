@@ -1,5 +1,5 @@
 # backend/routes/regressor.py
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi import Query
 from fastapi.responses import HTMLResponse
 from backend.memory.state import session_data
@@ -19,13 +19,15 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph(
+    request: Request, #Request object to extract the lot_id
     intermediates: int = Query(100), #Parametes for Interemdiate/Bin value (default 200)
-    amountOfRegressions: int = Query(2) #Parameter for Amount of Regressions (default 2)
+    amountOfRegressions: int = Query(2) #Parameter for Amount of Regressions (default 2)    
 ):
     try:
         #Extract lot_id and print it
-        lot_id = await RequestLotId().return_data() 
-        debug(lot_id) #Print in console
+        lot_id = await RequestLotId(request).return_data() 
+
+        #debug(lot_id) #Print in console
 
         #Format the query with the current lot id
         query = query_regressor_graph.format(current_lot=lot_id)
@@ -51,13 +53,13 @@ async def generate_graph(
         print(f"Error: {e}")
         # Retrun error
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
-
+"""
 @router.get("/SummaryTable")
-async def summary_table():
+async def summary_table(request: Request):
     data = await fetch_table_data(query_regression_table)
 
     #Extract lot_id and print it
-    lot_id = await RequestLotId().return_data() 
+    lot_id = await RequestLotId(Request).return_data() 
     #Format the query with the current lot id
     query = query_regressor_graph.format(current_lot=lot_id)
     #Generate a dataframe with the DB query (For calculate the length)
@@ -67,6 +69,7 @@ async def summary_table():
         data[0]["IntermediateCount"] = f"{len(df)}"
     return data
 
+
 # ---------- Debug by console   ---------- #
 def debug(lot_id):
     print( # Debugging by console
@@ -74,7 +77,7 @@ def debug(lot_id):
         f"\n* LotID: {f'{lot_id}':<30}*" +
         f"\n* ProportioningID: {f': {RequestPropId().return_data()}':<20}*" +
         "\n" + "*" * 40 + "\n")
-    
+
 # ---------- Request data for table  ---------- #
 async def fetch_table_data(query_template: str):
     try:
@@ -89,3 +92,4 @@ async def fetch_table_data(query_template: str):
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
+"""

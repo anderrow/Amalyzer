@@ -1,3 +1,6 @@
+// Call ensureUID() from uid.js to get or generate the user's UID
+const uid = ensureUID();
+
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch current Proportioning ID
     fetch("/common/PropId")

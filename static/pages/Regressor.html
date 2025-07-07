@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amalyzer</title>
+    <title>Regressor</title>
     <link rel="stylesheet" href="../css/style.css"> <!-- Linking the CSS file -->
     <link rel="icon" type="image/png" href="../images/faviconV2.png">
     <script defer src="../js/regressor.js" defer></script>
+    <script src="/static/js/uid.js"></script> <!-- Linking the UID script -->
 </head>
 <body>
 
@@ -28,7 +29,7 @@
         <section id="ProportioningConnection" class="PropConnection">
                 <label for="ProportioningId">Prop</label>
                 <label for="ProportioningId"> ID:</label>
-                <input type="text" id="ProportioningId" name="ProportioningId" value="Proportioning ID" />
+                <input type="text" id="ProportioningId" name="ProportioningId" value="Proportioning ID" readonly />
                 <input type="text" id="InfoPropId" name="InfoPropId" value="Valuable Information about the Proportioning selected" readonly />
                 <button id="UpdateRegressor">Update</button>
         </section>
