@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from backend.memory.state import session_data
 from backend.classes.db_connection import DBConnection
 from backend.database.config import config
@@ -12,14 +12,20 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 
 # ---------- Get Actual PropId to analyze ---------- #
 @router.get("/PropId")
-async def analyzer_status():
-    current_prop = RequestPropId().return_data()
+async def analyzer_status(request: Request):# Get the current proportioning ID from the request cookies
+    # Get the UID from the request cookies
+    uid = request.cookies.get("uid")
+    current_prop = RequestPropId(uid).return_data()
     return current_prop
 
 # ---------- Extra Information from the PropId ---------- #
 @router.get("/PropIdExtraInfo")
-async def analyzer_status():
-    data = await fetch_data(query_valuable_information)
+async def analyzer_status(request: Request):  # Get the current proportioning ID from the request cookies 
+    # Get the UID from the request cookies
+    uid = request.cookies.get("uid")
+    current_prop = RequestPropId(uid).return_data()
+
+    data = await fetch_data(query_valuable_information, current_prop=current_prop)
 
     if data and isinstance(data, list) and isinstance(data[0], dict):
         values = list(data[0].values())  # ['Vitacell R200', 'MIAVIT 174240##Vitacell R200'] (Extract values from dict)
@@ -30,10 +36,8 @@ async def analyzer_status():
 
 
 # ---------- Request data for table  ---------- #
-async def fetch_data(query_template: str):
+async def fetch_data(query_template: str, current_prop: int) -> dict:
     try:
-        #Get current proportioning id
-        current_prop = session_data.get("current_prop_id")
         #Write the current_prop variable inside the query
         query = query_template.format(current_prop=current_prop)
         #Request the data

@@ -15,9 +15,10 @@ class Request:
     Provides methods for building, sending, and processing requests and responses.
     Intended to be used as a utility class for network communication or API integration.
     """
-    def __init__(self):        
+    def __init__(self, uid: str ):        
         #Get current proportioning id
-        self.current_prop = session_data.get("current_prop_id")
+        self.uid = uid #Unique (user) ID
+        
 
     def return_data(self):
         raise NotImplementedError(f"Subclasses should implement this method. Call one of: {[cls.__name__ for cls in Request.__subclasses__()]}")
@@ -27,13 +28,14 @@ class RequestPropId(Request):
     """
     When this class is called, it will return the current Proportioning ID 
     """
-    def __init__(self):
-
-        super().__init__()
+    def __init__(self, uid: str):
+        super().__init__(uid)
 
     def return_data(self):
-        data = self.current_prop
-        return data
+        # Get current proportioning id for this user UID
+        user_session = session_data.get(self.uid, {})
+        self.current_prop = user_session.get("current_prop_id")
+        return self.current_prop
 
 class RequestLotId(Request):
     """
@@ -41,7 +43,7 @@ class RequestLotId(Request):
     """
     def __init__(self):
         
-        super().__init__()
+        super().__init__(uid)
 
     async def return_data(self):
         # Initialize the DBConnection object

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi import Query
+from fastapi import Query, Request
 from backend.database.config import config
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
@@ -9,6 +9,11 @@ from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsI
 from backend.memory.state import session_data
 from typing import List, Dict, Any
 import pandas as pd
+from pydantic import BaseModel
+
+class PropIdRequest(BaseModel):
+    propDbId: int   # Include propDbId in the request model for tracking purposes
+    uid: str  # Include UID in the request model for tracking purposes
 
 # Create an APIRouter instance
 router = APIRouter()
@@ -21,6 +26,7 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 @router.get("/api/proportionings")
 async def get_proportionings() -> List[Dict[str, Any]]:
     try:
+
         # Fetch data from the database
         data = await db_connection.fetch_df(query=query_proportionings) #Raw Data (Limited to 1000 rows by default)
 
@@ -32,7 +38,6 @@ async def get_proportionings() -> List[Dict[str, Any]]:
         data = make_db_redable(data)
 
        
-
         return data #Return data
 
     except Exception as e:
@@ -105,12 +110,23 @@ async def get_proportionings_filtered(
 
 # ----------------- Define a POST route that listens for row click events from the frontend ----------------- #
 @router.post("/api/rowclicked")
-async def handle_row_click(request: PropIdRequest):
+async def handle_row_click( body: PropIdRequest):
+    # Extract the UID and propDbId from the request body
+    uid = body.uid
+    propDbId = body.propDbId
+
+    # Print the UID from the request cookies to the backend console for debugging/logging purposes
+    print("\n"+"*"*50+ "\n" + f"* UID:{uid:<43}*")
     # Print the received propDbId to the backend console for debugging/logging purposes
-    print("\n"+ "*"*50+ "\n" + f"* PropDBID selected: {request.propDbId:<28}*"+ "\n" + "*"*50 + "\n")
-    # Save int he dictionary using current_prop_id keyword
-    session_data["current_prop_id"] = request.propDbId
-    return {"propDbId": request.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
+    print("*"*50+ "\n" + f"* PropDBID selected: {propDbId:<28}*"+ "\n" + "*"*50 + "\n")
+    # Check if the session_data dictionary already has an entry for the UID
+    # If not, create a new entry for the UID
+    if uid not in session_data:
+        session_data[uid] = {}
+
+    session_data[uid]["current_prop_id"] = propDbId # Store the propDbId in the session_data dictionary under the UID
+
+    return {"propDbId": body.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
 
 # ----------------- Request all the article names ----------------- #
 @router.get("/api/articlenames")

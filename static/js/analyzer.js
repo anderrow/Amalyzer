@@ -1,3 +1,6 @@
+// Call ensureUID() from uid.js to get or generate the user's UID
+const uid = ensureUID();
+
 // -------------------- UPDATE ANALYZER DATA -------------------- //
 window.addEventListener("DOMContentLoaded", () => {
     // Fetch and inject Graph1 HTML

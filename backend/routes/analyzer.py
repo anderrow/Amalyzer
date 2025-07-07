@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from backend.memory.state import session_data
 from backend.classes.db_connection import DBConnection
@@ -7,6 +7,7 @@ from backend.database.config import config
 from backend.classes.request import RequestPropId
 from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph, query_analyzer_flow, query_analyzer_dosed_material
 
+
 router = APIRouter(prefix="/analyzer")  
 
 # Initialize the DBConnection object
@@ -14,10 +15,13 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 
 # ---------- Generate and return interactive graph SLIDE POSITION  ---------- #
 @router.get("/Graph1", response_class=HTMLResponse)
-async def generate_graph():
+async def generate_graph(request: Request):
     try:
-        df = await db_connection.fetch_df(query=query_analyzer_slide_graph)
-        debug(RequestPropId().return_data(), "Slide Position") # Debugging by console
+        current_prop = get_current_prop_id(request) # Get the current proportioning ID from the request cookies
+
+        df = await db_connection.fetch_df(query=query_analyzer_slide_graph, current_prop=current_prop)
+
+        debug(current_prop, "Slide Position") # Debugging by console
 
         #Generate an empty list for traces
         trace_list = []
@@ -44,13 +48,18 @@ async def generate_graph():
         # Aquí podrías devolver un HTML de error, o un JSON si prefieres
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
     
+
 # ---------- Generate and return interactive graph  DOSED MATERIAL---------- #
 @router.get("/Graph2", response_class=HTMLResponse)
-async def generate_graph():
+async def generate_graph(request: Request):
     try:
-        df = await db_connection.fetch_df(query=query_analyzer_dosed_material)
-        summary = await fetch_table_data(query_analyzer_summary)
-        debug(RequestPropId().return_data(),"Dosed Material") # Debugging by console
+        current_prop = get_current_prop_id(request) # Get the current proportioning ID from the request cookies
+
+        df = await db_connection.fetch_df(query=query_analyzer_dosed_material, current_prop=current_prop)
+
+        summary = await fetch_table_data(query_analyzer_summary, current_prop=current_prop)
+
+        debug(current_prop,"Dosed Material") # Debugging by console
 
         requested = float(summary[0]['Requested'])
         tolerance = float(summary[0]['Tolerance'])/100
@@ -86,10 +95,12 @@ async def generate_graph():
 
 # ---------- Generate and return interactive graph SLIDE POSITION  ---------- #
 @router.get("/Graph3", response_class=HTMLResponse)
-async def generate_graph():
+async def generate_graph(request: Request):
     try:
-        df = await db_connection.fetch_df(query=query_analyzer_flow)
-        debug(RequestPropId().return_data(), "Material Flow") # Debugging by console
+        current_prop = get_current_prop_id(request) # Get the current proportioning ID from the request cookies
+
+        df = await db_connection.fetch_df(query=query_analyzer_flow, current_prop=current_prop)
+        debug(current_prop, "Material Flow") # Debugging by console
 
         #Generate an empty list for traces
         trace_list = []
@@ -117,38 +128,35 @@ async def generate_graph():
 
 # ---------- SUMMARY TABLE ---------- #
 @router.get("/Summary")
-async def summary_table():
-    return await fetch_table_data(query_analyzer_summary)
+async def summary_table(request: Request):
+    return await fetch_table_data(query_analyzer_summary, get_current_prop_id(request))
 
 # ---------- PROP RECORD ---------- #    
 @router.get("/PropRecord")
-async def propRecord_table():
-    return await fetch_table_data(query_analyzer_propRecord)
+async def propRecord_table(request: Request):
+    return await fetch_table_data(query_analyzer_propRecord, get_current_prop_id(request))
     
 
 # ---------- Logging Param ---------- #    
 @router.get("/LogginParam")
-async def propRecord_table():
-    return await fetch_table_data(query_analyzer_logginParam)
+async def propRecord_table(request: Request):
+    return await fetch_table_data(query_analyzer_logginParam, get_current_prop_id(request))
     
 
 # ---------- Lot table ---------- #    
 @router.get("/Lot")
-async def lot_table():
-    return await fetch_table_data(query_analyzer_lot)
+async def lot_table(request: Request):
+    return await fetch_table_data(query_analyzer_lot, get_current_prop_id(request))
     
 # ---------- Article table ---------- #    
 @router.get("/Article")
-async def article_table():
-    return await fetch_table_data(query_analyzer_article)
-
+async def article_table(request: Request):
+    return await fetch_table_data(query_analyzer_article, get_current_prop_id(request))
 
 
 # ---------- Request data for table  ---------- #
-async def fetch_table_data(query_template: str):
+async def fetch_table_data(query_template: str, current_prop):
     try:
-        #Get current proportioning id
-        current_prop = session_data.get("current_prop_id")
         #Write the current_prop variable inside the query
         query = query_template.format(current_prop=current_prop)
         #Request the data
@@ -158,6 +166,15 @@ async def fetch_table_data(query_template: str):
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
+def get_current_prop_id(request: Request):
+    """
+    Get the current proportioning ID from the request cookies.
+    """
+    # Get the UID from the request cookies
+    uid = request.cookies.get("uid")
+    # Get current proportioning id for this user UID
+    current_prop = RequestPropId(uid).return_data()
+    return current_prop
 # ---------- Debugging by console  ---------- #
 def debug(prop_id,num):
     print( # Debugging by console

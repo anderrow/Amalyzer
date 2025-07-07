@@ -1,3 +1,6 @@
+// Call ensureUID() from uid.js to get or generate the user's UID
+const uid = ensureUID();
+
 let fullData = [];
 let currentPage = 1;
 const rowsPerPage = 500;
@@ -174,7 +177,8 @@ function renderTablePage(page) {
             fetch(`/api/rowclicked`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ propDbId })
+                credentials: 'include', // Include credentials for session management
+                body: JSON.stringify({ propDbId, uid }) // Send UID for tracking
             })
                 .then(response => response.json())
                 .then(result => {

@@ -49,7 +49,7 @@ class DBConnection:
     async def fetch_data(self, query: str) -> List[Dict[str, Any]]:
         return await asyncio.to_thread(self._connect_and_fetch, query)
     
-    def _connect_and_fetch_df(self, query: str) -> pd.DataFrame:
+    def _connect_and_fetch_df(self, query: str, current_prop =None) -> pd.DataFrame:
         try:
             # Build SQLAlchemy connection string
             user = self.config['ConnectionStrings']['UserID']
@@ -62,8 +62,6 @@ class DBConnection:
             connection_str = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}"
             engine = create_engine(connection_str)
 
-            # Get current proportioning ID from session
-            current_prop = session_data.get("current_prop_id")
             query = query.format(current_prop=current_prop)
 
             # Read query into pandas DataFrame
@@ -78,8 +76,8 @@ class DBConnection:
             raise Exception(f"Error executing query: {e}")
         
      # Asynchronous method that runs the blocking code in a separate thread   
-    async def fetch_df(self, query: str) -> pd.DataFrame:
-        return await asyncio.to_thread(self._connect_and_fetch_df, query)
+    async def fetch_df(self, query: str, current_prop=None) -> pd.DataFrame:
+        return await asyncio.to_thread(self._connect_and_fetch_df, query, current_prop)
 
 class DBConnectionError(Exception):
     """
