@@ -166,15 +166,14 @@ async def fetch_table_data(query_template: str, current_prop):
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
+# ------------ Get the current proportioning ID from the request cookies ---------- #
 def get_current_prop_id(request: Request):
-    """
-    Get the current proportioning ID from the request cookies.
-    """
     # Get the UID from the request cookies
     uid = request.cookies.get("uid")
     # Get current proportioning id for this user UID
     current_prop = RequestPropId(uid).return_data()
     return current_prop
+
 # ---------- Debugging by console  ---------- #
 def debug(prop_id,num):
     print( # Debugging by console
