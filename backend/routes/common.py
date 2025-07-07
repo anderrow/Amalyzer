@@ -13,17 +13,13 @@ db_connection = DBConnection(config=config) #config is declared in backend/datab
 # ---------- Get Actual PropId to analyze ---------- #
 @router.get("/PropId")
 async def analyzer_status(request: Request):# Get the current proportioning ID from the request cookies
-    # Get the UID from the request cookies
-    uid = request.cookies.get("uid")
-    current_prop = RequestPropId(uid).return_data()
+    current_prop = RequestPropId(request).return_data()
     return current_prop
 
 # ---------- Extra Information from the PropId ---------- #
 @router.get("/PropIdExtraInfo")
 async def analyzer_status(request: Request):  # Get the current proportioning ID from the request cookies 
-    # Get the UID from the request cookies
-    uid = request.cookies.get("uid")
-    current_prop = RequestPropId(uid).return_data()
+    current_prop = RequestPropId(request).return_data()
 
     data = await fetch_data(query_valuable_information, current_prop=current_prop)
 
@@ -48,10 +44,3 @@ async def fetch_data(query_template: str, current_prop: int) -> dict:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
     
-# ------------ Get the current proportioning ID from the request cookies ---------- #
-def get_current_prop_id(request: Request):
-    # Get the UID from the request cookies
-    uid = request.cookies.get("uid")
-    # Get current proportioning id for this user UID
-    current_prop = RequestPropId(uid).return_data()
-    return current_prop
