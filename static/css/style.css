@@ -169,7 +169,7 @@ nav {
 
 #ProportioningArticle {
     display: grid;
-    grid-template-columns: 3fr 1fr; /* 3/4 and 1/4 of the screen */
+    grid-template-columns: 4fr 1fr;  /*4/5 and 1/5 of the screen */
     gap: 20px;
     padding: 20px;
     flex: 1;  /* Occupies all remaining space */

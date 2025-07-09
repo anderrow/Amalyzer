@@ -89,10 +89,6 @@ class ReadableDataFormatter:
         if "VMSscan" in self.df.columns:
             self.df["VMSscan"] = self.df["VMSscan"].map({True: "✅", False: "❌"})
 
-    def format_lot_id(self):
-        if "LotID" in self.df.columns:
-            self.df["LotID"] = self.df["LotID"].astype(str).str.replace("##", "#<br>#", regex=False)
-
     def format_type_of_dosing(self):
         if "TypeOfDosing" in self.df.columns:
             def format_dosing(val):
@@ -136,7 +132,6 @@ class ReadableDataFormatter:
         self.format_start_time()
         self.format_actual()
         self.format_vms_scan()
-        self.format_lot_id()
         self.format_type_of_dosing()
         self.format_tolerance()
         self.format_deviation()

@@ -145,6 +145,7 @@ function renderTablePage(page) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${row.ProportioningDBID}</td>
+            <td>${row.StartTime}</td>
             <td>${row.VMSscan}</td>
             <td>${row.ArticleName}</td>
             <td>${row.Requested}</td>
@@ -158,7 +159,6 @@ function renderTablePage(page) {
             <td>${row.MixBoxID}</td>
             <td>${row.IngBoxID}</td>
             <td>${row.TypeOfDosing}</td>
-            <td>${row.StartTime}</td>
             <td>${row.DosingLocation}</td>
             <td>${row.OrderID}</td>
             <td>${row.ArticleDBID}</td>
