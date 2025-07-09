@@ -79,7 +79,7 @@ class ReadableDataFormatter:
     def format_start_time(self):
         if "StartTime" in self.df.columns:
             self.df["StartTime"] = pd.to_datetime(self.df["StartTime"], errors="coerce")
-            self.df["StartTime"] = self.df["StartTime"].dt.strftime("%Y-%m-%d %A %H:%M:%S")
+            self.df["StartTime"] = self.df["StartTime"].dt.strftime("%Y-%m-%d  %H:%M") # Format to "YYYY-MM-DD HH:MM" Year-Month-Day Hour:Minute
 
     def format_actual(self):
         if "Actual" in self.df.columns:
@@ -119,7 +119,7 @@ class ReadableDataFormatter:
                     return f"{tol:.2f}% "
                 except:
                     return original_tolerance[row.name]
-                
+                    
             self.df["Tolerance"] = self.df.apply(format_tolerance, axis=1)
             self.df["calc_per"] = self.df.apply(format_percentage, axis=1)
 
