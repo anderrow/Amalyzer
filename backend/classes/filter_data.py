@@ -83,7 +83,7 @@ class ReadableDataFormatter:
 
     def format_actual(self):
         if "Actual" in self.df.columns:
-            self.df["Actual"] = pd.to_numeric(self.df["Actual"], errors="coerce").round(4)
+            self.df["Actual"] = pd.to_numeric(self.df["Actual"], errors="coerce").round(3)
 
     def format_vms_scan(self):
         if "VMSscan" in self.df.columns:
