@@ -129,11 +129,12 @@ class NumericDeviation(Calculation):
     Given requested, actual  columns, this class adds a new column (default: 'NumericDeviation') 
     with the absolute difference between requested and actual values in kg and a percentage deviation.
     """
-    def __init__(self, data: pd.DataFrame, requested: str, real: str, new_column_name="NumericDeviation"):
+    def __init__(self, data: pd.DataFrame, requested: str, real: str, new_column_name_unit="NumericDeviationkg", new_column_name_percent="NumericDeviationPercent"):
         super().__init__(data)
         self.requested = requested
         self.real = real
-        self.new_column_name = new_column_name
+        self.new_column_name_unit = new_column_name_unit
+        self.new_column_name_percent = new_column_name_percent
 
     def apply_calculation(self) -> pd.DataFrame:
         # Ensure numeric columns
@@ -151,23 +152,20 @@ class NumericDeviation(Calculation):
         df_copy.loc[mask_fill_box, self.requested] = df_copy[self.real]
 
         # Calculate absolute and percentage deviation
-        absdeviation = (df_copy[self.requested] - df_copy[self.real]).abs()
+        numdeviation = (df_copy[self.real] - df_copy[self.requested])
         percentage_deviation = ((df_copy[self.real] * 100) / df_copy[self.requested] - 100)
 
         # Force both deviations to be 0.0 where the original requested was -1
-        absdeviation[mask_fill_box] = 0.0
+        numdeviation[mask_fill_box] = 0.0
         percentage_deviation[mask_fill_box] = 0.0
 
         # Round results to two decimal places
-        absdeviation = absdeviation.round(2)
-        percentage_deviation = percentage_deviation.round(2)
-
-
-        numdeviation = percentage_deviation.astype(str) + " % <br> " + absdeviation.astype(str) + " kg" 
-        
+        numdeviation = numdeviation.round(3)
+        percentage_deviation = percentage_deviation.round(2)  
 
         # Assign the result to a new column
-        self.data[self.new_column_name] = numdeviation
+        self.data[self.new_column_name_unit] = numdeviation.astype(str) + " kg" 
+        self.data[self.new_column_name_percent] = percentage_deviation.astype(str) + " %"
 
         return self.data
 
