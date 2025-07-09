@@ -24,7 +24,7 @@ async def generate_graph(request: Request):
 
         #Filter the dataframe to only take the data INSIDE the box 
         #df = take_data_inside_the_box(df)
-        df = df[(df["sensor_m"] < 650) & (df["sensor_m"] > 300)]
+        df = df[(df["sensor_m"] < 625) & (df["sensor_m"] > 350)]
 
 
         #Extra information
