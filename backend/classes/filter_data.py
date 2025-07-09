@@ -110,7 +110,7 @@ class ReadableDataFormatter:
             def format_tolerance(row):
                 try:
                     kg = float(original_calc_per[row.name]) 
-                    return f"{kg:.2f} kg"
+                    return f"{kg:.3f} kg"
                 except:
                     return original_tolerance[row.name]
             def format_percentage(row):
