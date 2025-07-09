@@ -104,14 +104,24 @@ class ReadableDataFormatter:
 
     def format_tolerance(self):
         if "Tolerance" in self.df.columns and "calc_per" in self.df.columns:
+            original_tolerance = self.df["Tolerance"].copy()
+            original_calc_per = self.df["calc_per"].copy()
+            
             def format_tolerance(row):
                 try:
-                    tol = float(row["Tolerance"])
-                    kg = float(row["calc_per"])
-                    return f"{tol:.2f}% <br> {kg:.2f} kg"
+                    kg = float(original_calc_per[row.name]) 
+                    return f"{kg:.2f} kg"
                 except:
-                    return row["Tolerance"]
+                    return original_tolerance[row.name]
+            def format_percentage(row):
+                try:
+                    tol = float(original_tolerance[row.name])
+                    return f"{tol:.2f}% "
+                except:
+                    return original_tolerance[row.name]
+                
             self.df["Tolerance"] = self.df.apply(format_tolerance, axis=1)
+            self.df["calc_per"] = self.df.apply(format_percentage, axis=1)
 
     def format_deviation(self):
         if "Deviation" in self.df.columns:
