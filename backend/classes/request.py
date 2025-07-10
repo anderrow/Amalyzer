@@ -42,6 +42,12 @@ class RequestPropId(RequestBase):
         # Get current proportioning id for this user UID
         user_session = session_data.get(self.uid, {})
         current_prop = user_session.get("current_prop_id")
+        
+        if current_prop is not None:
+            print("*"*75)
+            print(f"* UID {self.uid} requested proportioning: {current_prop:<6}*")
+            print("*"*75)
+
         return current_prop
 
 class RequestLotId(RequestBase):
@@ -62,5 +68,10 @@ class RequestLotId(RequestBase):
         db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
         lot_id = await db_connection.fetch_data(query)  #Save lot_id
         data = lot_id[0]["lot_dbid"]    #Extract the lot_id
+
+        if lot_id is not None:
+            print("*"*75)
+            print(f"* UID {self.uid} requested lot id: {data:<7}*")
+            print("\*"*75) # Debugging output  
 
         return data
