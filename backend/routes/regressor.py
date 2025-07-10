@@ -27,8 +27,6 @@ async def generate_graph(
         #Extract lot_id and print it
         lot_id = await RequestLotId(request).return_data() 
 
-        #debug(lot_id) #Print in console
-
         #Format the query with the current lot id
         query = query_regressor_graph.format(current_lot=lot_id)
 
@@ -53,15 +51,19 @@ async def generate_graph(
         print(f"Error: {e}")
         # Retrun error
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
-"""
+
 @router.get("/SummaryTable")
 async def summary_table(request: Request):
-    data = await fetch_table_data(query_regression_table)
 
-    #Extract lot_id and print it
-    lot_id = await RequestLotId(Request).return_data() 
+
+    #Extract lot_id
+    lot_id = await RequestLotId(request).return_data() 
+
+    data = await fetch_table_data(query_regression_table, lot_id)
+    
     #Format the query with the current lot id
     query = query_regressor_graph.format(current_lot=lot_id)
+
     #Generate a dataframe with the DB query (For calculate the length)
     df = await db_connection.fetch_df(query=query) 
 
@@ -70,19 +72,9 @@ async def summary_table(request: Request):
     return data
 
 
-# ---------- Debug by console   ---------- #
-def debug(lot_id):
-    print( # Debugging by console
-        "\n" + "*" * 40 +
-        f"\n* LotID: {f'{lot_id}':<30}*" +
-        f"\n* ProportioningID: {f': {RequestPropId().return_data()}':<20}*" +
-        "\n" + "*" * 40 + "\n")
-
 # ---------- Request data for table  ---------- #
-async def fetch_table_data(query_template: str):
+async def fetch_table_data(query_template: str, lot_id: int = None):
     try:
-        #Get current lot id
-        lot_id = await RequestLotId().return_data() 
         #Write the current_prop variable inside the query
         query = query_template.format(current_lot=lot_id)
         #Request the data
@@ -92,4 +84,3 @@ async def fetch_table_data(query_template: str):
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
-"""
