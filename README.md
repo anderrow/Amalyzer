@@ -59,6 +59,11 @@ Amalyzer/
    python run_server_and_browser.py
    ```
 
+### Note for Docker users:
+To run the app inside Docker, modify the following line in app.py:
+
+uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
 ## Key Components
 
 ### Backend
