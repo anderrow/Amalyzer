@@ -72,6 +72,6 @@ class RequestLotId(RequestBase):
         if lot_id is not None:
             print("*"*75)
             print(f"* UID {self.uid} requested lot id: {data:<7}*")
-            print("\*"*75) # Debugging output  
+            print("*"*75) # Debugging output  
 
         return data
