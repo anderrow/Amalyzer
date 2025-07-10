@@ -70,8 +70,8 @@ class RequestLotId(RequestBase):
         data = lot_id[0]["lot_dbid"]    #Extract the lot_id
 
         if lot_id is not None:
-            print("*"*75)
+            print("*"*69)
             print(f"* UID {self.uid} requested lot id: {data:<7}*")
-            print("*"*75) # Debugging output  
+            print("*"*69) # Debugging output  
 
         return data
