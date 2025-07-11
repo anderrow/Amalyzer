@@ -7,9 +7,9 @@ const rowsPerPage = 500;
 let sortDirections = []; // Track sort direction per column (true = ascending)
 
 const columnKeys = [
-    "ProportioningDBID", "VMSscan", "ArticleName", "Requested",
-    "Actual", "Deviation", "Tolerance",  "NumericDeviationPercent", "calc_per", "NumericDeviationkg", "EndTime", 
-    "MixBoxID", "IngBoxID", "TypeOfDosing", "StartTime", "DosingLocation", "OrderID",
+    "ProportioningDBID", "StartTime", "VMSscan", "ArticleName", "Requested",
+    "Actual", "Deviation","NumericDeviationPercent", "NumericDeviationkg",    "calc_per", "Tolerance",  "EndTime", 
+    "MixBoxID", "IngBoxID", "TypeOfDosing", "DosingLocation", "OrderID",
     "ArticleDBID", "LotDBID", "LotID", "ArticleID"
 ];
 
@@ -30,6 +30,9 @@ function sortTable(columnIndex) {
         const isNumeric = !isNaN(aNum) && !isNaN(bNum);
 
         if (isNumeric) {
+            // Mover los -1 al final
+            if (aNum === -1 && bNum !== -1) return isAscending ? 1 : -1;
+            if (bNum === -1 && aNum !== -1) return isAscending ? -1 : 1;
             return isAscending ? aNum - bNum : bNum - aNum;
         } else {
             return isAscending
