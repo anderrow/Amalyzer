@@ -25,8 +25,8 @@ async def generate_graph(request: Request):
         #Filter the dataframe to only take the data INSIDE the box 
         #df = take_data_inside_the_box(df)
         df = df[(df["sensor_m"] < 625) & (df["sensor_m"] > 350)]
-
-
+        df = df[(df["sensor_l"] < 625) & (df["sensor_l"] > 350)]
+        df = df[(df["sensor_r"] < 625) & (df["sensor_r"] > 350)]
         #Extra information
         n = len(df) #Number of Samples
         y_vals = np.linspace(0, 570, n) #Space then equally in 570 values (Distance of the box)
@@ -41,7 +41,7 @@ async def generate_graph(request: Request):
         z_left_zero = m_left * (0- x_left) + df["sensor_l"]
 
         m_right = (df["sensor_m"]-df["sensor_r"])/(x_mid-x_right)
-        z_right_zero = m_right * (367- x_right) + df["sensor_r"]
+        z_right_zero = m_right * (367 - x_right) + df["sensor_r"]
         
         #Generate an empty list for traces
         trace_list = []
