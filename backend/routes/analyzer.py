@@ -5,6 +5,8 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import PlotPointsinTime, TraceData
 from backend.database.config import config
 from backend.classes.request import RequestPropId
+from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent , IsInTolerance , NumericDeviation
+from backend.classes.filter_data import Deviation , DosingType
 from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph, query_analyzer_flow, query_analyzer_dosed_material
 
 
@@ -129,12 +131,29 @@ async def generate_graph(request: Request):
 # ---------- SUMMARY TABLE ---------- #
 @router.get("/Summary")
 async def summary_table(request: Request):
-    return await fetch_table_data(query_analyzer_summary, get_current_prop_id(request))
+    data = await db_connection.fetch_df(query_analyzer_summary, get_current_prop_id(request))
+    
+    data = calculate(data) #Make all the calculations that are needed
+    
+    data = data.rename(columns={"ArticleName": "Article Name",
+                                "LotID": "Lot ID",
+                                "LotDBID": "Lot DB ID",
+                                "calc_per": "Tolerance (Kg)",
+                                "Tolerance": "Tolerance %",
+                                "Actual": "Actual (Kg)",
+                                "Requested": "Requested (Kg)",
+                                "NumericDeviation": "Numeric Deviation (Kg)",
+                                "NumericDeviationPercent": "Numeric Deviation %",})
+    
+    data["Deviation"] = data["Deviation"].apply(lambda val: Deviation(val).name.capitalize()) # for val in data["Deviation"] -> Deviation(val).name.capitalize()
+    data["Type Of Dosing"] = data["Type Of Dosing"].apply(lambda val: DosingType(val).name.capitalize() if val else "Unknown") # for val in data["TypeOfDosing"] -> DosingType(val).name.capitalize()
+
+    return data.to_dict(orient="records") #FastAPI expects a list of dictionaries for JSON response
 
 # ---------- PROP RECORD ---------- #    
 @router.get("/PropRecord")
 async def propRecord_table(request: Request):
-    return await fetch_table_data(query_analyzer_propRecord, get_current_prop_id(request))
+    return await fetch_df(query_analyzer_propRecord, get_current_prop_id(request))
     
 
 # ---------- Logging Param ---------- #    
@@ -177,3 +196,16 @@ def debug(prop_id,num):
         "\n" + "*" * 52 +
         f"\n* Plotting Graph {num} for PropID: {f': {prop_id}':<7}*" +
         "\n" + "*" * 52 + "\n" )   
+
+# ----------------- Make all the calculations that are needed ----------------- #
+def calculate(data):
+    #Overwrite Endtime with EndTime - StartTime to calculate duration
+    data = CaclulateDateDelta(data, "Dosing Date", "Duration", overwrite=True).apply_calculation()
+    #Add percentage calculation column
+    data = CaclulatPercent(data, "Requested", "Tolerance", overwrite=False).apply_calculation()
+    #Add deviation column
+    data = IsInTolerance(data, "Requested", "Actual", "Tolerance").apply_calculation()
+    #Add Numeric Deviation column
+    data = NumericDeviation(data, "Requested", "Actual").apply_calculation()
+
+    return data
