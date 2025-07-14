@@ -103,8 +103,8 @@ WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
 query_analyzer_lot = """
 SELECT * 
 FROM public.amadeus_lot
-WHERE article_dbid = (
-    SELECT article_dbid 
+WHERE lot_dbid = (
+    SELECT lot_dbid 
     FROM public.amadeus_proportioning 
     WHERE proportioning_dbid = {current_prop});
 
