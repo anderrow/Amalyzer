@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi import Query, Request
+from fastapi import Query
 from backend.database.config import config
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
@@ -19,7 +19,7 @@ class PropIdRequest(BaseModel):
 router = APIRouter()
 
 # Initialize the DBConnection object
-db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
+db_connection = DBConnection(config) #config is declared in backend/database/config.py
 
 # ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) ----------------- #
 
@@ -28,7 +28,7 @@ async def get_proportionings() -> List[Dict[str, Any]]:
     try:
 
         # Fetch data from the database
-        data = await db_connection.fetch_df(query=query_proportionings) #Raw Data (Limited to 1000 rows by default)
+        data = await db_connection.fetch_df(query_proportionings) #Raw Data (Limited to 1000 rows by default)
 
         #Make all the calculations that are needed
         data = calculate(data)

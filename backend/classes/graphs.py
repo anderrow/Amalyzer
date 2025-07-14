@@ -1,7 +1,6 @@
 import plotly.graph_objects as go
 import plotly.io as pio
 import numpy as np
-import pandas as pd
 from dataclasses import dataclass, field
 from typing import List, Optional, Union, Sequence
 

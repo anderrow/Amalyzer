@@ -2,7 +2,6 @@ import psycopg2
 from typing import List, Dict, Any
 import asyncio
 import pandas as pd
-from backend.memory.state import session_data
 from sqlalchemy import create_engine
 
 class DBConnection:

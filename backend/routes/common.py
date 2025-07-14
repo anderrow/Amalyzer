@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Request
-from backend.memory.state import session_data
 from backend.classes.db_connection import DBConnection
 from backend.database.config import config
 from backend.classes.request import RequestPropId

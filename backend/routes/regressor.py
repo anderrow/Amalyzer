@@ -2,12 +2,11 @@
 from fastapi import APIRouter, Request
 from fastapi import Query
 from fastapi.responses import HTMLResponse
-from backend.memory.state import session_data
 from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import LogScatterPlot
 from backend.database.query import query_regressor_graph, query_regression_table
-from backend.classes.request import RequestLotId, RequestPropId
+from backend.classes.request import RequestLotId
 from backend.classes.calculation import CalculateLogTraces
 
 
