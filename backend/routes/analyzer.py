@@ -57,16 +57,17 @@ async def generate_graph(request: Request):
     try:
         current_prop = get_current_prop_id(request) # Get the current proportioning ID from the request cookies
 
-        df = await db_connection.fetch_df(query=query_analyzer_dosed_material, current_prop=current_prop)
-
-        summary = await fetch_table_data(query_analyzer_summary, current_prop=current_prop)
-
         debug(current_prop,"Dosed Material") # Debugging by console
 
-        requested = float(summary[0]['Requested'])
-        tolerance = float(summary[0]['Tolerance'])/100
-        upper_tolerance = requested *  (1+tolerance)
-        lower_tolerance = requested * (1-tolerance)
+        df = await db_connection.fetch_df(query=query_analyzer_dosed_material, current_prop=current_prop)
+
+        summary = await db_connection.fetch_df(query_analyzer_summary, current_prop=current_prop)
+
+        requested = float(summary["Requested"].iloc[0])
+        tolerance = float(summary["Tolerance"].iloc[0]) / 100
+        upper_tolerance = requested * (1 + tolerance)
+        lower_tolerance = requested * (1 - tolerance)
+
 
         trace_list = []
         #Smoothed filter for erasing small variations
@@ -153,38 +154,30 @@ async def summary_table(request: Request):
 # ---------- PROP RECORD ---------- #    
 @router.get("/PropRecord")
 async def propRecord_table(request: Request):
-    return await fetch_df(query_analyzer_propRecord, get_current_prop_id(request))
-    
+    data = await db_connection.fetch_df(query_analyzer_propRecord, get_current_prop_id(request))
+    return data.to_dict(orient="records") 
 
 # ---------- Logging Param ---------- #    
 @router.get("/LogginParam")
 async def propRecord_table(request: Request):
-    return await fetch_table_data(query_analyzer_logginParam, get_current_prop_id(request))
-    
+    data = await db_connection.fetch_df (query_analyzer_logginParam, get_current_prop_id(request))
+    return data.to_dict(orient="records") 
 
 # ---------- Lot table ---------- #    
 @router.get("/Lot")
 async def lot_table(request: Request):
-    return await fetch_table_data(query_analyzer_lot, get_current_prop_id(request))
-    
+    data = await db_connection.fetch_df(query_analyzer_lot, get_current_prop_id(request))
+    return data.to_dict(orient="records") 
+
 # ---------- Article table ---------- #    
 @router.get("/Article")
 async def article_table(request: Request):
-    return await fetch_table_data(query_analyzer_article, get_current_prop_id(request))
+    data = await db_connection.fetch_df(query_analyzer_article, get_current_prop_id(request))
+    return data.to_dict(orient="records") 
 
 
-# ---------- Request data for table  ---------- #
-async def fetch_table_data(query_template: str, current_prop):
-    try:
-        #Write the current_prop variable inside the query
-        query = query_template.format(current_prop=current_prop)
-        #Request the data
-        data = await db_connection.fetch_data(query=query)
-        return data
-    
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return {"error": str(e)}
+
+
 # ------------ Get the current proportioning ID from the request cookies ---------- #
 def get_current_prop_id(request: Request):
     current_prop = RequestPropId(request).return_data()
