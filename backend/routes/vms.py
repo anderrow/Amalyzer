@@ -1,23 +1,24 @@
 # backend/routes/vms.py
+import numpy as np
 from fastapi import APIRouter, Request
 from fastapi import Query
 from fastapi.responses import HTMLResponse
 from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import Traces3DPlot , TraceData
-from backend.classes.request import RequestPropId
+from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.database.query import query_vms_data
-import numpy as np
+from backend.database.config import *
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  
-# Initialize the DBConnection object
-db_connection = DBConnection(config=config) 
 
 # Example endpoint to check vms status
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph(request: Request):
     try:
+        db_connection = connect_to_user_environment(request, env_map)
+
         current_prop = RequestPropId(request).return_data()
         #Take the data from the prop ID requested
         df = await db_connection.fetch_df(query_vms_data, current_prop)
@@ -108,3 +109,9 @@ def detect_hill_end(series, fall_thresh=-50, plateau_margin=5, plateau_points=10
                 return i
     # If no hill end found, return length of series (end of data)
     return len(series)
+
+# ------------ Get the current Environment from the request cookies ---------- #
+def connect_to_user_environment(request: Request, env_map):
+    environment = RequestEnvironment(request).return_data()
+    selected_env = env_map.get(environment.upper(), UFA) #Default to UFA if the environment is not found
+    return DBConnection(selected_env)
