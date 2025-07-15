@@ -1,15 +1,17 @@
+from typing import List, Dict, Any
 from pydantic import BaseModel
 from fastapi import Request
 from backend.memory.state import session_data
 from backend.database.query import query_lot_db_id
 from backend.classes.db_connection import DBConnection
-from backend.database.config import config
+from backend.database.config import config, UFA, VILOFOSS, Testrig, env_map
 
 
 # Import BaseModel from Pydantic to define the expected structure of the request body
-class PropIdRequest(BaseModel):
-    # This field represents the ID of the selected row, expected to be an integer
-    propDbId: int
+class UserInfo(BaseModel):
+    propDbId: int   # Include propDbId in the request model for tracking purposes
+    uid: str  # Include UID in the request model for tracking purposes
+    environment: str = "UFA"  # Optional field for environment, default is UFA 
 
 class RequestBase:
     """
@@ -75,3 +77,27 @@ class RequestLotId(RequestBase):
             print("*"*69) # Debugging output  
 
         return data
+class RequestEnvironment(RequestBase):
+    """
+    When this class is called, it will return the Environment attached to the current Proportioning ID
+    """
+    def __init__(self, uid: str):
+        super().__init__(uid)
+
+    def return_data(self):
+        # Get current environment for this user UID
+        user_session = session_data.get(self.uid, {})
+        environment = user_session.get("environment")  # Default to "UFA" if not set
+
+        if environment is not None:
+            print("*"*75)
+            print(f"* UID {self.uid} requested environment: {environment:<6}*")
+            print("*"*75)
+
+        return str(environment)
+    
+    @staticmethod
+    def connect_to_user_environment(request: Request) -> DBConnection:
+        environment = RequestEnvironment(request).return_data()
+        selected_env = env_map.get(environment.upper(), UFA) #Default to UFA if the environment is not found 
+        return DBConnection(selected_env)
