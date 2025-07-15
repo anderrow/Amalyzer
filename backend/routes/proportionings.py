@@ -1,38 +1,30 @@
+import pandas as pd
 from fastapi import APIRouter
-from fastapi import Query
-from backend.database.config import config
+from fastapi import Query, Request
+from backend.database.config import config, UFA, VILOFOSS, Testrig, env_map
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, Deviation
-from backend.classes.request import PropIdRequest
+from backend.classes.request import UserInfo, RequestEnvironment, UserInfo
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
 from backend.memory.state import session_data
 from typing import List, Dict, Any
-import pandas as pd
-from pydantic import BaseModel
-
-class PropIdRequest(BaseModel):
-    propDbId: int   # Include propDbId in the request model for tracking purposes
-    uid: str  # Include UID in the request model for tracking purposes
 
 # Create an APIRouter instance
 router = APIRouter()
 
-# Initialize the DBConnection object
-db_connection = DBConnection(config) #config is declared in backend/database/config.py
-
 # ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) ----------------- #
 
 @router.get("/api/proportionings")
-async def get_proportionings() -> List[Dict[str, Any]]:
+async def get_proportionings(request: Request) -> List[Dict[str, Any]]:
     try:
+        db_connection = connect_to_user_environment(request, env_map) # Connect to the user's environment
 
         # Fetch data from the database
         data = await db_connection.fetch_df(query_proportionings) #Raw Data (Limited to 1000 rows by default)
 
         #Make all the calculations that are needed
         data = calculate(data)
-        
 
         #Make data redable
         data = make_db_redable(data)
@@ -48,6 +40,7 @@ async def get_proportionings() -> List[Dict[str, Any]]:
 
 @router.get("/api/proportioningsfilter") #Article + Age Filter -> Update Filtered Data Button
 async def get_proportionings_filtered(
+    request: Request,
     switchChecked: bool = Query(False),  # Default is False (switch off)
     requestedArticle: str = Query(""), # Default is empty string if no input
     ageSwitchChecked: bool = Query(False),  # Parameter for Age Filter switch (Default False)
@@ -58,6 +51,8 @@ async def get_proportionings_filtered(
 ) -> List[Dict[str, Any]]:
     
     try:
+        db_connection = connect_to_user_environment(request, env_map)  # Connect to the user's environment
+
         # Copy the base query for proportionings
         query_proportionings_filtered = query_proportionings_filter
 
@@ -101,16 +96,36 @@ async def get_proportionings_filtered(
             #Make data redable
             data = make_db_redable(data)
 
-        return data
+        return data # Convert DataFrame to list of dictionaries
         
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}  
+    
+# ----------------- Request all the article names ----------------- #
+@router.get("/api/articlenames")
+async def get_article_names(request: Request) -> List[Dict[str, Any]]:
+    try:
+        # Connect to the user's environment
+        db_connection = connect_to_user_environment(request, env_map)   
+        # Fetch data from the database
+        data = await db_connection.fetch_data(query=query_proportionings)   
+        # Convert the data to a pandas DateFrame
+        df = pd.DataFrame(data)
+        #Get unique values from the 'ArticleName' column
+        unique_article_names =df['ArticleName'].unique()
+        # Create a list of dictionaries (required format)
+        result = [{"ArticleName": name} for name in unique_article_names]
+        #Return the results
+        return result
 
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return {"error": str(e)}  
 
 # ----------------- Define a POST route that listens for row click events from the frontend ----------------- #
 @router.post("/api/rowclicked")
-async def handle_row_click( body: PropIdRequest):
+async def handle_row_click( body: UserInfo):
     # Extract the UID and propDbId from the request body
     uid = body.uid
     propDbId = body.propDbId
@@ -128,24 +143,27 @@ async def handle_row_click( body: PropIdRequest):
 
     return {"propDbId": body.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
 
-# ----------------- Request all the article names ----------------- #
-@router.get("/api/articlenames")
-async def get_article_names() -> List[Dict[str, Any]]:
-    try:
-        # Fetch data from the database
-        data = await db_connection.fetch_data(query=query_proportionings)   
-        # Convert the data to a pandas DateFrame
-        df = pd.DataFrame(data)
-        #Get unique values from the 'ArticleName' column
-        unique_article_names =df['ArticleName'].unique()
-        # Create a list of dictionaries (required format)
-        result = [{"ArticleName": name} for name in unique_article_names]
-        #Return the results
-        return result
+@router.post("/api/selectedenvironment")
+async def handle_row_click( body: UserInfo):
+    # Extract the UID and propDbId from the request body
+    uid = body.uid
+    propDbId = body.propDbId
+    environment = body.environment
 
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return {"error": str(e)}  
+    # Print the UID from the request cookies to the backend console for debugging/logging purposes
+    print("\n"+"*"*50+ "\n" + f"* UID:{uid:<43}*")
+    # Print the received propDbId to the backend console for debugging/logging purposes
+    print("*"*50+ "\n" + f"* Envrionment selected: {environment:<28}*"+ "\n" + "*"*50 + "\n")
+    # Check if the session_data dictionary already has an entry for the UID
+    # If not, create a new entry for the UID
+    if uid not in session_data:
+        session_data[uid] = {}
+
+    session_data[uid]["environment"] = environment # Store the propDbId in the session_data dictionary under the UID
+
+    return {"propDbId": body.propDbId}
+
+
 
 # ----------------- Make all the calculations that are needed ----------------- #
 def calculate(data):
@@ -159,9 +177,15 @@ def calculate(data):
     data = NumericDeviation(data, "Requested", "Actual").apply_calculation()
 
     return data
+
 #  -----------------  Filter Database to make it more redable  ----------------- #
 def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:
     formatter = ReadableDataFormatter(df)
     return formatter.apply_all_formats()
 
 
+# ------------ Get the current Environment from the request cookies ---------- #
+def connect_to_user_environment(request: Request, env_map):
+    environment = RequestEnvironment(request).return_data()
+    selected_env = env_map.get(environment.upper(), UFA) #Default to UFA if the environment is not found
+    return DBConnection(selected_env)
