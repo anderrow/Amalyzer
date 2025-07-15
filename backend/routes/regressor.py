@@ -6,15 +6,13 @@ from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import LogScatterPlot
 from backend.database.query import query_regressor_graph, query_regression_table
-from backend.classes.request import RequestLotId
+from backend.classes.request import RequestLotId, RequestEnvironment
 from backend.classes.calculation import CalculateLogTraces
+from backend.database.config import *
 
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/regressor")  
-
-# Initialize the DBConnection object
-db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
 
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph(
@@ -23,6 +21,7 @@ async def generate_graph(
     amountOfRegressions: int = Query(2) #Parameter for Amount of Regressions (default 2)    
 ):
     try:
+        db_connection = connect_to_user_environment(request, env_map)
         #Extract lot_id and print it
         lot_id = await RequestLotId(request).return_data() 
 
@@ -53,12 +52,11 @@ async def generate_graph(
 
 @router.get("/SummaryTable")
 async def summary_table(request: Request):
-
-
+    db_connection = connect_to_user_environment(request, env_map)
     #Extract lot_id
     lot_id = await RequestLotId(request).return_data() 
 
-    data = await fetch_table_data(query_regression_table, lot_id)
+    data = await fetch_table_data(query_regression_table,db_connection, lot_id)
     
     #Format the query with the current lot id
     query = query_regressor_graph.format(current_lot=lot_id)
@@ -72,7 +70,7 @@ async def summary_table(request: Request):
 
 
 # ---------- Request data for table  ---------- #
-async def fetch_table_data(query_template: str, lot_id: int = None):
+async def fetch_table_data(query_template: str, db_connection: DBConnection, lot_id: int = None) -> dict:
     try:
         #Write the current_prop variable inside the query
         query = query_template.format(current_lot=lot_id)
@@ -83,3 +81,9 @@ async def fetch_table_data(query_template: str, lot_id: int = None):
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
+
+# ------------ Get the current Environment from the request cookies ---------- #
+def connect_to_user_environment(request: Request, env_map):
+    environment = RequestEnvironment(request).return_data()
+    selected_env = env_map.get(environment.upper(), UFA) #Default to UFA if the environment is not found
+    return DBConnection(selected_env)
