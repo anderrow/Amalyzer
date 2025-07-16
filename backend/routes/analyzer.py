@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import PlotPointsinTime, TraceData
-from backend.database.config import config, UFA, VILOFOSS, Testrig, env_map
+from backend.database.config import *
 from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent , IsInTolerance , NumericDeviation
 from backend.classes.filter_data import Deviation , DosingType

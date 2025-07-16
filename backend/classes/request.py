@@ -4,7 +4,7 @@ from fastapi import Request
 from backend.memory.state import session_data
 from backend.database.query import query_lot_db_id
 from backend.classes.db_connection import DBConnection
-from backend.database.config import config, UFA, VILOFOSS, Testrig, env_map
+from backend.database.config import *
 
 
 # Import BaseModel from Pydantic to define the expected structure of the request body
