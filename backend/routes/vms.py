@@ -113,5 +113,5 @@ def detect_hill_end(series, fall_thresh=-50, plateau_margin=5, plateau_points=10
 # ------------ Get the current Environment from the request cookies ---------- #
 def connect_to_user_environment(request: Request, env_map):
     environment = RequestEnvironment(request).return_data()
-    selected_env = env_map.get(environment.upper(), UFA) #Default to UFA if the environment is not found
+    selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found
     return DBConnection(selected_env)

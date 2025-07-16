@@ -99,5 +99,5 @@ class RequestEnvironment(RequestBase):
     @staticmethod
     def connect_to_user_environment(request: Request) -> DBConnection:
         environment = RequestEnvironment(request).return_data()
-        selected_env = env_map.get(environment.upper(), UFA) #Default to UFA if the environment is not found 
+        selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found 
         return DBConnection(selected_env)
