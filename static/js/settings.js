@@ -8,11 +8,10 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", async function () {
         const selectedEnvironment = select.value;
 
-        // 🔧 Cambia este valor si ya tienes un propDbId válido que quieras usar
-        const propDbId = 0; // o null, o algún valor actual
+        const propDbId = null; 
 
         try {
-            const response = await fetch("/api/selectedenvironment", {
+            const response = await fetch("/settings/selectedenvironment", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

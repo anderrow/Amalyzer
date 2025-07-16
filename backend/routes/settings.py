@@ -11,7 +11,7 @@ router = APIRouter(prefix="/settings")
 
 # ----------------- Define a POST routine for selecting environment ----------------- #
 @router.post("/selectedenvironment")
-async def handle_row_click(request: Request,  body: UserInfo):
+async def handle_selected_environmnet(request: Request,  body: UserInfo):
     # Extract UID from the request cookies (More secure than extracting from body)
     uid = request.cookies.get("uid")
     # Extract the Environment from the request body
@@ -29,6 +29,6 @@ async def handle_row_click(request: Request,  body: UserInfo):
         session_data[uid] = {}
 
     session_data[uid]["environment"] = environment # Store the propDbId in the session_data dictionary under the UID
-    session_data[uid]["propDbId"] = None # Reset the propDbId when changing environment (For avoiding request of not existing propDbId)
+    session_data[uid]["current_prop_id"] = None # Reset the propDbId when changing environment (For avoiding request of not existing propDbId)
 
     return {"environment": environment}

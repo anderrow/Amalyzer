@@ -143,27 +143,6 @@ async def handle_row_click( body: UserInfo):
 
     return {"propDbId": propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
 
-@router.post("/api/selectedenvironment")
-async def handle_row_click( body: UserInfo):
-    # Extract the UID and propDbId from the request body
-    uid = body.uid
-    propDbId = body.propDbId
-    environment = body.environment
-
-    # Print the UID from the request cookies to the backend console for debugging/logging purposes
-    print("\n"+"*"*50+ "\n" + f"* UID:{uid:<43}*")
-    # Print the received propDbId to the backend console for debugging/logging purposes
-    print("*"*50+ "\n" + f"* Envrionment selected: {environment:<28}*"+ "\n" + "*"*50 + "\n")
-    # Check if the session_data dictionary already has an entry for the UID
-    # If not, create a new entry for the UID
-    if uid not in session_data:
-        session_data[uid] = {}
-
-    session_data[uid]["environment"] = environment # Store the propDbId in the session_data dictionary under the UID
-
-    return {"environment": environment}
-
-
 
 # ----------------- Make all the calculations that are needed ----------------- #
 def calculate(data):
