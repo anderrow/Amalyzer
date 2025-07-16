@@ -11,7 +11,7 @@ from backend.database.config import *
 class UserInfo(BaseModel):
     propDbId: Optional[int] = None  # Include propDbId in the request model for tracking purposes
     uid: str  # Include UID in the request model for tracking purposes
-    environment: str = "UFA"  # Optional field for environment, default is UFA 
+    environment: str = "config"  # Optional field for environment, default is config 
 
 class RequestBase:
     """
