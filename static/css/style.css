@@ -852,3 +852,28 @@ output {
     background-color: #e0fac3 !important; /* Highlight color */
     color: #222 !important; /* Ensure text is dark for visibility */
 }
+
+/* Settings Page */
+#Settings{
+    justify-items: center;
+}
+
+#EnvironmentSettingsSection{
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 8px;
+    width: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-height: calc(90vh - 60px);
+    min-height: calc(86vh - 60px);
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+}
+#SettingDropDownnMenu{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

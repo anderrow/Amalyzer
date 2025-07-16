@@ -5,7 +5,7 @@ from backend.database.config import *
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, Deviation
-from backend.classes.request import UserInfo, RequestEnvironment, UserInfo
+from backend.classes.request import UserInfo, RequestEnvironment
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
 from backend.memory.state import session_data
 from typing import List, Dict, Any
@@ -141,7 +141,7 @@ async def handle_row_click( body: UserInfo):
 
     session_data[uid]["current_prop_id"] = propDbId # Store the propDbId in the session_data dictionary under the UID
 
-    return {"propDbId": body.propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
+    return {"propDbId": propDbId} # Return a confirmation message as a JSON response (Not mandatory for now)
 
 @router.post("/api/selectedenvironment")
 async def handle_row_click( body: UserInfo):
@@ -161,7 +161,7 @@ async def handle_row_click( body: UserInfo):
 
     session_data[uid]["environment"] = environment # Store the propDbId in the session_data dictionary under the UID
 
-    return {"propDbId": body.propDbId}
+    return {"environment": environment}
 
 
 

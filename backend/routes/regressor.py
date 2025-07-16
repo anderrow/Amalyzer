@@ -2,7 +2,6 @@
 from fastapi import APIRouter, Request
 from fastapi import Query
 from fastapi.responses import HTMLResponse
-from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import LogScatterPlot
 from backend.database.query import query_regressor_graph, query_regression_table
