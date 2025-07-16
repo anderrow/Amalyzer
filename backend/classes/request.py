@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import Optional
 from pydantic import BaseModel
 from fastapi import Request
 from backend.memory.state import session_data
@@ -9,7 +9,7 @@ from backend.database.config import *
 
 # Import BaseModel from Pydantic to define the expected structure of the request body
 class UserInfo(BaseModel):
-    propDbId: int   # Include propDbId in the request model for tracking purposes
+    propDbId: Optional[int] = None  # Include propDbId in the request model for tracking purposes
     uid: str  # Include UID in the request model for tracking purposes
     environment: str = "UFA"  # Optional field for environment, default is UFA 
 
