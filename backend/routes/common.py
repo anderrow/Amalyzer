@@ -12,7 +12,10 @@ router = APIRouter(prefix="/common")
 @router.get("/PropId")
 async def analyzer_status(request: Request):# Get the current proportioning ID from the request cookies
     current_prop = RequestPropId(request).return_data()
-    return current_prop
+    current_env = RequestEnvironment(request).return_data()
+    if current_env is None or current_env == "None":
+        current_env = "Default"
+    return str(current_prop) + " | " + str(current_env)
 
 # ---------- Extra Information from the PropId ---------- #
 @router.get("/PropIdExtraInfo")
