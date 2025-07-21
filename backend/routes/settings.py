@@ -13,14 +13,13 @@ async def handle_selected_environmnet(request: Request,  body: UserInfo):
     # Extract UID from the request cookies (More secure than extracting from body)
     uid = request.cookies.get("uid")
     # Extract the Environment from the request body
-    #uid = body.uid
-    propDbId = body.propDbId
     environment = body.environment
 
     # Print the UID from the request cookies to the backend console for debugging/logging purposes
     print("\n"+"*"*50+ "\n" + f"* UID:{uid:<43}*")
     # Print the received propDbId to the backend console for debugging/logging purposes
     print("*"*50+ "\n" + f"* Envrionment selected: {environment:<28}*"+ "\n" + "*"*50 + "\n")
+    
     # Check if the session_data dictionary already has an entry for the UID
     # If not, create a new entry for the UID
     if uid not in session_data:
