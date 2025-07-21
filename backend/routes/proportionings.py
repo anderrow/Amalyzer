@@ -1,7 +1,6 @@
 import pandas as pd
 from fastapi import APIRouter
 from fastapi import Query, Request
-from backend.database.config import *
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, Deviation
@@ -18,7 +17,7 @@ router = APIRouter()
 @router.get("/api/proportionings")
 async def get_proportionings(request: Request) -> List[Dict[str, Any]]:
     try:
-        db_connection = connect_to_user_environment(request, env_map) # Connect to the user's environment
+        db_connection = connect_to_user_environment(request)
 
         # Fetch data from the database
         data = await db_connection.fetch_df(query_proportionings) #Raw Data (Limited to 1000 rows by default)
@@ -37,7 +36,6 @@ async def get_proportionings(request: Request) -> List[Dict[str, Any]]:
         return {"error": str(e)}
 
 # ----------------- GET endpoint to retrieve proportioning filtered data (Controls -> Update Filtered Data button) ----------------- #
-
 @router.get("/api/proportioningsfilter") #Article + Age Filter -> Update Filtered Data Button
 async def get_proportionings_filtered(
     request: Request,
@@ -51,7 +49,7 @@ async def get_proportionings_filtered(
 ) -> List[Dict[str, Any]]:
     
     try:
-        db_connection = connect_to_user_environment(request, env_map)  # Connect to the user's environment
+        db_connection = connect_to_user_environment(request)
 
         # Copy the base query for proportionings
         query_proportionings_filtered = query_proportionings_filter
@@ -106,8 +104,8 @@ async def get_proportionings_filtered(
 @router.get("/api/articlenames")
 async def get_article_names(request: Request) -> List[Dict[str, Any]]:
     try:
-        # Connect to the user's environment
-        db_connection = connect_to_user_environment(request, env_map)   
+        db_connection = connect_to_user_environment(request)
+
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query_proportionings)   
         # Convert the data to a pandas DateFrame
@@ -162,9 +160,9 @@ def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:
     formatter = ReadableDataFormatter(df)
     return formatter.apply_all_formats()
 
-
 # ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request: Request, env_map):
-    environment = RequestEnvironment(request).return_data()
-    selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found
-    return DBConnection(selected_env)
+def connect_to_user_environment(request):
+    # Get configuration based on the user's environment
+    env = RequestEnvironment(request).get_config() 
+    # Initialize the DBConnection object with the selected environment
+    return DBConnection(env)

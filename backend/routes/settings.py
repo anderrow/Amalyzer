@@ -1,7 +1,5 @@
 # backend/routes/settings.py
 from fastapi import APIRouter, Request
-from fastapi import Query
-from backend.database.config import *
 from backend.memory.state import session_data
 from backend.classes.request import UserInfo
 

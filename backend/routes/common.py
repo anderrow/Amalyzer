@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Request
 from backend.classes.db_connection import DBConnection
-from backend.database.config import config
 from backend.classes.request import RequestPropId
 from backend.database.query import query_valuable_information
 from backend.classes.request import RequestEnvironment
-from backend.database.config import *
 
 router = APIRouter(prefix="/common")  
 
@@ -20,8 +18,7 @@ async def analyzer_status(request: Request):# Get the current proportioning ID f
 # ---------- Extra Information from the PropId ---------- #
 @router.get("/PropIdExtraInfo")
 async def analyzer_status(request: Request):  # Get the current proportioning ID from the request cookies 
-    # Connect to the user's environment
-    db_connection = connect_to_user_environment(request, env_map) 
+    db_connection = connect_to_user_environment(request)
 
     current_prop = RequestPropId(request).return_data()
 
@@ -47,9 +44,10 @@ async def fetch_data(query_template: str, current_prop: int, db_connection: DBCo
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
-    
+
 # ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request: Request, env_map):
-    environment = RequestEnvironment(request).return_data()
-    selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found
-    return DBConnection(selected_env)
+def connect_to_user_environment(request):
+    # Get configuration based on the user's environment
+    env = RequestEnvironment(request).get_config() 
+    # Initialize the DBConnection object with the selected environment
+    return DBConnection(env)

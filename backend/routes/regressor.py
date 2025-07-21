@@ -7,8 +7,6 @@ from backend.classes.graphs import LogScatterPlot
 from backend.database.query import query_regressor_graph, query_regression_table
 from backend.classes.request import RequestLotId, RequestEnvironment
 from backend.classes.calculation import CalculateLogTraces
-from backend.database.config import *
-
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/regressor")  
@@ -20,7 +18,8 @@ async def generate_graph(
     amountOfRegressions: int = Query(2) #Parameter for Amount of Regressions (default 2)    
 ):
     try:
-        db_connection = connect_to_user_environment(request, env_map)
+        db_connection = connect_to_user_environment(request)
+
         #Extract lot_id and print it
         lot_id = await RequestLotId(request).return_data() 
 
@@ -51,7 +50,7 @@ async def generate_graph(
 
 @router.get("/SummaryTable")
 async def summary_table(request: Request):
-    db_connection = connect_to_user_environment(request, env_map)
+    db_connection = connect_to_user_environment(request)
     #Extract lot_id
     lot_id = await RequestLotId(request).return_data() 
 
@@ -82,7 +81,8 @@ async def fetch_table_data(query_template: str, db_connection: DBConnection, lot
         return {"error": str(e)}
 
 # ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request: Request, env_map):
-    environment = RequestEnvironment(request).return_data()
-    selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found
-    return DBConnection(selected_env)
+def connect_to_user_environment(request):
+    # Get configuration based on the user's environment
+    env = RequestEnvironment(request).get_config() 
+    # Initialize the DBConnection object with the selected environment
+    return DBConnection(env)

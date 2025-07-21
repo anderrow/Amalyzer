@@ -3,12 +3,10 @@ import numpy as np
 from fastapi import APIRouter, Request
 from fastapi import Query
 from fastapi.responses import HTMLResponse
-from backend.database.config import config
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import Traces3DPlot , TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.database.query import query_vms_data
-from backend.database.config import *
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  
@@ -17,7 +15,7 @@ router = APIRouter(prefix="/vms")
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph(request: Request):
     try:
-        db_connection = connect_to_user_environment(request, env_map)
+        db_connection = connect_to_user_environment(request)
 
         current_prop = RequestPropId(request).return_data()
         #Take the data from the prop ID requested
@@ -111,7 +109,8 @@ def detect_hill_end(series, fall_thresh=-50, plateau_margin=5, plateau_points=10
     return len(series)
 
 # ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request: Request, env_map):
-    environment = RequestEnvironment(request).return_data()
-    selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found
-    return DBConnection(selected_env)
+def connect_to_user_environment(request):
+    # Get configuration based on the user's environment
+    env = RequestEnvironment(request).get_config() 
+    # Initialize the DBConnection object with the selected environment
+    return DBConnection(env)

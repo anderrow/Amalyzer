@@ -77,12 +77,13 @@ class RequestLotId(RequestBase):
             print("*"*69) # Debugging output  
 
         return data
+    
 class RequestEnvironment(RequestBase):
     """
     When this class is called, it will return the Environment attached to the current Proportioning ID
     """
-    def __init__(self, uid: str):
-        super().__init__(uid)
+    def __init__(self, request: Request):
+        super().__init__(request)
 
     def return_data(self):
         # Get current environment for this user UID
@@ -95,9 +96,8 @@ class RequestEnvironment(RequestBase):
             print("*"*75)
 
         return str(environment)
-    
-    @staticmethod
-    def connect_to_user_environment(request: Request) -> DBConnection:
-        environment = RequestEnvironment(request).return_data()
+
+    def get_config(self):
+        environment = self.return_data()
         selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found 
-        return DBConnection(selected_env)
+        return selected_env
