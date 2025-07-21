@@ -855,6 +855,7 @@ output {
 
 /* Settings Page */
 #Settings{
+    display: flex;
     justify-items: center;
 }
 
