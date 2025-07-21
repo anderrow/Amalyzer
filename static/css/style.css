@@ -423,7 +423,7 @@ input, select {
 /* Typing animation */
 @keyframes typing {
     from { width: 0; }
-    to { width: 600px; } /* Adjust depending on the text length */
+    to { width: 440px; } /* Adjust depending on the text length */
 }
 
 /* Blinking cursor effect */
