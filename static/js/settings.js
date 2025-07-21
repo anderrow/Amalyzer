@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error sending environment:", error);
         }
     });
+    loadEnvironments();
 });
 
 
@@ -74,4 +75,26 @@ function showPopupMessage(message, isError = false) {
             popupOffset -= 60; // Liberar espacio cuando desaparece
         });
     }, 3000);
+}
+
+async function loadEnvironments() {
+    try {
+        const response = await fetch('/settings/availableenvironments');
+        const environmentsNames = await response.json();
+        const select = document.getElementById('ChoosenEnvironment');
+
+        select.length = 1;
+
+        const fragment = document.createDocumentFragment();
+        environmentsNames.forEach(environment => {
+            const option = document.createElement('option');
+            option.value = environment;
+            option.textContent = environment;
+            fragment.appendChild(option);
+        });
+        select.appendChild(fragment);
+    } catch (error) {
+        console.error('Error loading environment names:', error);
+        showError('Failed to load environements names. Please try again.');
+    }
 }
