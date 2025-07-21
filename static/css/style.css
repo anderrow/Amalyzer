@@ -877,3 +877,6 @@ output {
     align-items: center;
     flex-direction: column;
 }
+#ChoosenEnvironment{
+    width: 100%;
+}
