@@ -207,7 +207,7 @@ class Traces3DPlot(Graph):
             zaxis_title='Distance to sensor (mm)',
             xaxis=dict(nticks=5), # Display 5 ticks in X axis
             yaxis=dict(nticks=10), # Display 10 ticks in Y axis
-            zaxis=dict(range=[0, 650]),  # Range from 0 to 900 and inverted in Z
+            zaxis=dict(range=[0, 425]),  # Range from 0 to 900 and inverted in Z
             camera=dict(
                 eye=dict(x=1.5, y=1.5, z=1),
             )
