@@ -204,10 +204,10 @@ class Traces3DPlot(Graph):
         scene=dict(
             xaxis_title='Box width (367)',
             yaxis_title='Box length (570)',
-            zaxis_title='Distance to sensor (mm)',
+            zaxis_title='Box height (400)',
             xaxis=dict(nticks=5), # Display 5 ticks in X axis
             yaxis=dict(nticks=10), # Display 10 ticks in Y axis
-            zaxis=dict(range=[0, 425]),  # Range from 0 to 900 and inverted in Z
+            zaxis=dict(range=[0, 400]),  # Range from 0 to 900 and inverted in Z
             camera=dict(
                 eye=dict(x=1.5, y=1.5, z=1),
             )

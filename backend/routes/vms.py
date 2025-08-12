@@ -22,15 +22,7 @@ async def generate_graph(request: Request):
         df = await db_connection.fetch_df(query_vms_data, current_prop)
         
         #Filter the dataframe to only take the data INSIDE the box 
-        #df = take_data_inside_the_box(df)
-        df = df[(df["sensor_m"] < 680) & (df["sensor_m"] > 350)] 
-        df = df[(df["sensor_l"] < 680) & (df["sensor_l"] > 350)]
-        df = df[(df["sensor_r"] < 680) & (df["sensor_r"] > 350)]
-        
-        #Inverse the sensors values to have the correct orientation
-        df["sensor_l"] = (680 - df["sensor_l"]) 
-        df["sensor_m"] = (680 - df["sensor_m"])
-        df["sensor_r"] = (680 - df["sensor_r"])
+        df = take_data_inside_the_box(df)
         
         #Extra information
         n = len(df) #Number of Samples
@@ -73,14 +65,16 @@ async def generate_graph(request: Request):
 
 # Function to trim the dataframe and keep only the part inside the "box"
 def take_data_inside_the_box(df):
-    # Detect the start index of the hill in the sensor_m data
-    start = detect_hill_start(df["sensor_m"].to_numpy())
-    # Detect the end index of the hill in the sensor_m data
-    end = detect_hill_end(df["sensor_m"].to_numpy())
-    # Slice the dataframe from start to end and reset the index
-    trimmed_df = df.iloc[start:end].reset_index(drop=True)
+    df = df[(df["sensor_m"] < 680) & (df["sensor_m"] > 350)] 
+    df = df[(df["sensor_l"] < 680) & (df["sensor_l"] > 350)]
+    df = df[(df["sensor_r"] < 680) & (df["sensor_r"] > 350)]
+        
+    #Inverse the sensors values to have the correct orientation
+    df["sensor_l"] = (680 - df["sensor_l"]) 
+    df["sensor_m"] = (680 - df["sensor_m"])
+    df["sensor_r"] = (680 - df["sensor_r"])
 
-    return trimmed_df
+    return df
 
 # Function to detect the start of a hill in a numeric series
 def detect_hill_start(series, rise_thresh=50, plateau_margin=5, plateau_points=10):
