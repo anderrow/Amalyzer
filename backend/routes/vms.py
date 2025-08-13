@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import Traces3DPlot , TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
-from backend.database.query import query_vms_data
+from backend.database.query import query_vms_data, query_vms_parameters
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  
@@ -21,6 +21,9 @@ async def generate_graph(request: Request):
         #Take the data from the prop ID requested
         df = await db_connection.fetch_df(query_vms_data, current_prop)
         
+        #Take the parameters from the prop ID requested
+        df_params = await db_connection.fetch_df(query_vms_parameters, current_prop)
+        
         #Filter the dataframe to only take the data INSIDE the box 
         df = take_data_inside_the_box(df)
         
@@ -28,11 +31,20 @@ async def generate_graph(request: Request):
         n = len(df) #Number of Samples
         y_vals = np.linspace(0, 570, n) #Space then equally in 570 values (Distance of the box)
 
-        #Load x values for each sensor (Needs to be taken from db, also the height of the sensors)
-        x_left=18
-        x_mid=160
-        x_right=340
-
+        #Load x values for each sensor (Needs to be taken from db, also the height of the sensors) (Temporal solution)
+        x_left=df_params.at[0, "offset_l_x"] #Left sensor x value
+        x_mid= df_params.at[0, "offset_m_x"] #Middle sensor x value]
+        x_right = df_params.at[0, "offset_r_x"] #Right sensor x value
+        #Load y values for each sensor (Needs to be taken from db, also the height of the sensors) (Temporal solution)
+        y_left= 650 - df_params.at[0, "offset_l_y"] #Left sensor y value
+        y_mid = 650 - df_params.at[0, "offset_m_y"] #Middle sensor y value
+        y_right = 650 - df_params.at[0, "offset_r_y"] #Right sensor y value   
+    
+        #Level the sensors to the same height
+        df["sensor_l"] = df["sensor_l"] - y_left
+        df["sensor_m"] = df["sensor_m"] - y_mid
+        df["sensor_r"] = df["sensor_r"] - y_right
+        
         #Iterate new values for the material on the wall of the box
         m_left = (df["sensor_m"]-df["sensor_l"])/(x_mid-x_left)
         z_left_zero = m_left * (0- x_left) + df["sensor_l"]
@@ -75,38 +87,6 @@ def take_data_inside_the_box(df):
     df["sensor_r"] = (680 - df["sensor_r"])
 
     return df
-
-# Function to detect the start of a hill in a numeric series
-def detect_hill_start(series, rise_thresh=50, plateau_margin=5, plateau_points=10):
-    # Calculate the difference between consecutive points in the series
-    diffs = np.diff(series)
-
-    # Iterate over differences to find where the slope rises above threshold
-    for i in range(len(diffs) - plateau_points):
-        if diffs[i] > rise_thresh:
-            # Check if the next points form a relatively flat plateau
-            window = series[i+1:i+1+plateau_points]
-            if np.all(np.abs(np.diff(window)) < plateau_margin):
-                # Return the index right after the rise starts
-                return i + 1
-    # If no hill start found, return 0 (start of series)
-    return 0
-
-# Function to detect the end of a hill in a numeric series
-def detect_hill_end(series, fall_thresh=-50, plateau_margin=5, plateau_points=10):
-    # Calculate the difference between consecutive points in the series
-    diffs = np.diff(series)
-
-    # Iterate backward over differences to find where slope falls below threshold
-    for i in range(len(diffs) - 1, plateau_points, -1):
-        if diffs[i-1] < fall_thresh:
-            # Check if the previous points form a relatively flat plateau
-            window = series[i-plateau_points:i]
-            if np.all(np.abs(np.diff(window)) < plateau_margin):
-                # Return the index where the fall ends
-                return i
-    # If no hill end found, return length of series (end of data)
-    return len(series)
 
 # ------------ Get the current Environment from the request cookies ---------- #
 def connect_to_user_environment(request):

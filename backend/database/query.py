@@ -164,7 +164,13 @@ WHERE lot_dbid = {current_lot}
 """
 #SQL query to request VMS data
 query_vms_data = """
-SELECT proportioning_dbid, sensor_l, sensor_m, sensor_r FROM public.amadeus_vms_logging
+SELECT proportioning_dbid, sensor_l, sensor_m, sensor_r 
+    FROM public.amadeus_vms_logging
 	where proportioning_dbid = 	{current_prop}
 	ORDER BY vms_logging_dbid ASC
+"""
+query_vms_parameters = """
+SELECT offset_l_x, offset_l_y, offset_m_x, offset_m_y, offset_r_x, offset_r_y  
+    FROM public.amadeus_vms_param
+    where proportioning_dbid = {current_prop}
 """
