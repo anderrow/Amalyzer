@@ -118,7 +118,7 @@ WHERE article_dbid = (
     SELECT article_dbid 
     FROM public.amadeus_proportioning 
     WHERE proportioning_dbid = {current_prop});
- """
+"""
 
 #SQL query to fetch Analyzer Graph
 query_analyzer_slide_graph= """
@@ -143,8 +143,7 @@ SELECT
 """
 #SQL query to fetch Regressor Graph
 query_regressor_graph = """
-SELECT
-intermediate_dbid, measurement_time, flow, opening
+SELECT intermediate_dbid, measurement_time, flow, opening
 FROM public.amadeus_intermediates
 WHERE lot_dbid = {current_lot};
 """
@@ -156,9 +155,8 @@ WHERE proportioning_dbid = {current_prop};
 """
 #SQL query to request Regression table
 query_regression_table = """
-SELECT 
-     lot_id, lot_dbid, c2_in_flowtablequality, c2_in_measureddensity, c2_in_angleofrepose,c2_in_oscillationfactor,
-     c2_in_oscillationmin ,c2_in_oscillationspeed, c1_in_minflow, c1_in_maxflow 
+SELECT lot_id, lot_dbid, c2_in_flowtablequality, c2_in_measureddensity, c2_in_angleofrepose,c2_in_oscillationfactor,
+    c2_in_oscillationmin ,c2_in_oscillationspeed, c1_in_minflow, c1_in_maxflow 
     FROM public.amadeus_lot
 WHERE lot_dbid = {current_lot}
 """
