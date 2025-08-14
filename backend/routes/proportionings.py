@@ -7,7 +7,9 @@ from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, 
 from backend.classes.request import UserInfo, RequestEnvironment
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
 from backend.memory.state import session_data
+from backend.database.db_connections import ALL_DB_CONNECTIONS
 from typing import List, Dict, Any
+
 
 # Create an APIRouter instance
 router = APIRouter()
@@ -28,7 +30,6 @@ async def get_proportionings(request: Request) -> List[Dict[str, Any]]:
         #Make data redable
         data = make_db_redable(data)
 
-       
         return data #Return data
 
     except Exception as e:
@@ -163,6 +164,11 @@ def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:
 # ------------ Get the current Environment from the request cookies ---------- #
 def connect_to_user_environment(request):
     # Get configuration based on the user's environment
-    env = RequestEnvironment(request).get_config() 
+    env_key  = (RequestEnvironment(request).return_data())
+    
+    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
+        print(f"Environment (not) defined as {env_key},  using default configuration.")
+        env_key = "CONFIG"  # Default key for DB Connection
+    
     # Initialize the DBConnection object with the selected environment
-    return DBConnection(env)
+    return  ALL_DB_CONNECTIONS[env_key]

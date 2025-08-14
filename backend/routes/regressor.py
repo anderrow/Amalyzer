@@ -7,6 +7,7 @@ from backend.classes.graphs import LogScatterPlot
 from backend.database.query import query_regressor_graph, query_regression_table
 from backend.classes.request import RequestLotId, RequestEnvironment
 from backend.classes.calculation import CalculateLogTraces
+from backend.database.db_connections import ALL_DB_CONNECTIONS
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/regressor")  
@@ -83,6 +84,11 @@ async def fetch_table_data(query_template: str, db_connection: DBConnection, lot
 # ------------ Get the current Environment from the request cookies ---------- #
 def connect_to_user_environment(request):
     # Get configuration based on the user's environment
-    env = RequestEnvironment(request).get_config() 
+    env_key  = (RequestEnvironment(request).return_data())
+    
+    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
+        print(f"Environment (not) defined as {env_key},  using default configuration.")
+        env_key = "CONFIG"  # Default key for DB Connection
+    
     # Initialize the DBConnection object with the selected environment
-    return DBConnection(env)
+    return  ALL_DB_CONNECTIONS[env_key]

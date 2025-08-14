@@ -5,6 +5,7 @@ from backend.classes.graphs import PlotPointsinTime, TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent , IsInTolerance , NumericDeviation
 from backend.classes.filter_data import Deviation , DosingType
+from backend.database.db_connections import ALL_DB_CONNECTIONS
 from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph, query_analyzer_flow, query_analyzer_dosed_material
 
 router = APIRouter(prefix="/analyzer")  
@@ -219,6 +220,11 @@ def debug(prop_id,num):
 # ------------ Get the current Environment from the request cookies ---------- #
 def connect_to_user_environment(request):
     # Get configuration based on the user's environment
-    env = RequestEnvironment(request).get_config() 
+    env_key  = (RequestEnvironment(request).return_data())
+    
+    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
+        print(f"Environment (not) defined as {env_key},  using default configuration.")
+        env_key = "CONFIG"  # Default key for DB Connection
+    
     # Initialize the DBConnection object with the selected environment
-    return DBConnection(env)
+    return  ALL_DB_CONNECTIONS[env_key]

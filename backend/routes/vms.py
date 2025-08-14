@@ -7,6 +7,7 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import Traces3DPlot , TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.database.query import query_vms_data, query_vms_parameters
+from backend.database.db_connections import ALL_DB_CONNECTIONS
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  
@@ -91,6 +92,11 @@ def take_data_inside_the_box(df):
 # ------------ Get the current Environment from the request cookies ---------- #
 def connect_to_user_environment(request):
     # Get configuration based on the user's environment
-    env = RequestEnvironment(request).get_config() 
+    env_key  = (RequestEnvironment(request).return_data())
+    
+    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
+        print(f"Environment (not) defined as {env_key},  using default configuration.")
+        env_key = "CONFIG"  # Default key for DB Connection
+    
     # Initialize the DBConnection object with the selected environment
-    return DBConnection(env)
+    return  ALL_DB_CONNECTIONS[env_key]
