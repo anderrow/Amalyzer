@@ -2,7 +2,6 @@ import pandas as pd
 from fastapi import APIRouter
 from fastapi import Query, Request
 from backend.database.query import query_proportionings, query_proportionings_filter
-from backend.classes.db_connection import DBConnection
 from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, Deviation
 from backend.classes.request import UserInfo, RequestEnvironment
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation

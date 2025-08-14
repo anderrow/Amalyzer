@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from fastapi import Request
 from backend.memory.state import session_data
 from backend.database.query import query_lot_db_id
-from backend.classes.db_connection import DBConnection
 from backend.database.db_connections import ALL_DB_CONNECTIONS
 from backend.database.config import env_map, config
 

@@ -3,7 +3,6 @@ import numpy as np
 from fastapi import APIRouter, Request
 from fastapi import Query
 from fastapi.responses import HTMLResponse
-from backend.classes.db_connection import DBConnection
 from backend.classes.graphs import Traces3DPlot , TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.database.query import query_vms_data, query_vms_parameters
