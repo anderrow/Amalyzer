@@ -4,7 +4,8 @@ from fastapi import Request
 from backend.memory.state import session_data
 from backend.database.query import query_lot_db_id
 from backend.classes.db_connection import DBConnection
-from backend.database.config import *
+from backend.database.db_connections import ALL_DB_CONNECTIONS
+from backend.database.config import env_map, config
 
 
 # Import BaseModel from Pydantic to define the expected structure of the request body
@@ -63,11 +64,17 @@ class RequestLotId(RequestBase):
         # Get current proportioning id for this user UID
         user_session = session_data.get(self.uid, {})
         current_prop = user_session.get("current_prop_id")
+        env_key= user_session.get("environment")
+        
+        if env_key is None or env_key not in ALL_DB_CONNECTIONS:
+            print(f"Environment (not) defined as {env_key},  using default configuration.")
+            env_key = "CONFIG"  # Default key for DB Connection
+            
+        # Collect the DBConnection object
+        db_connection = ALL_DB_CONNECTIONS[env_key]
+        
         #Write the current_prop variable inside the query
         query = query_lot_db_id.format(current_prop=current_prop)
-
-        # Initialize the DBConnection object
-        db_connection = DBConnection(config=config) #config is declared in backend/database/config.py
         lot_id = await db_connection.fetch_data(query)  #Save lot_id
         data = lot_id[0]["lot_dbid"]    #Extract the lot_id
 
@@ -101,3 +108,16 @@ class RequestEnvironment(RequestBase):
         environment = self.return_data()
         selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found 
         return selected_env
+    
+    
+# ------------ Get the current Environment from the request cookies ---------- #
+def connect_to_user_environment(request):
+    # Get configuration based on the user's environment
+    env_key  = (RequestEnvironment(request).return_data())
+    
+    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
+        print(f"Environment (not) defined as {env_key},  using default configuration.")
+        env_key = "CONFIG"  # Default key for DB Connection
+    
+    # Initialize the DBConnection object with the selected environment
+    return  ALL_DB_CONNECTIONS[env_key]
