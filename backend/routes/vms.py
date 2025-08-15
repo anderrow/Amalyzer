@@ -5,18 +5,16 @@ from fastapi import Query
 from fastapi.responses import HTMLResponse
 from backend.classes.graphs import Traces3DPlot , TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
-from backend.database.query import query_vms_data, query_vms_parameters
+from backend.database.query import query_vms_data, query_vms_parameters, query_vms_summary_table
 from backend.database.db_connections import ALL_DB_CONNECTIONS
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  
 
-# Example endpoint to check vms status
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph(request: Request):
     try:
         db_connection = connect_to_user_environment(request)
-
         current_prop = RequestPropId(request).return_data()
         #Take the data from the prop ID requested
         df = await db_connection.fetch_df(query_vms_data, current_prop)
@@ -73,7 +71,18 @@ async def generate_graph(request: Request):
         # Retrun error
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
     
-# ------------- Taking only the VMS data inside the box ------------- #
+@router.get("/Summary")
+async def generate_summary_table(request: Request):
+    try:
+        db_connection = connect_to_user_environment(request)
+        current_prop = RequestPropId(request).return_data()
+        data = await db_connection.fetch_df(query_vms_summary_table, current_prop)
+        return data.to_dict(orient="records")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+
 
 # Function to trim the dataframe and keep only the part inside the "box"
 def take_data_inside_the_box(df):

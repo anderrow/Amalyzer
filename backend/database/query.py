@@ -172,3 +172,20 @@ SELECT offset_l_x, offset_l_y, offset_m_x, offset_m_y, offset_r_x, offset_r_y
     FROM public.amadeus_vms_param
     where proportioning_dbid = {current_prop}
 """
+query_vms_summary_table = """
+SELECT 
+    amadeus_proportioning.proportioning_dbid AS "ProportioningDBID",
+    amadeus_article.name AS "ArticleName",
+    amadeus_proportioningrecord.box_id AS "BoxID",
+    amadeus_proportioningrecord.start_time AS "ScanDate",
+    amadeus_lot.lot_id AS "LotID",
+    amadeus_proportioning.lot_dbid AS "LotDBID"
+FROM amadeus_proportioning 
+JOIN amadeus_proportioningrecord 
+    ON amadeus_proportioning.proportioning_dbid = amadeus_proportioningrecord.proportioning_dbid 
+JOIN amadeus_article 
+    ON amadeus_proportioning.article_dbid = amadeus_article.article_dbid 
+JOIN amadeus_lot 
+    ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
+WHERE amadeus_proportioning.proportioning_dbid = {current_prop};
+"""
