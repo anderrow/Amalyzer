@@ -708,7 +708,7 @@ input, select {
     background: #5572f3;
 }
 
-#AnalyzerSummaryTable {
+#AnalyzerSummaryTable, #VmsSummaryTable{
     margin-top: 4px;
     border-collapse: collapse;
     width: 100%;
@@ -718,15 +718,14 @@ input, select {
     overflow-y: auto;
 }
   
-#AnalyzerSummaryTable th,
-#AnalyzerSummaryTable td {
+#AnalyzerSummaryTable th, #AnalyzerSummaryTable td, #VmsSummaryTable th, #VmsSummaryTable td {
 border: 1px solid #ddd;
 padding: 8px;
 white-space: normal;
 overflow-wrap: break-word;  /*Break the word if it is too long*/
 }
 
-#AnalyzerSummaryTable th {
+#AnalyzerSummaryTable th, #VmsSummaryTable th{ 
 background-color: #f2f2f2;
 text-align: left;
 }
