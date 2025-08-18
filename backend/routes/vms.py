@@ -91,8 +91,8 @@ def take_data_inside_the_box(df):
     df = df[(df["sensor_r"] < 680) & (df["sensor_r"] > 350)]
         
     #Inverse the sensors values to have the correct orientation
-    df["sensor_l"] = (680 - df["sensor_l"]) 
-    df["sensor_m"] = (680 - df["sensor_m"])
-    df["sensor_r"] = (680 - df["sensor_r"])
+    df["sensor_l"] = (650 - df["sensor_l"]) 
+    df["sensor_m"] = (650 - df["sensor_m"])
+    df["sensor_r"] = (650 - df["sensor_r"])
 
     return df
