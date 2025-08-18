@@ -89,6 +89,7 @@ class RequestEnvironment(RequestBase):
     When this class is called, it will return the Environment attached to the current Proportioning ID
     """
     def __init__(self, request: Request):
+        # Initialize the base class to extract and store the user UID from the request cookies
         super().__init__(request)
 
     def return_data(self):
@@ -108,15 +109,13 @@ class RequestEnvironment(RequestBase):
         selected_env = env_map.get(environment.upper(), config) #Default to config if the environment is not found 
         return selected_env
     
-    
-# ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request):
-    # Get configuration based on the user's environment
-    env_key  = (RequestEnvironment(request).return_data())
-    
-    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
-        print(f"Environment (not) defined as {env_key},  using default configuration.")
-        env_key = "CONFIG"  # Default key for DB Connection
-    
-    # Initialize the DBConnection object with the selected environment
-    return  ALL_DB_CONNECTIONS[env_key]
+    def ConnectToUserEnvironment(self):
+        # Get configuration based on the user's environment
+        env_key  = self.return_data()
+        
+        if env_key is None or env_key not in ALL_DB_CONNECTIONS:
+            print(f"Environment (not) defined as {env_key},  using default configuration.")
+            env_key = "CONFIG"  # Default key for DB Connection
+        
+        # Initialize the DBConnection object with the selected environment
+        return  ALL_DB_CONNECTIONS[env_key]
