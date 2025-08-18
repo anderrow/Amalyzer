@@ -19,7 +19,7 @@ async def analyzer_status(request: Request):# Get the current proportioning ID f
 # ---------- Extra Information from the PropId ---------- #
 @router.get("/PropIdExtraInfo")
 async def analyzer_status(request: Request):  # Get the current proportioning ID from the request cookies 
-    db_connection = connect_to_user_environment(request)
+    db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
     current_prop = RequestPropId(request).return_data()
 
@@ -45,15 +45,3 @@ async def fetch_data(query_template: str, current_prop: int, db_connection: DBCo
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
-
-# ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request):
-    # Get configuration based on the user's environment
-    env_key  = (RequestEnvironment(request).return_data())
-    
-    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
-        print(f"Environment (not) defined as {env_key},  using default configuration.")
-        env_key = "CONFIG"  # Default key for DB Connection
-    
-    # Initialize the DBConnection object with the selected environment
-    return  ALL_DB_CONNECTIONS[env_key]

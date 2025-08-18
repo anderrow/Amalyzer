@@ -14,7 +14,7 @@ router = APIRouter(prefix="/analyzer")
 async def generate_graph(request: Request):
     try:
         # Connect to the user's environment
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
         # Get the current proportioning ID from the request cookies
         current_prop = get_current_prop_id(request) 
@@ -54,7 +54,7 @@ async def generate_graph(request: Request):
 async def generate_graph(request: Request):
     try:
         # Connect to the user's environment
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
         # Get the current proportioning ID from the request cookies
         current_prop = get_current_prop_id(request) 
@@ -103,7 +103,7 @@ async def generate_graph(request: Request):
 async def generate_graph(request: Request):
     try:
         # Connect to the user's environment
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
         # Get the current proportioning ID from the request cookies
         current_prop = get_current_prop_id(request) 
@@ -139,7 +139,7 @@ async def generate_graph(request: Request):
 # ---------- SUMMARY TABLE ---------- #
 @router.get("/Summary")
 async def summary_table(request: Request):
-    db_connection = connect_to_user_environment(request)
+    db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
     
     data = await db_connection.fetch_df(query_analyzer_summary, get_current_prop_id(request))
     
@@ -163,28 +163,28 @@ async def summary_table(request: Request):
 # ---------- PROP RECORD ---------- #    
 @router.get("/PropRecord")
 async def propRecord_table(request: Request):
-    db_connection = connect_to_user_environment(request)
+    db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
     data = await db_connection.fetch_df(query_analyzer_propRecord, get_current_prop_id(request))
     return data.to_dict(orient="records") 
 
 # ---------- Logging Param ---------- #    
 @router.get("/LogginParam")
 async def propRecord_table(request: Request):
-    db_connection = connect_to_user_environment(request)
+    db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
     data = await db_connection.fetch_df (query_analyzer_logginParam, get_current_prop_id(request))
     return data.to_dict(orient="records") 
 
 # ---------- Lot table ---------- #    
 @router.get("/Lot")
 async def lot_table(request: Request):
-    db_connection = connect_to_user_environment(request)
+    db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
     data = await db_connection.fetch_df(query_analyzer_lot, get_current_prop_id(request))
     return data.to_dict(orient="records") 
 
 # ---------- Article table ---------- #    
 @router.get("/Article")
 async def article_table(request: Request):
-    db_connection = connect_to_user_environment(request)
+    db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
     data = await db_connection.fetch_df(query_analyzer_article, get_current_prop_id(request))
     return data.to_dict(orient="records") 
 
@@ -216,14 +216,3 @@ def debug(prop_id,num):
         f"\n* Plotting Graph {num} for PropID: {f': {prop_id}':<7}*" +
         "\n" + "*" * 52 + "\n" )   
     
-# ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request):
-    # Get configuration based on the user's environment
-    env_key  = (RequestEnvironment(request).return_data())
-    
-    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
-        print(f"Environment (not) defined as {env_key},  using default configuration.")
-        env_key = "CONFIG"  # Default key for DB Connection
-    
-    # Initialize the DBConnection object with the selected environment
-    return  ALL_DB_CONNECTIONS[env_key]

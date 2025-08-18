@@ -19,7 +19,7 @@ async def generate_graph(
     amountOfRegressions: int = Query(2) #Parameter for Amount of Regressions (default 2)    
 ):
     try:
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
         #Extract lot_id and print it
         lot_id = await RequestLotId(request).return_data() 
@@ -51,7 +51,7 @@ async def generate_graph(
 
 @router.get("/SummaryTable")
 async def summary_table(request: Request):
-    db_connection = connect_to_user_environment(request)
+    db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
     #Extract lot_id
     lot_id = await RequestLotId(request).return_data() 
 
@@ -80,15 +80,3 @@ async def fetch_table_data(query_template: str, db_connection: DBConnection, lot
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"error": str(e)}
-
-# ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request):
-    # Get configuration based on the user's environment
-    env_key  = (RequestEnvironment(request).return_data())
-    
-    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
-        print(f"Environment (not) defined as {env_key},  using default configuration.")
-        env_key = "CONFIG"  # Default key for DB Connection
-    
-    # Initialize the DBConnection object with the selected environment
-    return  ALL_DB_CONNECTIONS[env_key]

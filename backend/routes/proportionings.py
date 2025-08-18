@@ -18,7 +18,7 @@ router = APIRouter()
 @router.get("/api/proportionings")
 async def get_proportionings(request: Request) -> List[Dict[str, Any]]:
     try:
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()  # Get the DBConnection object based on the user's environment
 
         # Fetch data from the database
         data = await db_connection.fetch_df(query_proportionings) #Raw Data (Limited to 1000 rows by default)
@@ -49,7 +49,7 @@ async def get_proportionings_filtered(
 ) -> List[Dict[str, Any]]:
     
     try:
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()  # Get the DBConnection object based on the user's environment
 
         # Copy the base query for proportionings
         query_proportionings_filtered = query_proportionings_filter
@@ -104,7 +104,7 @@ async def get_proportionings_filtered(
 @router.get("/api/articlenames")
 async def get_article_names(request: Request) -> List[Dict[str, Any]]:
     try:
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
         # Fetch data from the database
         data = await db_connection.fetch_data(query=query_proportionings)   
@@ -160,14 +160,3 @@ def make_db_redable(df: pd.DataFrame) -> List[Dict[str, Any]]:
     formatter = ReadableDataFormatter(df)
     return formatter.apply_all_formats()
 
-# ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request):
-    # Get configuration based on the user's environment
-    env_key  = (RequestEnvironment(request).return_data())
-    
-    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
-        print(f"Environment (not) defined as {env_key},  using default configuration.")
-        env_key = "CONFIG"  # Default key for DB Connection
-    
-    # Initialize the DBConnection object with the selected environment
-    return  ALL_DB_CONNECTIONS[env_key]

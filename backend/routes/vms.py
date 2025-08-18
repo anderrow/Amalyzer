@@ -14,7 +14,7 @@ router = APIRouter(prefix="/vms")
 @router.get("/Graph", response_class=HTMLResponse)
 async def generate_graph(request: Request):
     try:
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
         current_prop = RequestPropId(request).return_data()
         #Take the data from the prop ID requested
         df = await db_connection.fetch_df(query_vms_data, current_prop)
@@ -74,7 +74,7 @@ async def generate_graph(request: Request):
 @router.get("/Summary")
 async def generate_summary_table(request: Request):
     try:
-        db_connection = connect_to_user_environment(request)
+        db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
         current_prop = RequestPropId(request).return_data()
         data = await db_connection.fetch_df(query_vms_summary_table, current_prop)
         return data.to_dict(orient="records")
@@ -96,15 +96,3 @@ def take_data_inside_the_box(df):
     df["sensor_r"] = (680 - df["sensor_r"])
 
     return df
-
-# ------------ Get the current Environment from the request cookies ---------- #
-def connect_to_user_environment(request):
-    # Get configuration based on the user's environment
-    env_key  = (RequestEnvironment(request).return_data())
-    
-    if env_key is None or env_key not in ALL_DB_CONNECTIONS:
-        print(f"Environment (not) defined as {env_key},  using default configuration.")
-        env_key = "CONFIG"  # Default key for DB Connection
-    
-    # Initialize the DBConnection object with the selected environment
-    return  ALL_DB_CONNECTIONS[env_key]
