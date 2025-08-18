@@ -34,8 +34,14 @@
                     <option value="" disabled selected>Select environment     ...</option>
                 <!-- Fetch from backend -->
                 </select> 
-                <button id="SetEnvironment">Set Environment</button>
             </div>
+
+            <div id = "RowAmountContainer">
+                <label for="RangeInput">Amount of Rows</label>
+                <input type="range" min="100" max="100000" step="100" value="1000" class="short-slider RegressorSlider" oninput="document.getElementById('RowAmount').value = this.value" id="RangeInput" />
+                <output id="RowAmount">1000</output>
+            </div>
+            <button id="SetEnvironment">Set Environment</button>
         </section>
     </article>
 </body> 
