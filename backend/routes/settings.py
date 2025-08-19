@@ -15,7 +15,7 @@ async def handle_selected_environmnet(request: Request,  body: UserInfo):
     uid = request.cookies.get("uid")
     # Extract the Environment from the request body
     environment = body.environment
-    
+    # Extract the number of rows from the request body 
     rows = body.rows
 
     # Print the UID from the request cookies to the backend console for debugging/logging purposes
@@ -31,6 +31,7 @@ async def handle_selected_environmnet(request: Request,  body: UserInfo):
 
     session_data[uid]["environment"] = environment # Store the propDbId in the session_data dictionary under the UID
     session_data[uid]["current_prop_id"] = None # Reset the propDbId when changing environment (For avoiding request of not existing propDbId)
+    session_data[uid]["rows"] = rows
 
     return {"environment": environment}
 
@@ -41,4 +42,4 @@ async def get_available_environments():
     #Get a list of the env defined in the config.py
     env_list = list(env_map.keys())
     
-    return env_list
+    return env_list 
