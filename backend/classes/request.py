@@ -120,3 +120,22 @@ class RequestEnvironment(RequestBase):
         
         # Initialize the DBConnection object with the selected environment
         return  ALL_DB_CONNECTIONS[env_key]
+    
+class RequestRows(RequestBase):
+    """
+    When this class is called, it will return the number of rows to fetch from the database.
+    This value can be adjusted by the user in the settings page.
+    """
+    def __init__(self, request: Request):
+        super().__init__(request)
+
+    def return_data(self):
+        # Get current number of rows for this user UID
+        user_session = session_data.get(self.uid, {})
+        rows = user_session.get("rows", 1000)  # Default to 1000 if not set
+
+        print("*"*75)
+        print(f"* UID {self.uid} requested rows: {rows:<6}*")
+        print("*"*75)
+
+        return rows
