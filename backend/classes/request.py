@@ -129,13 +129,13 @@ class RequestRows(RequestBase):
     def __init__(self, request: Request):
         super().__init__(request)
 
-    def return_data(self):
+    def get_rows(self):
         # Get current number of rows for this user UID
         user_session = session_data.get(self.uid, {})
         rows = user_session.get("rows", 1000)  # Default to 1000 if not set
 
         print("*"*75)
-        print(f"* UID {self.uid} requested rows: {rows:<6}*")
+        print(f"* UID {self.uid} requested rows: {rows:<15}*")
         print("*"*75)
 
         return rows
