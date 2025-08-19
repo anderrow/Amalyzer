@@ -3,11 +3,11 @@ from fastapi import APIRouter
 from fastapi import Query, Request
 from backend.database.query import query_proportionings, query_proportionings_filter
 from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, Deviation
-from backend.classes.request import UserInfo, RequestEnvironment
+from backend.classes.request import UserInfo, RequestEnvironment, RequestRows
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
 from backend.memory.state import session_data
 from backend.database.db_connections import ALL_DB_CONNECTIONS
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 
 
 # Create an APIRouter instance
@@ -16,12 +16,14 @@ router = APIRouter()
 # ----------------- GET endpoint to retrieve proportioning data (Controls -> Update button) ----------------- #
 
 @router.get("/api/proportionings")
-async def get_proportionings(request: Request) -> List[Dict[str, Any]]:
+async def get_proportionings(request: Request) -> Union[List[Dict[str, Any]], Dict[str, str]]:
     try:
+        rows = RequestRows(request).get_rows()  # Get the number of rows to fetch from the request
+        
         db_connection = RequestEnvironment(request).ConnectToUserEnvironment()  # Get the DBConnection object based on the user's environment
 
         # Fetch data from the database
-        data = await db_connection.fetch_df(query_proportionings) #Raw Data (Limited to 1000 rows by default)
+        data = await db_connection.fetch_df(query=query_proportionings.format(rows=rows)) #Raw Data (Limited to 1000 rows by default)
 
         #Make all the calculations that are needed
         data = calculate(data)
@@ -104,10 +106,12 @@ async def get_proportionings_filtered(
 @router.get("/api/articlenames")
 async def get_article_names(request: Request) -> List[Dict[str, Any]]:
     try:
+        rows = RequestRows(request).get_rows()
+        
         db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
         # Fetch data from the database
-        data = await db_connection.fetch_data(query=query_proportionings)   
+        data = await db_connection.fetch_df(query=query_proportionings.format(rows=rows))  
         # Convert the data to a pandas DateFrame
         df = pd.DataFrame(data)
         #Get unique values from the 'ArticleName' column

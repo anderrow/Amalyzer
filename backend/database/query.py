@@ -24,7 +24,7 @@ JOIN amadeus_loggingparam ON amadeus_proportioning.proportioning_dbid = amadeus_
 JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.article_dbid 
 JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
 ORDER BY amadeus_proportioning.proportioning_dbid DESC
-LIMIT 1000;"""
+LIMIT {rows};"""
 # SQL query to fetch proportioning FILTER data
 query_proportionings_filter= """
 SELECT 
