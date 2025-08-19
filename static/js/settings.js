@@ -4,6 +4,7 @@ const uid = ensureUID();
 document.addEventListener("DOMContentLoaded", function () {
     const button = document.getElementById("SetEnvironment");
     const select = document.getElementById("ChoosenEnvironment");
+    const rowAmount = document.getElementById("RowAmount");
 
     button.addEventListener("click", async function () {
         const selectedEnvironment = select.value;
@@ -19,7 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify({
                     environment: selectedEnvironment,
                     propDbId: propDbId,
-                    uid: uid
+                    uid: uid,
+                    rows: rowAmount.value, 
                 }),
                 credentials: "include",
             });
@@ -30,8 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const result = await response.json();
             console.log("Server response:", result);
-            showPopupMessage("✅ Environment chosen: " + selectedEnvironment);
+            showPopupMessage("✅ Rows to fetch: " + rowAmount.value);
+            showPopupMessage("✅ Environment chosen: " + selectedEnvironment); 
             showPopupMessage("PropDbId is now set to Null" , true);
+
 
         } catch (error) {
             console.error("Error sending environment:", error);

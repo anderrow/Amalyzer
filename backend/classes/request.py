@@ -12,6 +12,7 @@ class UserInfo(BaseModel):
     propDbId: Optional[int] = None  # Include propDbId in the request model for tracking purposes
     uid: str  # Include UID in the request model for tracking purposes
     environment: str = "config"  # Optional field for environment, default is config 
+    rows: int = 1000  # Default number of rows to fetch, can be adjusted by the user
 
 class RequestBase:
     """
