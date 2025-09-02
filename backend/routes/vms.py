@@ -6,7 +6,6 @@ from fastapi.responses import HTMLResponse
 from backend.classes.graphs import Traces3DPlot , TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.database.query import query_vms_data, query_vms_parameters, query_vms_summary_table
-from backend.database.db_connections import ALL_DB_CONNECTIONS
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/vms")  

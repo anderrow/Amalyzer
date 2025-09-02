@@ -7,7 +7,6 @@ from backend.classes.graphs import LogScatterPlot
 from backend.database.query import query_regressor_graph, query_regression_table
 from backend.classes.request import RequestLotId, RequestEnvironment
 from backend.classes.calculation import CalculateLogTraces
-from backend.database.db_connections import ALL_DB_CONNECTIONS
 
 # Create an APIRouter instance
 router = APIRouter(prefix="/regressor")  

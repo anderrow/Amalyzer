@@ -3,7 +3,6 @@ from backend.classes.db_connection import DBConnection
 from backend.classes.request import RequestPropId
 from backend.database.query import query_valuable_information
 from backend.classes.request import RequestEnvironment
-from backend.database.db_connections import ALL_DB_CONNECTIONS
 
 router = APIRouter(prefix="/common")  
 

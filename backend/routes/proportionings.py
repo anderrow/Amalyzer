@@ -6,9 +6,7 @@ from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, 
 from backend.classes.request import UserInfo, RequestEnvironment, RequestRows
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
 from backend.memory.state import session_data
-from backend.database.db_connections import ALL_DB_CONNECTIONS
 from typing import List, Dict, Any, Union
-
 
 # Create an APIRouter instance
 router = APIRouter()

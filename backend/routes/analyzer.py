@@ -4,7 +4,6 @@ from backend.classes.graphs import PlotPointsinTime, TraceData
 from backend.classes.request import RequestPropId, RequestEnvironment
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent , IsInTolerance , NumericDeviation
 from backend.classes.filter_data import Deviation , DosingType
-from backend.database.db_connections import ALL_DB_CONNECTIONS
 from backend.database.query import query_analyzer_summary, query_analyzer_propRecord, query_analyzer_logginParam, query_analyzer_lot, query_analyzer_article, query_analyzer_slide_graph, query_analyzer_flow, query_analyzer_dosed_material
 
 router = APIRouter(prefix="/analyzer")  
