@@ -132,7 +132,6 @@ async def generate_graph(request: Request):
 
     except Exception as e:
         print(f"Error: {e}")
-        # Aquí podrías devolver un HTML de error, o un JSON si prefieres
         return HTMLResponse(f"<p>Error generating graph: {e}</p>", status_code=500)
     
 
