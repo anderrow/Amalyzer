@@ -67,12 +67,3 @@ class DBConnection:
     # Asynchronous method that runs the blocking code in a separate thread   
     async def fetch_df(self, query: str, current_prop=None) -> pd.DataFrame:
         return await asyncio.to_thread(self._connect_and_fetch_df, query, current_prop)
-
-class DBConnectionError(Exception):
-    """
-    Custom exception for database connection errors. Raised when a connection or query fails.
-    """
-
-    def __init__(self, message: str):
-        self.message = message
-        super().__init__(self.message)
