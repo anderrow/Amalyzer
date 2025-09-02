@@ -1,4 +1,3 @@
-import psycopg2
 from typing import List, Dict, Any
 import asyncio
 import pandas as pd
