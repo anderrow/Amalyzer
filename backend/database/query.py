@@ -53,6 +53,17 @@ JOIN amadeus_lot ON amadeus_proportioning.lot_dbid = amadeus_lot.lot_dbid
 {where_clause}
 ORDER BY amadeus_proportioning.proportioning_dbid DESC
 LIMIT 5000;"""
+
+#SQL query to fetch ArticleList (ProportioningDbId and LIMIT {rows} are added to be sure that the query is fetch the same data that is shown in the proportonings table (fetched with query_proportionings))
+query_article_list = """SELECT 
+    amadeus_proportioning.proportioning_dbid AS "ProportioningDBID",
+    amadeus_proportioning.article_dbid AS "ArticleDBID", 
+    amadeus_article.name AS "ArticleName"  
+FROM amadeus_proportioning 
+JOIN amadeus_article ON amadeus_proportioning.article_dbid = amadeus_article.article_dbid 
+ORDER BY amadeus_proportioning.proportioning_dbid DESC
+LIMIT {rows}; 
+"""
 # SQL query to fetch Analyzer Summary data
 query_analyzer_summary = """
 SELECT 
