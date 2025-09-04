@@ -1,7 +1,7 @@
 import pandas as pd
 from fastapi import APIRouter
 from fastapi import Query, Request
-from backend.database.query import query_proportionings, query_proportionings_filter
+from backend.database.query import query_proportionings, query_proportionings_filter, query_article_list
 from backend.classes.filter_data import  ReadableDataFormatter, FilterByString, Deviation
 from backend.classes.request import UserInfo, RequestEnvironment, RequestRows
 from backend.classes.calculation import CaclulateDateDelta, CaclulatPercent, IsInTolerance, NumericDeviation
@@ -15,13 +15,11 @@ router = APIRouter()
 
 @router.get("/api/proportionings")
 async def get_proportionings(request: Request) -> Union[List[Dict[str, Any]], Dict[str, str]]:
-    try:
-        rows = RequestRows(request).get_rows()  # Get the number of rows to fetch from the request
-        
+    try:        
         db_connection = RequestEnvironment(request).ConnectToUserEnvironment()  # Get the DBConnection object based on the user's environment
 
         # Fetch data from the database
-        data = await db_connection.fetch_df(query=query_proportionings.format(rows=rows)) #Raw Data (Limited to 1000 rows by default)
+        data = await db_connection.fetch_df(query=query_proportionings.format(rows=RequestRows(request).get_rows())) #Raw Data (Limited to 1000 rows by default)
 
         #Make all the calculations that are needed
         data = calculate(data)
@@ -61,9 +59,9 @@ async def get_proportionings_filtered(
         conditions = []
         #Filter by Article if it's requested
         if switchChecked:
-            conditions.append(f"name = '{requestedArticle}'")  # Add condition for ArticleName
+            conditions.append(f"amadeus_proportioning.article_dbid = '{requestedArticle}'")  # Add condition for ArticleName
             print("\n"+"*"*50 +"\n* Article Filter Switch enabled" + " "*18 + "*")
-            print(f"* Requested Article: {requestedArticle:<28}* \n"+"*"*50+"\n")
+            print(f"* Requested Article DB ID: {requestedArticle:<28}* \n"+"*"*50+"\n")
             
             
         # Handle Age Filter logic
@@ -78,7 +76,7 @@ async def get_proportionings_filtered(
             where_clause = "WHERE " + " AND ".join(conditions)
 
         # Fetch data from the database
-        data = await db_connection.fetch_df(query=query_proportionings_filtered.format(where_clause=where_clause)) #Raw Data
+        data = await db_connection.fetch_df(query=query_proportionings_filtered.format(where_clause=where_clause, rows=RequestRows(request).get_rows())) #Raw Data
             
         data = calculate(data)
 
@@ -94,7 +92,7 @@ async def get_proportionings_filtered(
             #Make data redable
             data = make_db_redable(data)
 
-        return data # Convert DataFrame to list of dictionaries
+        return data #Return data
         
     except Exception as e:
         print(f"Error: {str(e)}")
@@ -102,21 +100,20 @@ async def get_proportionings_filtered(
     
 # ----------------- Request all the article names ----------------- #
 @router.get("/api/articlenames")
-async def get_article_names(request: Request) -> List[Dict[str, Any]]:
+async def get_article_names(request: Request) ->  Union[List[Dict[str, Any]], Dict[str, str]]: #Only allow List of Dicts or error message
     try:
         rows = RequestRows(request).get_rows()
         
         db_connection = RequestEnvironment(request).ConnectToUserEnvironment()
 
         # Fetch data from the database
-        data = await db_connection.fetch_df(query=query_proportionings.format(rows=rows))  
+        data = await db_connection.fetch_df(query=query_article_list.format(rows=rows))  
         # Convert the data to a pandas DateFrame
         df = pd.DataFrame(data)
         #Get unique values from the 'ArticleName' column
-        unique_article_names =df['ArticleName'].unique()
-        # Create a list of dictionaries (required format)
-        result = [{"ArticleName": name} for name in unique_article_names]
-        #Return the results
+        result = df[['ArticleDBID', 'ArticleName']].drop_duplicates().to_dict(orient="records")
+        
+        # Create a list of dictionaries (required format) and return the results
         return result
 
     except Exception as e:

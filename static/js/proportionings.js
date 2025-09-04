@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const fragment = document.createDocumentFragment();
             articleNames.forEach(article => {
                 const option = document.createElement('option');
-                option.value = article.ArticleName;
+                option.value = article.ArticleDBID; // Use ArticleDBID as value (Avoid issues with special characters when the article is requested in database queries)
                 option.textContent = article.ArticleName;
                 fragment.appendChild(option);
             });
