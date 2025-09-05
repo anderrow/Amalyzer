@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Segoe UI", sans-serif;
+    font-family: "Arial", sans-serif;
 }
 
 body {
@@ -560,7 +560,7 @@ input, select {
   
   /* The Number above the slider*/
   #rangevalue {
-    font-family: 'Quantico', sans-serif;
+    font-family: 'Arial', sans-serif;
     font-size: 14px;
     color: #579E81;
     text-align: center;
